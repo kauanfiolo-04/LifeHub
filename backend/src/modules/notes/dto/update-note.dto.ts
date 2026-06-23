@@ -1,17 +1,19 @@
 import { IsString, IsNotEmpty, MinLength, MaxLength, IsOptional, IsArray } from 'class-validator';
 
 export class UpdateNoteDTO {
+  @IsOptional()
   @IsString()
   @IsNotEmpty()
   @MinLength(5)
   @MaxLength(255)
-  readonly title!: string;
+  readonly title?: string;
 
   @IsString()
+  @IsOptional()
   @IsNotEmpty()
   @MinLength(5)
   @MaxLength(255)
-  readonly content!: string;
+  readonly content?: string;
 
   @IsOptional()
   @IsArray()
