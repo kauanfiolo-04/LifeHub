@@ -1,7 +1,38 @@
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn
+} from 'typeorm';
+import { User } from '../../users/entities/user.entity';
+
+@Entity('notes')
 export class Note {
+  @PrimaryGeneratedColumn('uuid')
   id!: string;
+
+  @Column('uuid')
+  userId!: string;
+
+  @Column({ length: 100 })
   title!: string;
+
+  @Column({ type: 'text' })
   content!: string;
+
+  @Column('text', { array: true, default: [] })
   tags!: string[];
-  createdAt!: Date;
+
+  @ManyToOne(() => User, user => user.notes, { onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'userId' })
+  user!: User;
+
+  @CreateDateColumn()
+  createdAt?: Date;
+
+  @UpdateDateColumn()
+  updatedAt?: Date;
 }
