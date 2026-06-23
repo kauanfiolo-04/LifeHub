@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateNoteDTO } from './dto/create-note.dto';
 import { UpdateNoteDTO } from './dto/update-note.dto';
 import { randomUUID } from 'crypto';
+import { Note } from './entities/note.entity';
 
 @Injectable()
 export class NotesService {
