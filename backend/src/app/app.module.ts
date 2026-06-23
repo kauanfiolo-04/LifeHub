@@ -5,24 +5,26 @@ import { TasksModule } from '../tasks/tasks.module';
 import { NotesModule } from '../notes/notes.module';
 import { UsersModule } from '../users/users.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigType } from '@nestjs/config';
+import globalConfig from '../global-config/global-config';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
     TypeOrmModule.forRootAsync({
-      imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory: (config: ConfigService) => ({
-        type: 'postgres',
-        url: config.get<string>('DATABASE_URL'),
-
-        ssl: {
-          rejectUnauthorized: false
-        },
-
-        autoLoadEntities: true
-      })
+      imports: [ConfigModule.forFeature(globalConfig)],
+      inject: [globalConfig.KEY],
+      useFactory: (config: ConfigType<typeof globalConfig>) => {
+        return {
+          type: config.database.type,
+          url: config.database.url,
+          ssl: {
+            rejectUnauthorized: false
+          },
+          autoLoadEntities: config.database.autoLoadEntities,
+          synchronize: config.database.synchronize
+        };
+      }
     }),
     TasksModule,
     NotesModule,
