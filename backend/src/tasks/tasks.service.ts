@@ -3,15 +3,6 @@ import { randomUUID } from 'crypto';
 import { CreateTaskDTO } from './dto/create-task.dto';
 import { UpdateTaskDTO } from './dto/update-task.dto';
 
-export interface Task {
-  id: string;
-  title: string;
-  description?: string;
-  completed: boolean;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
 @Injectable()
 export class TasksService {
   private tasks: Task[] = [];
@@ -69,11 +60,11 @@ export class TasksService {
     this.tasks.splice(taskIndex, 1);
   }
 
-  toggleComplete(id: string): Task {
-    const task = this.findOne(id);
+  // toggleComplete(id: string): Task {
+  //   const task = this.findOne(id);
 
-    return this.update(id, {
-      completed: !task.completed
-    });
-  }
+  //   return this.update(id, {
+  //     completed: !task.completed
+  //   });
+  // }
 }

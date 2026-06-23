@@ -3,14 +3,6 @@ import { CreateNoteDTO } from './dto/create-note.dto';
 import { UpdateNoteDTO } from './dto/update-note.dto';
 import { randomUUID } from 'crypto';
 
-export interface Note {
-  id: string;
-  title: string;
-  content: string;
-  tags: string[];
-  createdAt: Date;
-}
-
 @Injectable()
 export class NotesService {
   private notes: Note[] = [];
