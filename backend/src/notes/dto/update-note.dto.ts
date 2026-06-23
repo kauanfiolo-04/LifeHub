@@ -1,22 +1,4 @@
-import { IsString, IsNotEmpty, MinLength, MaxLength, IsOptional, IsArray } from 'class-validator';
+import { PartialType } from '@nestjs/mapped-types';
+import { CreateNoteDTO } from './create-note.dto';
 
-export class UpdateNoteDTO {
-  @IsOptional()
-  @IsString()
-  @IsNotEmpty()
-  @MinLength(5)
-  @MaxLength(255)
-  readonly title?: string;
-
-  @IsString()
-  @IsOptional()
-  @IsNotEmpty()
-  @MinLength(5)
-  @MaxLength(255)
-  readonly content?: string;
-
-  @IsOptional()
-  @IsArray()
-  @IsString({ each: true })
-  readonly tags?: string[];
-}
+export class UpdateNoteDTO extends PartialType(CreateNoteDTO) {}
