@@ -58,7 +58,7 @@ export class NotesService {
     return this.notes.find(note => note.id === id);
   }
 
-  delete(id: string) {
+  remove(id: string) {
     const note = this.notes.find(note => note.id === id)!;
 
     this.notes = this.notes.filter(n => n.id !== note.id);
