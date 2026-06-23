@@ -1,61 +1,54 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateNoteDTO } from './dto/create-note.dto';
 import { UpdateNoteDTO } from './dto/update-note.dto';
-import { randomUUID } from 'crypto';
 import { Note } from './entities/note.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class NotesService {
-  private notes: Note[] = [];
+  constructor(
+    @InjectRepository(Note)
+    private readonly notesRepository: Repository<Note>
+  ) {}
 
   throwNotFoundException(): never {
     throw new NotFoundException('Note not found!');
   }
 
-  create(dto: CreateNoteDTO) {
-    const note = {
-      id: randomUUID().toString(),
-      ...dto,
-      tags: dto.tags ?? [],
-      createdAt: new Date()
-    };
+  async create(dto: CreateNoteDTO) {
+    const newNote = this.notesRepository.create(dto);
 
-    this.notes.push(note);
+    await this.notesRepository.save(newNote);
 
-    return note;
+    return newNote;
   }
 
-  findAll() {
-    return this.notes;
+  async findAll() {
+    const notes = await this.notesRepository.find({ order: { createdAt: 'desc' } });
+
+    return notes;
   }
 
-  findOne(id: string) {
-    return this.notes.find(note => note.id === id);
-  }
-
-  update(id: string, dto: UpdateNoteDTO) {
-    const note = this.notes.find(note => note.id === id);
+  async findOne(id: string) {
+    const note = await this.notesRepository.findOneBy({ id });
 
     if (!note) this.throwNotFoundException();
 
-    const newNotes = this.notes.map(n => {
-      if (n.id === note.id) {
-        return { ...n, ...dto };
-      }
-
-      return n;
-    });
-
-    this.notes = newNotes;
-
-    return this.notes.find(note => note.id === id);
+    return note;
   }
 
-  remove(id: string) {
-    const note = this.notes.find(note => note.id === id)!;
+  async update(id: string, dto: UpdateNoteDTO) {
+    const updatedNote = await this.notesRepository.preload({ id, ...dto });
 
-    this.notes = this.notes.filter(n => n.id !== note.id);
+    if (!updatedNote) this.throwNotFoundException();
 
-    return note;
+    return await this.notesRepository.save(updatedNote);
+  }
+
+  async remove(id: string) {
+    const note = await this.findOne(id);
+
+    return await this.notesRepository.remove(note);
   }
 }
