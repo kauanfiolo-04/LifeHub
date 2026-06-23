@@ -1,34 +1,34 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
-import { CreateNoteDTO } from './dto/create-note.dto';
-import { UpdateNoteDTO } from './dto/update-note.dto';
-import { NotesService } from './notes.service';
+import { CreateTaskDTO } from './dto/create-task.dto';
+import { UpdateTaskDTO } from './dto/update-task.dto';
+import { TasksService } from './tasks.service';
 
 @Controller('tasks')
-export class NotesController {
-  constructor(private readonly notesService: NotesService) {}
+export class TasksController {
+  constructor(private readonly tasksService: TasksService) {}
 
   @Post()
-  create(@Body() body: CreateNoteDTO) {
-    return this.notesService.create(body);
+  create(@Body() body: CreateTaskDTO) {
+    return this.tasksService.create(body);
   }
 
   @Get()
   findAll() {
-    return this.notesService.findAll();
+    return this.tasksService.findAll();
   }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.notesService.findOne(id);
+    return this.tasksService.findOne(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() body: UpdateNoteDTO) {
-    return this.notesService.update(id, body);
+  update(@Param('id') id: string, @Body() body: UpdateTaskDTO) {
+    return this.tasksService.update(id, body);
   }
 
   @Delete(':id')
-  delete(@Param('id') id: string) {
-    return this.notesService.delete(id);
+  remove(@Param('id') id: string) {
+    return this.tasksService.remove(id);
   }
 }
