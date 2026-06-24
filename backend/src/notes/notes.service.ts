@@ -4,6 +4,7 @@ import { UpdateNoteDTO } from './dto/update-note.dto';
 import { Note } from './entities/note.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { JwtPayload } from '../auth/types/jwt-payload.type';
 
 @Injectable()
 export class NotesService {
@@ -16,8 +17,11 @@ export class NotesService {
     throw new NotFoundException('Note not found!');
   }
 
-  async create(dto: CreateNoteDTO) {
-    const newNote = this.notesRepository.create(dto);
+  async create(dto: CreateNoteDTO, payload: JwtPayload) {
+    const newNote = this.notesRepository.create({
+      userId: payload.sub,
+      ...dto
+    });
 
     await this.notesRepository.save(newNote);
 
