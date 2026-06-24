@@ -13,7 +13,7 @@ export default registerAs(
     environment: process.env.NODE_ENV || 'development',
     jwt: {
       jwt_access_secret: process.env.JWT_ACCESS_SECRET ?? '',
-      jwt_refresh_secret: process.env.JWT_RERESH_SECRET ?? '',
+      jwt_refresh_secret: process.env.JWT_REFRESH_SECRET ?? '',
       jwt_ttl: Number(process.env.JWT_TTL ?? 3600),
       jwt_refresh_ttl: Number(process.env.JWT_REFRESH_TTL ?? 86400)
     }

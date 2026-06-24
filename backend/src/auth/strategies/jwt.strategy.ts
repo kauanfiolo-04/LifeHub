@@ -6,6 +6,10 @@ import { GlobalConfig } from '../../global-config/global-config.type';
 
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(private readonly configService: ConfigService<GlobalConfig>) {
+    console.log('STRATEGY CONFIG:', {
+      access: configService.get('jwt.jwt_access_secret', { infer: true })
+    });
+
     const secret = configService.get<string>('jwt.jwt_access_secret', { infer: true });
 
     if (!secret) {
