@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { ConflictException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -12,12 +10,15 @@ import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { User } from '../users/entities/user.entity';
 import { JwtPayload } from './types/jwt-payload.type';
-// import { OAuthAccount } from './entities/oauth-account.entity';
+import { OAuthProfile } from './types/oauth-profile.type';
+import { OAuthAccount } from './entities/oauth-account.entity';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly usersService: UsersService,
+    @InjectRepository(OAuthAccount)
+    private readonly oauthRepo: Repository<OAuthAccount>,
     @InjectRepository(Credential)
     private readonly credentialsRepository: Repository<Credential>,
     private readonly configService: ConfigService,
@@ -108,5 +109,50 @@ export class AuthService {
     await this.saveRefreshToken(user.id, tokens.refreshToken);
 
     return tokens;
+  }
+
+  async oauthLogin(data: OAuthProfile) {
+    if (!data.email) {
+      throw new UnauthorizedException('OAuth provider did not return email');
+    }
+
+    let oauth = await this.oauthRepo.findOne({
+      where: {
+        provider: data.provider
+        // provider: data.provider
+        // providerAccountId: data.providerAccountId
+      }
+      // relations: ['user']
+    });
+
+    let user: User;
+
+    if (oauth) {
+      user = oauth.user;
+    } else {
+      user = await this.usersService.findByEmail(data.email);
+
+      if (!user) {
+        user = await this.usersService.create({
+          email: data.email,
+          name: data.name ?? 'User'
+        });
+      }
+
+      oauth = this.oauthRepo.create({
+        provider: data.provider,
+        providerAccountId: data.providerAccountId,
+        user
+      });
+
+      await this.oauthRepo.save(oauth);
+    }
+
+    const tokens = await this.generateTokens(user);
+
+    return {
+      user,
+      ...tokens
+    };
   }
 }

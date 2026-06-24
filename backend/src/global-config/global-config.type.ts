@@ -14,4 +14,11 @@ export type GlobalConfig = {
     jwt_ttl: number;
     jwt_refresh_ttl: number;
   };
+
+  oauth: {
+    google_client_id: string;
+    google_secret: string;
+    github_client_id: string;
+    github_client_secret: string;
+  };
 };

@@ -2,18 +2,20 @@ import { Module } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
-// import { OAuthAccount } from './entities/oauth-account.entity';
+import { OAuthAccount } from './entities/oauth-account.entity';
 import { Credential } from './entities/credential.entity';
 import { UsersModule } from '../users/users.module';
 import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import { GoogleStrategy } from './strategies/google.strategy';
+import { GithubStrategy } from './strategies/github.strategy';
 
 @Module({
   imports: [
     ConfigModule,
-    TypeOrmModule.forFeature([Credential]),
+    TypeOrmModule.forFeature([Credential, OAuthAccount]),
     UsersModule,
     JwtModule.registerAsync({
       inject: [ConfigService],
@@ -25,7 +27,7 @@ import { JwtAuthGuard } from './guards/jwt-auth.guard';
       })
     })
   ],
-  providers: [AuthService, JwtStrategy, JwtAuthGuard],
+  providers: [AuthService, JwtStrategy, JwtAuthGuard, GoogleStrategy, GithubStrategy],
   controllers: [AuthController],
   exports: [JwtAuthGuard]
 })

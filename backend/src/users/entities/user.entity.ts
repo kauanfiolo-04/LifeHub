@@ -10,7 +10,7 @@ import {
 import { Task } from '../../tasks/entities/task.entity';
 import { Note } from '../../notes/entities/note.entity';
 import { Credential } from '../../auth/entities/credential.entity';
-// import { OAuthAccount } from '../../auth/entities/oauth-account.entity';
+import { OAuthAccount } from '../../auth/entities/oauth-account.entity';
 
 @Entity('users')
 export class User {
@@ -32,8 +32,8 @@ export class User {
   @OneToOne(() => Credential, credential => credential.user)
   credential?: Credential;
 
-  // @OneToMany(() => OAuthAccount, oAuthAccount => oAuthAccount.user)
-  // oAuthAccounts!: OAuthAccount[];
+  @OneToMany(() => OAuthAccount, oAuthAccount => oAuthAccount.user)
+  oAuthAccounts!: OAuthAccount[];
 
   @Column({ nullable: true })
   hashedRefreshToken?: string;

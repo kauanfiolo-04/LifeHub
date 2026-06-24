@@ -16,6 +16,12 @@ export default registerAs(
       jwt_refresh_secret: process.env.JWT_REFRESH_SECRET ?? '',
       jwt_ttl: Number(process.env.JWT_TTL ?? 3600),
       jwt_refresh_ttl: Number(process.env.JWT_REFRESH_TTL ?? 86400)
+    },
+    oauth: {
+      google_client_id: process.env.GOOGLE_CLIENT_ID ?? '',
+      google_secret: process.env.GOOGLE_SECRET ?? '',
+      github_client_id: process.env.GITHUB_CLIENT_ID ?? '',
+      github_client_secret: process.env.GITHUB_CLIENT_SECRET ?? ''
     }
   })
 );
