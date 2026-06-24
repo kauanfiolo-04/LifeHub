@@ -7,6 +7,7 @@ import { UsersModule } from '../users/users.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigType } from '@nestjs/config';
 import globalConfig from '../global-config/global-config';
+import { AuthModule } from '../auth/auth.module';
 
 @Module({
   imports: [
@@ -28,7 +29,8 @@ import globalConfig from '../global-config/global-config';
     }),
     TasksModule,
     NotesModule,
-    UsersModule
+    UsersModule,
+    AuthModule
   ],
   controllers: [AppController],
   providers: [AppService]
