@@ -5,16 +5,16 @@ export class CreateNoteDTO {
   @IsNotEmpty()
   @MinLength(5)
   @MaxLength(255)
-  readonly title!: string;
+  title!: string;
 
   @IsString()
   @IsNotEmpty()
   @MinLength(5)
   @MaxLength(255)
-  readonly content!: string;
+  content!: string;
 
   @IsOptional()
   @IsArray()
   @IsString({ each: true })
-  readonly tags?: string[];
+  tags?: string[];
 }
