@@ -1,9 +1,10 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { User } from './entities/user.entity';
 import { CreateUserDTO } from './dto/create-user.dto';
 import { UpdateUserDTO } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { JwtPayload } from '../auth/types/jwt-payload.type';
 
 @Injectable()
 export class UsersService {
@@ -52,7 +53,9 @@ export class UsersService {
     return user;
   }
 
-  async update(id: string, dto: UpdateUserDTO) {
+  async update(id: string, dto: UpdateUserDTO, payload: JwtPayload) {
+    if (payload.sub !== id) throw new UnauthorizedException(`You can't update another user.`);
+
     const updatedUser = await this.userRepository.preload({ id, ...dto });
 
     if (!updatedUser) this.throwNotFoundException();
@@ -60,7 +63,9 @@ export class UsersService {
     return await this.userRepository.save(updatedUser);
   }
 
-  async remove(id: string) {
+  async remove(id: string, payload: JwtPayload) {
+    if (payload.sub !== id) throw new UnauthorizedException(`You can't delete another user.`);
+
     const user = await this.findOne(id);
 
     return await this.userRepository.remove(user);

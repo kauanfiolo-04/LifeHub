@@ -75,9 +75,13 @@ export class AuthService {
   }
 
   async saveRefreshToken(userId: string, refreshToken: string) {
+    // const payload = this.jwtService.verify<JwtPayload>(refreshToken, {
+    //   secret: this.configService.get('globalConfig.jwt.jwt_refresh_secret')
+    // });
+
     const hash = await bc.hash(refreshToken, 10);
 
-    await this.usersService.update(userId, { hashedRefreshToken: hash });
+    await this.usersService.update(userId, { hashedRefreshToken: hash }, {} as JwtPayload);
   }
 
   async login(user: User) {
