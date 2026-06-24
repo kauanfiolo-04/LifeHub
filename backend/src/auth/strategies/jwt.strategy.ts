@@ -2,15 +2,12 @@ import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { ConfigService } from '@nestjs/config';
 import { JwtPayload } from '../jwt-payload.type';
-import { GlobalConfig } from '../../global-config/global-config.type';
+import { Injectable } from '@nestjs/common';
 
+@Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
-  constructor(private readonly configService: ConfigService<GlobalConfig>) {
-    console.log('STRATEGY CONFIG:', {
-      access: configService.get('jwt.jwt_access_secret', { infer: true })
-    });
-
-    const secret = configService.get<string>('jwt.jwt_access_secret', { infer: true });
+  constructor(private readonly configService: ConfigService) {
+    const secret = configService.get<string>('globalConfig.jwt.jwt_access_secret');
 
     if (!secret) {
       throw new Error('JWT_ACCESS_SECRET is not defined');

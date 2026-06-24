@@ -5,13 +5,26 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 // import { OAuthAccount } from './entities/oauth-account.entity';
 import { Credential } from './entities/credential.entity';
 import { UsersModule } from '../users/users.module';
-import { JwtAuthGuard } from './guards/jwt-auth.guard';
-import { JwtService } from '@nestjs/jwt';
+import { JwtModule } from '@nestjs/jwt';
+import { JwtStrategy } from './strategies/jwt.strategy';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Credential]), UsersModule],
-  providers: [AuthService, JwtAuthGuard, JwtService],
-  controllers: [AuthController],
-  exports: [JwtAuthGuard]
+  imports: [
+    ConfigModule,
+    TypeOrmModule.forFeature([Credential]),
+    UsersModule,
+    JwtModule.registerAsync({
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => ({
+        secret: config.get('globalConfig.jwt.jwt_access_secret'),
+        signOptions: {
+          expiresIn: config.get('globalConfig.jwt.jwt_ttl')
+        }
+      })
+    })
+  ],
+  providers: [AuthService, JwtStrategy],
+  controllers: [AuthController]
 })
 export class AuthModule {}

@@ -56,19 +56,19 @@ export class AuthService {
   }
 
   async generateTokens(user: User) {
-    const payload: JwtPayload = {
+    const payload: Pick<JwtPayload, 'sub' | 'email'> = {
       sub: user.id,
       email: user.email
     };
 
     const accessToken = await this.jwtService.signAsync(payload, {
-      secret: this.configService.get('jwt_access_secret'),
-      expiresIn: this.configService.get('jwt_ttl')
+      secret: this.configService.get('globalConfig.jwt.jwt_access_secret'),
+      expiresIn: this.configService.get('globalConfig.jwt.jwt_ttl')
     });
 
     const refreshToken = await this.jwtService.signAsync(payload, {
-      secret: this.configService.get('jwt_refresh_secret'),
-      expiresIn: this.configService.get('jwt_refresh_ttl')
+      secret: this.configService.get('globalConfig.jwt.jwt_refresh_secret'),
+      expiresIn: this.configService.get('globalConfig.jwt.jwt_refresh_ttl')
     });
 
     return { accessToken, refreshToken };
