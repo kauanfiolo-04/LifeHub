@@ -1,12 +1,10 @@
-import { Injectable, NotFoundException, UnauthorizedException, UseGuards } from '@nestjs/common';
+import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { CreateTaskDTO } from './dto/create-task.dto';
 import { UpdateTaskDTO } from './dto/update-task.dto';
 import { Task } from './entities/task.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { type JwtPayload } from '../auth/types/jwt-payload.type';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { AuthGuard } from '@nestjs/passport';
 
 @Injectable()
 export class TasksService {
@@ -19,7 +17,6 @@ export class TasksService {
     throw new NotFoundException('Task not found!');
   }
 
-  @UseGuards(AuthGuard)
   async create(dto: CreateTaskDTO, payload: JwtPayload) {
     const newTask = this.tasksRepository.create({
       userId: payload.sub,
@@ -45,31 +42,21 @@ export class TasksService {
     return task;
   }
 
-  @UseGuards(AuthGuard)
   async update(id: string, dto: UpdateTaskDTO, payload: JwtPayload) {
-    if (payload.sub !== id) throw new UnauthorizedException(`You can't change another user task.`);
-
     const updatedTask = await this.tasksRepository.preload({ id, ...dto });
 
     if (!updatedTask) this.throwNotFoundException();
 
+    if (payload.sub !== updatedTask.userId) throw new UnauthorizedException(`You can't change another user task.`);
+
     return await this.tasksRepository.save(updatedTask);
   }
 
-  @UseGuards(JwtAuthGuard)
   async remove(id: string, payload: JwtPayload) {
-    if (payload.sub !== id) throw new UnauthorizedException(`You can't delete another user task.`);
-
     const task = await this.findOne(id);
+
+    if (payload.sub !== task.userId) throw new UnauthorizedException(`You can't delete another user task.`);
 
     return await this.tasksRepository.remove(task);
   }
-
-  // toggleComplete(id: string): Task {
-  //   const task = this.findOne(id);
-
-  //   return this.update(id, {
-  //     completed: !task.completed
-  //   });
-  // }
 }

@@ -26,13 +26,15 @@ export class TasksController {
     return this.tasksService.findOne(id);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Patch(':id')
-  update(@Param('id') id: string, @Body() body: UpdateTaskDTO) {
-    return this.tasksService.update(id, body);
+  update(@Param('id') id: string, @Body() body: UpdateTaskDTO, @TokenPayload() payload: JwtPayload) {
+    return this.tasksService.update(id, body, payload);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.tasksService.remove(id);
+  remove(@Param('id') id: string, @TokenPayload() payload: JwtPayload) {
+    return this.tasksService.remove(id, payload);
   }
 }

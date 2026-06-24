@@ -1,7 +1,9 @@
-import { IsNotEmpty, IsOptional, IsString, MaxLength, MinLength } from 'class-validator';
+import { IsDateString, IsEnum, IsNotEmpty, IsOptional, IsString, MaxLength, MinLength } from 'class-validator';
+import { TaskStatus } from '../enum/task-status.enum';
+import { TaskPriority } from '../enum/task-priority.enum';
+import { Type } from 'class-transformer';
 
 export class CreateTaskDTO {
-  @IsOptional()
   @IsString()
   @IsNotEmpty()
   @MinLength(5)
@@ -13,5 +15,18 @@ export class CreateTaskDTO {
   @IsNotEmpty()
   @MinLength(5)
   @MaxLength(255)
-  description!: string;
+  description?: string;
+
+  @IsOptional()
+  @IsEnum(TaskStatus)
+  status?: TaskStatus;
+
+  @IsOptional()
+  @IsEnum(TaskPriority)
+  priority!: TaskPriority;
+
+  @IsOptional()
+  @IsDateString()
+  @Type(() => Date)
+  dueDate?: Date;
 }
