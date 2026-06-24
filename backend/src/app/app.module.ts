@@ -8,10 +8,25 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigType } from '@nestjs/config';
 import globalConfig from '../global-config/global-config';
 import { AuthModule } from '../auth/auth.module';
+import * as Joi from 'joi';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true }),
+    ConfigModule.forRoot({
+      isGlobal: true,
+      validationSchema: Joi.object({
+        DATABASE_URL: Joi.string().required(),
+        DATABASE_TYPE: Joi.string().required(),
+
+        JWT_ACCESS_SECRET: Joi.string().required(),
+        JWT_REFRESH_SECRET: Joi.string().required(),
+
+        JWT_TTL: Joi.number().default(3600),
+        JWT_REFRESH_TTL: Joi.number().default(86400),
+
+        NODE_ENV: Joi.string().valid('development', 'production', 'test').default('development')
+      })
+    }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule.forFeature(globalConfig)],
       inject: [globalConfig.KEY],
