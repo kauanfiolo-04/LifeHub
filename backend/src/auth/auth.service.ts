@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { ConflictException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -75,13 +77,13 @@ export class AuthService {
   }
 
   async saveRefreshToken(userId: string, refreshToken: string) {
-    // const payload = this.jwtService.verify<JwtPayload>(refreshToken, {
-    //   secret: this.configService.get('globalConfig.jwt.jwt_refresh_secret')
-    // });
+    const payload = this.jwtService.verify<JwtPayload>(refreshToken, {
+      secret: this.configService.get('globalConfig.jwt.jwt_refresh_secret')
+    });
 
     const hash = await bc.hash(refreshToken, 10);
 
-    await this.usersService.update(userId, { hashedRefreshToken: hash }, {} as JwtPayload);
+    await this.usersService.update(userId, { hashedRefreshToken: hash }, payload);
   }
 
   async login(user: User) {
