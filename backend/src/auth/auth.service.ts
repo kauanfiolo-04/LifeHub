@@ -118,11 +118,10 @@ export class AuthService {
 
     let oauth = await this.oauthRepo.findOne({
       where: {
-        provider: data.provider
-        // provider: data.provider
-        // providerAccountId: data.providerAccountId
-      }
-      // relations: ['user']
+        provider: data.provider,
+        providerAccountId: data.providerAccountId
+      },
+      relations: { user: true }
     });
 
     let user: User;
@@ -130,9 +129,11 @@ export class AuthService {
     if (oauth) {
       user = oauth.user;
     } else {
-      user = await this.usersService.findByEmail(data.email);
+      const existingUser = await this.usersService.findByEmail(data.email);
 
-      if (!user) {
+      if (existingUser) {
+        user = existingUser;
+      } else {
         user = await this.usersService.create({
           email: data.email,
           name: data.name ?? 'User'

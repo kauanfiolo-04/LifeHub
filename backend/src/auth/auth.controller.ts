@@ -25,9 +25,10 @@ export class AuthController {
     return this.authService.login(user);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post('refresh')
-  refresh(@Body() body: { userId: string; refreshToken: string }) {
-    return this.authService.refreshTokens(body.userId, body.refreshToken);
+  refresh(@Body() body: { refreshToken: string }, @TokenPayload() payload: JwtPayload) {
+    return this.authService.refreshTokens(payload.sub, body.refreshToken);
   }
 
   @Get('google')
