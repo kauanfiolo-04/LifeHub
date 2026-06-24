@@ -4,6 +4,7 @@ import { CreateUserDTO } from './dto/create-user.dto';
 import { UpdateUserDTO } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { SignupDTO } from '../auth/dto/signup.dto';
 
 @Injectable()
 export class UsersService {
@@ -16,7 +17,7 @@ export class UsersService {
     throw new NotFoundException('User not found!');
   }
 
-  async create(dto: CreateUserDTO) {
+  async create(dto: SignupDTO) {
     try {
       const newUser = this.userRepository.create(dto);
 
@@ -32,6 +33,10 @@ export class UsersService {
 
       throw error;
     }
+  }
+
+  async findByEmail(email: string) {
+    return await this.userRepository.findOne({ where: { email } });
   }
 
   async findAll() {
