@@ -7,9 +7,9 @@ import { SignupDTO } from './dto/signup.dto';
 import { Credential } from './entities/credential.entity';
 import { LoginDto } from './dto/login.dto';
 import { JwtService } from '@nestjs/jwt';
-import { JwtPayload } from './jwt-payload.type';
 import { ConfigService } from '@nestjs/config';
 import { User } from '../users/entities/user.entity';
+import { JwtPayload } from './types/jwt-payload.type';
 // import { OAuthAccount } from './entities/oauth-account.entity';
 
 @Injectable()
@@ -56,7 +56,7 @@ export class AuthService {
   }
 
   async generateTokens(user: User) {
-    const payload: Pick<JwtPayload, 'sub' | 'email'> = {
+    const payload: JwtPayload = {
       sub: user.id,
       email: user.email
     };

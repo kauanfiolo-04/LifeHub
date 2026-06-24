@@ -3,6 +3,8 @@ import { AuthService } from './auth.service';
 import { SignupDTO } from './dto/signup.dto';
 import { LoginDto } from './dto/login.dto';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import { TokenPayload } from './decorators/user.decorator';
+import { type JwtPayload } from './types/jwt-payload.type';
 
 @Controller('auth')
 export class AuthController {
@@ -27,8 +29,7 @@ export class AuthController {
 
   @UseGuards(JwtAuthGuard)
   @Get('me')
-  getMe(@Request() req) {
-    console.log(req.headers.authorization);
-    return req.user;
+  getMe(@TokenPayload() tokenPayload: JwtPayload) {
+    return tokenPayload;
   }
 }
