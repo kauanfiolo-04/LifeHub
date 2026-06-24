@@ -1,15 +1,19 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
 import { CreateTaskDTO } from './dto/create-task.dto';
 import { UpdateTaskDTO } from './dto/update-task.dto';
 import { TasksService } from './tasks.service';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { TokenPayload } from '../auth/decorators/user.decorator';
+import { type JwtPayload } from '../auth/types/jwt-payload.type';
 
 @Controller('tasks')
 export class TasksController {
   constructor(private readonly tasksService: TasksService) {}
 
+  @UseGuards(JwtAuthGuard)
   @Post()
-  create(@Body() body: CreateTaskDTO) {
-    return this.tasksService.create(body);
+  create(@Body() body: CreateTaskDTO, @TokenPayload() payload: JwtPayload) {
+    return this.tasksService.create(body, payload);
   }
 
   @Get()
