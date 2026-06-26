@@ -1,4 +1,61 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { Repository } from 'typeorm';
+import { Account } from './entities/account.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { CreateAccountDTO } from './dto/create-account.dto';
+import { JwtPayload } from '../../auth/types/jwt-payload.type';
+import { UpdateAccountDTO } from './dto/update-account.dto';
 
 @Injectable()
-export class AccountsService {}
+export class AccountsService {
+  constructor(
+    @InjectRepository(Account)
+    private readonly accountsRepository: Repository<Account>
+  ) {}
+
+  throwNotFoundException(): never {
+    throw new NotFoundException('Account not found!');
+  }
+
+  async createAccount(dto: CreateAccountDTO, payload: JwtPayload) {
+    const newAccount = this.accountsRepository.create({
+      ...dto,
+      user: { id: payload.sub }
+    });
+
+    await this.accountsRepository.save(newAccount);
+  }
+
+  async findAll() {
+    const tasks = await this.accountsRepository.find({ order: { createdAt: 'desc' } });
+
+    return tasks;
+  }
+
+  async findOne(id: string) {
+    const account = await this.accountsRepository.findOneBy({ id });
+
+    if (!account) this.throwNotFoundException();
+
+    return account;
+  }
+
+  async update(id: string, dto: UpdateAccountDTO, payload: JwtPayload) {
+    const updatedAccount = await this.accountsRepository.preload({ id, ...dto });
+
+    if (!updatedAccount) this.throwNotFoundException();
+
+    if (payload.sub !== updatedAccount.user.id)
+      throw new UnauthorizedException(`You can't change another user account.`);
+
+    return await this.accountsRepository.save(updatedAccount);
+  }
+
+  async remove(id: string, payload: JwtPayload) {
+    const account = await this.findOne(id);
+
+    if (payload.sub !== account.user.id) throw new UnauthorizedException(`You can't delete another user account.`);
+
+    return await this.accountsRepository.remove(account);
+  }
+}
