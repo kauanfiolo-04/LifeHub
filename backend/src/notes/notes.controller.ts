@@ -26,13 +26,15 @@ export class NotesController {
     return this.notesService.findOne(id);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Patch(':id')
-  update(@Param('id') id: string, @Body() body: UpdateNoteDTO) {
-    return this.notesService.update(id, body);
+  update(@Param('id') id: string, @Body() body: UpdateNoteDTO, @TokenPayload() payload: JwtPayload) {
+    return this.notesService.update(id, body, payload);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.notesService.remove(id);
+  remove(@Param('id') id: string, @TokenPayload() payload: JwtPayload) {
+    return this.notesService.remove(id, payload);
   }
 }
