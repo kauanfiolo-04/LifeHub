@@ -19,8 +19,8 @@ export class TasksService {
 
   async create(dto: CreateTaskDTO, payload: JwtPayload) {
     const newTask = this.tasksRepository.create({
-      userId: payload.sub,
-      ...dto
+      ...dto,
+      user: { id: payload.sub }
     });
 
     await this.tasksRepository.save(newTask);
@@ -47,7 +47,7 @@ export class TasksService {
 
     if (!updatedTask) this.throwNotFoundException();
 
-    if (payload.sub !== updatedTask.userId) throw new UnauthorizedException(`You can't change another user task.`);
+    if (payload.sub !== updatedTask.user.id) throw new UnauthorizedException(`You can't change another user task.`);
 
     return await this.tasksRepository.save(updatedTask);
   }
@@ -55,7 +55,7 @@ export class TasksService {
   async remove(id: string, payload: JwtPayload) {
     const task = await this.findOne(id);
 
-    if (payload.sub !== task.userId) throw new UnauthorizedException(`You can't delete another user task.`);
+    if (payload.sub !== task.user.id) throw new UnauthorizedException(`You can't delete another user task.`);
 
     return await this.tasksRepository.remove(task);
   }

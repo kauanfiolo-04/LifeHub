@@ -19,8 +19,8 @@ export class NotesService {
 
   async create(dto: CreateNoteDTO, payload: JwtPayload) {
     const newNote = this.notesRepository.create({
-      userId: payload.sub,
-      ...dto
+      ...dto,
+      user: { id: payload.sub }
     });
 
     await this.notesRepository.save(newNote);
