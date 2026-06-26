@@ -27,9 +27,9 @@ export class AccountsService {
   }
 
   async findAll() {
-    const tasks = await this.accountsRepository.find({ order: { createdAt: 'desc' } });
+    const accounts = await this.accountsRepository.find({ order: { createdAt: 'desc' } });
 
-    return tasks;
+    return accounts;
   }
 
   async findOne(id: string) {
