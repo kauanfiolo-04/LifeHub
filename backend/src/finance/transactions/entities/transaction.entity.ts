@@ -8,6 +8,9 @@ export class Transaction {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
 
+  @Column({ length: 100 })
+  title!: string;
+
   @Column()
   description!: string;
 

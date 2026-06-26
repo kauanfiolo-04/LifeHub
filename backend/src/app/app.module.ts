@@ -44,11 +44,11 @@ import { FinanceModule } from '../finance/finance.module';
         };
       }
     }),
+    AuthModule,
     FinanceModule,
     TasksModule,
     NotesModule,
-    UsersModule,
-    AuthModule
+    UsersModule
   ],
   controllers: [AppController],
   providers: [AppService]
