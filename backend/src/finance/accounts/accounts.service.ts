@@ -24,6 +24,8 @@ export class AccountsService {
     });
 
     await this.accountsRepository.save(newAccount);
+
+    return newAccount;
   }
 
   async findAll() {
@@ -33,7 +35,18 @@ export class AccountsService {
   }
 
   async findOne(id: string) {
-    const account = await this.accountsRepository.findOneBy({ id });
+    const account = await this.accountsRepository.findOne({
+      where: { id },
+      relations: {
+        transactions: true,
+        user: true
+      },
+      select: {
+        user: {
+          id: true
+        }
+      }
+    });
 
     if (!account) this.throwNotFoundException();
 

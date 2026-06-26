@@ -1,4 +1,3 @@
-import { Type } from 'class-transformer';
 import {
   IsDateString,
   IsEnum,
@@ -20,10 +19,10 @@ export class CreateTransactionDTO {
   title!: string;
 
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   @MinLength(5)
   @MaxLength(255)
-  description!: string;
+  description?: string;
 
   @IsEnum(TransactionType)
   type!: TransactionType;
@@ -39,6 +38,5 @@ export class CreateTransactionDTO {
   categoryId?: string;
 
   @IsDateString()
-  @Type(() => Date)
-  date!: Date;
+  date!: string;
 }

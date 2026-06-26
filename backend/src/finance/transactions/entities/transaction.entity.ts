@@ -11,8 +11,8 @@ export class Transaction {
   @Column({ length: 100 })
   title!: string;
 
-  @Column()
-  description!: string;
+  @Column({ type: 'text', nullable: true })
+  description?: string;
 
   @Column({ type: 'enum', enum: TransactionType })
   type!: TransactionType;

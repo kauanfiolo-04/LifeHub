@@ -16,7 +16,7 @@ export class Account {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
 
-  @Column({ type: 'text' })
+  @Column({ type: 'text', unique: true })
   name!: string;
 
   @Column({ type: 'enum', enum: AccountType })

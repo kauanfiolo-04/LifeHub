@@ -1,7 +1,6 @@
 import { IsDateString, IsEnum, IsNotEmpty, IsOptional, IsString, MaxLength, MinLength } from 'class-validator';
 import { TaskStatus } from '../enum/task-status.enum';
 import { TaskPriority } from '../enum/task-priority.enum';
-import { Type } from 'class-transformer';
 
 export class CreateTaskDTO {
   @IsString()
@@ -27,6 +26,5 @@ export class CreateTaskDTO {
 
   @IsOptional()
   @IsDateString()
-  @Type(() => Date)
-  dueDate?: Date;
+  dueDate?: string;
 }

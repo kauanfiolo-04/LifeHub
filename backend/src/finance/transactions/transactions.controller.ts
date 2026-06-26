@@ -10,6 +10,7 @@ import { TransactionsService } from './transactions.service';
 export class TransactionsController {
   constructor(private readonly transactionService: TransactionsService) {}
 
+  @UseGuards(JwtAuthGuard)
   @Post()
   create(@Body() body: CreateTransactionDTO, @TokenPayload() payload: JwtPayload) {
     return this.transactionService.create(body, payload);
