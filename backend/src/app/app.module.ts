@@ -9,6 +9,7 @@ import { ConfigModule, ConfigType } from '@nestjs/config';
 import globalConfig from '../global-config/global-config';
 import { AuthModule } from '../auth/auth.module';
 import * as Joi from 'joi';
+import { FinanceModule } from '../finance/finance.module';
 
 @Module({
   imports: [
@@ -43,6 +44,7 @@ import * as Joi from 'joi';
         };
       }
     }),
+    FinanceModule,
     TasksModule,
     NotesModule,
     UsersModule,
