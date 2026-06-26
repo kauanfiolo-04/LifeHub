@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, Unique } from 'typeorm';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn, Unique } from 'typeorm';
 import { User } from '../../users/entities/user.entity';
 import { OAuthProvider } from '../enum/oauth-provider.enum';
 
@@ -8,9 +8,6 @@ export class OAuthAccount {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
 
-  @Column('uuid')
-  userId!: string;
-
   @Column({ type: 'enum', enum: OAuthProvider })
   provider!: OAuthProvider;
 
@@ -18,6 +15,5 @@ export class OAuthAccount {
   providerAccountId!: string;
 
   @ManyToOne(() => User, { onDelete: 'CASCADE' })
-  @JoinColumn({ name: 'userId' })
   user!: User;
 }

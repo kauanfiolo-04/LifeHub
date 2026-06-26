@@ -2,7 +2,6 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  JoinColumn,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -17,9 +16,6 @@ export class Account {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
 
-  @Column({ type: 'uuid' })
-  userId!: string;
-
   @Column({ type: 'text' })
   name!: string;
 
@@ -27,7 +23,6 @@ export class Account {
   type!: AccountType;
 
   @ManyToOne(() => User, user => user.accounts, { onDelete: 'CASCADE' })
-  @JoinColumn({ name: 'userId' })
   user!: User;
 
   @OneToMany(() => Transaction, transaction => transaction.account)

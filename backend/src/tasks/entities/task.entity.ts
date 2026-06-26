@@ -1,12 +1,4 @@
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn
-} from 'typeorm';
+import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { User } from '../../users/entities/user.entity';
 import { TaskStatus } from '../enum/task-status.enum';
 import { TaskPriority } from '../enum/task-priority.enum';
@@ -15,9 +7,6 @@ import { TaskPriority } from '../enum/task-priority.enum';
 export class Task {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
-
-  @Column('uuid')
-  userId!: string;
 
   @Column({ length: 100 })
   title!: string;
@@ -35,7 +24,6 @@ export class Task {
   dueDate?: Date;
 
   @ManyToOne(() => User, user => user.tasks, { onDelete: 'CASCADE' })
-  @JoinColumn({ name: 'userId' })
   user!: User;
 
   @CreateDateColumn()

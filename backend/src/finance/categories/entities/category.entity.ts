@@ -2,7 +2,6 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  JoinColumn,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -16,9 +15,6 @@ export class Category {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
 
-  @Column({ type: 'uuid' })
-  userId!: string;
-
   @Column({ unique: true })
   name!: string;
 
@@ -26,7 +22,6 @@ export class Category {
   color?: string;
 
   @ManyToOne(() => User, user => user.categories, { onDelete: 'CASCADE' })
-  @JoinColumn({ name: 'userId' })
   user!: User;
 
   @OneToMany(() => Transaction, transaction => transaction.category)
