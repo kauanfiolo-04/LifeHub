@@ -18,7 +18,9 @@ export type GlobalConfig = {
   oauth: {
     google_client_id: string;
     google_secret: string;
+    google_callback_url: string;
     github_client_id: string;
     github_client_secret: string;
+    github_callback_url: string;
   };
 };
