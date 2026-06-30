@@ -43,7 +43,11 @@ export class TransactionsService {
   }
 
   async findAll() {
-    const transactions = await this.transactionsRepository.find({ order: { createdAt: 'desc' } });
+    const transactions = await this.transactionsRepository.find({
+      order: { createdAt: 'desc' },
+      relations: { account: true },
+      select: { account: { id: true } }
+    });
 
     return transactions;
   }

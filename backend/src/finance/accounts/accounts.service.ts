@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { FindOptionsRelations, FindOptionsSelect, Repository } from 'typeorm';
 import { Account } from './entities/account.entity';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -47,20 +47,25 @@ export class AccountsService {
   }
 
   async update(id: string, dto: UpdateAccountDTO, payload: JwtPayload) {
-    const updatedAccount = await this.accountsRepository.preload({ id, ...dto });
+    const account = await this.findOne(id, { user: true }, { user: { id: true } });
 
-    if (!updatedAccount) this.throwNotFoundException();
+    if (!account) this.throwNotFoundException();
 
-    if (payload.sub !== updatedAccount.user.id)
-      throw new UnauthorizedException(`You can't change another user account.`);
+    if (payload.sub !== account.user.id) throw new UnauthorizedException(`You can't change another user account.`);
 
-    return await this.accountsRepository.save(updatedAccount);
+    Object.assign(account, dto);
+
+    return await this.accountsRepository.save(account);
   }
 
   async remove(id: string, payload: JwtPayload) {
-    const account = await this.findOne(id);
+    const account = await this.findOne(id, { user: true, transactions: true }, { user: { id: true } });
 
     if (payload.sub !== account.user.id) throw new UnauthorizedException(`You can't delete another user account.`);
+
+    if (account.transactions.length) {
+      throw new BadRequestException('You cannot delete an account that has transactions.');
+    }
 
     return await this.accountsRepository.remove(account);
   }
