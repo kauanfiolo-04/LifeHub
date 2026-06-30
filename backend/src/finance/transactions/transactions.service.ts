@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Transaction } from './entities/transaction.entity';
-import { Repository } from 'typeorm';
+import { FindOptionsRelations, FindOptionsSelect, Repository } from 'typeorm';
 import { CreateTransactionDTO } from './dto/create-transaction.dto';
 import { UpdateTransactionDTO } from './dto/update-transaction.dto';
 import { AccountsService } from '../accounts/accounts.service';
@@ -48,8 +48,8 @@ export class TransactionsService {
     return transactions;
   }
 
-  async findOne(id: string) {
-    const transaction = await this.transactionsRepository.findOneBy({ id });
+  async findOne(id: string, relations?: FindOptionsRelations<Transaction>, select?: FindOptionsSelect<Transaction>) {
+    const transaction = await this.transactionsRepository.findOne({ where: { id }, relations, select });
 
     if (!transaction) this.throwNotFoundException('Transaction');
 
@@ -57,14 +57,45 @@ export class TransactionsService {
   }
 
   async update(id: string, dto: UpdateTransactionDTO, payload: JwtPayload) {
-    const updatedTransaction = await this.transactionsRepository.preload({ id, ...dto });
+    const transaction = await this.findOne(
+      id,
+      { account: { user: true } },
+      {
+        account: {
+          id: true,
+          name: true,
+          type: true,
+          user: {
+            id: true
+          }
+        }
+      }
+    );
 
-    if (!updatedTransaction) this.throwNotFoundException('Transaction');
+    if (!transaction) this.throwNotFoundException('Transaction');
 
-    if (payload.sub !== updatedTransaction.account.user.id)
+    const { accountId, categoryId, ...rest } = dto;
+
+    if (accountId) {
+      const account = await this.accountsService.findOne(accountId, { user: true }, { user: { id: true } });
+
+      if (account.user.id !== payload.sub) throw new UnauthorizedException(`You can't use another user's account.`);
+
+      transaction.account = account;
+    }
+
+    if (categoryId) {
+      const category = await this.categoriesService.findOne(categoryId);
+
+      transaction.category = category;
+    }
+
+    if (payload.sub !== transaction.account.user.id)
       throw new UnauthorizedException(`You can't change another user's transaction.`);
 
-    return await this.transactionsRepository.save(updatedTransaction);
+    Object.assign(transaction, rest);
+
+    return await this.transactionsRepository.save(transaction);
   }
 
   async remove(id: string, payload: JwtPayload) {
