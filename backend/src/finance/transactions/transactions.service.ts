@@ -99,7 +99,20 @@ export class TransactionsService {
   }
 
   async remove(id: string, payload: JwtPayload) {
-    const transaction = await this.findOne(id);
+    const transaction = await this.findOne(
+      id,
+      { account: { user: true } },
+      {
+        account: {
+          id: true,
+          name: true,
+          type: true,
+          user: {
+            id: true
+          }
+        }
+      }
+    );
 
     if (payload.sub !== transaction.account.user.id)
       throw new UnauthorizedException(`You can't change another user's transaction.`);
