@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Category } from './entities/category.entity';
-import { Repository } from 'typeorm';
+import { FindOptionsRelations, FindOptionsSelect, Repository } from 'typeorm';
 import { CreateCategoryDTO } from './dto/create-category.dto';
 import { JwtPayload } from '../../auth/types/jwt-payload.type';
 import { UpdateCategoryDTO } from './dto/update-category.dto';
@@ -24,6 +24,8 @@ export class CategoriesService {
     });
 
     await this.categoriesRepository.save(newCategory);
+
+    return newCategory;
   }
 
   async findAll() {
@@ -32,8 +34,8 @@ export class CategoriesService {
     return categories;
   }
 
-  async findOne(id: string) {
-    const category = await this.categoriesRepository.findOneBy({ id });
+  async findOne(id: string, relations?: FindOptionsRelations<Category>, select?: FindOptionsSelect<Category>) {
+    const category = await this.categoriesRepository.findOne({ where: { id }, relations, select });
 
     if (!category) this.throwNotFoundException();
 
@@ -41,18 +43,19 @@ export class CategoriesService {
   }
 
   async update(id: string, dto: UpdateCategoryDTO, payload: JwtPayload) {
-    const updatedCategory = await this.categoriesRepository.preload({ id, ...dto });
+    const category = await this.findOne(id, { user: true }, { user: { id: true } });
 
-    if (!updatedCategory) this.throwNotFoundException();
+    if (!category) this.throwNotFoundException();
 
-    if (payload.sub !== updatedCategory.user.id)
-      throw new UnauthorizedException(`You can't change another user category.`);
+    if (payload.sub !== category.user.id) throw new UnauthorizedException(`You can't change another user category.`);
 
-    return await this.categoriesRepository.save(updatedCategory);
+    Object.assign(category, dto);
+
+    return await this.categoriesRepository.save(category);
   }
 
   async remove(id: string, payload: JwtPayload) {
-    const category = await this.findOne(id);
+    const category = await this.findOne(id, { user: true }, { user: { id: true } });
 
     if (payload.sub !== category.user.id) throw new UnauthorizedException(`You can't delete another user category.`);
 
