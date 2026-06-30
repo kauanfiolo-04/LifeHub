@@ -2,6 +2,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  Index,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -11,11 +12,12 @@ import { User } from '../../../users/entities/user.entity';
 import { Transaction } from '../../transactions/entities/transaction.entity';
 
 @Entity('categories')
+@Index(['user', 'name'], { unique: true })
 export class Category {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
 
-  @Column({ unique: true })
+  @Column()
   name!: string;
 
   @Column({ nullable: true })
