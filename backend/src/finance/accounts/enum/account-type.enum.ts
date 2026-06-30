@@ -1,5 +1,7 @@
 export enum AccountType {
-  CASH = 'cash',
-  BANK = 'bank',
-  WALLET = 'wallet'
+  CHECKING = 'checking',
+  SAVINGS = 'savings',
+  CREDIT_CARD = 'credit_card',
+  INVESTMENT = 'investment',
+  CASH = 'cash'
 }
