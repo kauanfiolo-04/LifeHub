@@ -17,7 +17,7 @@ export class CategoriesService {
     throw new NotFoundException('Category not found!');
   }
 
-  async createAccount(dto: CreateCategoryDTO, payload: JwtPayload) {
+  async create(dto: CreateCategoryDTO, payload: JwtPayload) {
     const newAccount = this.categoriesRepository.create({
       ...dto,
       user: { id: payload.sub }

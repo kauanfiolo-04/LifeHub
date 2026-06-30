@@ -13,7 +13,7 @@ export class CategoriesController {
   @UseGuards(JwtAuthGuard)
   @Post()
   create(@Body() body: CreateCategoryDTO, @TokenPayload() payload: JwtPayload) {
-    return this.categoriesService.createAccount(body, payload);
+    return this.categoriesService.create(body, payload);
   }
 
   @Get()

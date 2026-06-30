@@ -13,7 +13,7 @@ export class AccountsController {
   @UseGuards(JwtAuthGuard)
   @Post()
   create(@Body() body: CreateAccountDTO, @TokenPayload() payload: JwtPayload) {
-    return this.accountsService.createAccount(body, payload);
+    return this.accountsService.create(body, payload);
   }
 
   @Get()

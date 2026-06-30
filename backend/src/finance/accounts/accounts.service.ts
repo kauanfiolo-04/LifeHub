@@ -17,7 +17,7 @@ export class AccountsService {
     throw new NotFoundException('Account not found!');
   }
 
-  async createAccount(dto: CreateAccountDTO, payload: JwtPayload) {
+  async create(dto: CreateAccountDTO, payload: JwtPayload) {
     const newAccount = this.accountsRepository.create({
       ...dto,
       user: { id: payload.sub }
