@@ -18,37 +18,37 @@ export class CategoriesService {
   }
 
   async create(dto: CreateCategoryDTO, payload: JwtPayload) {
-    const newAccount = this.categoriesRepository.create({
+    const newCategory = this.categoriesRepository.create({
       ...dto,
       user: { id: payload.sub }
     });
 
-    await this.categoriesRepository.save(newAccount);
+    await this.categoriesRepository.save(newCategory);
   }
 
   async findAll() {
-    const tasks = await this.categoriesRepository.find({ order: { createdAt: 'desc' } });
+    const categories = await this.categoriesRepository.find({ order: { createdAt: 'desc' } });
 
-    return tasks;
+    return categories;
   }
 
   async findOne(id: string) {
-    const account = await this.categoriesRepository.findOneBy({ id });
+    const category = await this.categoriesRepository.findOneBy({ id });
 
-    if (!account) this.throwNotFoundException();
+    if (!category) this.throwNotFoundException();
 
-    return account;
+    return category;
   }
 
   async update(id: string, dto: UpdateCategoryDTO, payload: JwtPayload) {
-    const updatedAccount = await this.categoriesRepository.preload({ id, ...dto });
+    const updatedCategory = await this.categoriesRepository.preload({ id, ...dto });
 
-    if (!updatedAccount) this.throwNotFoundException();
+    if (!updatedCategory) this.throwNotFoundException();
 
-    if (payload.sub !== updatedAccount.user.id)
+    if (payload.sub !== updatedCategory.user.id)
       throw new UnauthorizedException(`You can't change another user category.`);
 
-    return await this.categoriesRepository.save(updatedAccount);
+    return await this.categoriesRepository.save(updatedCategory);
   }
 
   async remove(id: string, payload: JwtPayload) {
