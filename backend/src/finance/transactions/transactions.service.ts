@@ -24,7 +24,7 @@ export class TransactionsService {
   async create(dto: CreateTransactionDTO, payload: JwtPayload) {
     const { accountId, categoryId, ...rest } = dto;
 
-    const account = await this.accountsService.findOne(accountId);
+    const account = await this.accountsService.findOne(accountId, { user: true }, { user: { id: true } });
 
     if (account.user.id !== payload.sub)
       throw new UnauthorizedException(`You can't create transactions for another user's account.`);

@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
-import { Repository } from 'typeorm';
+import { FindOptionsRelations, FindOptionsSelect, Repository } from 'typeorm';
 import { Account } from './entities/account.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateAccountDTO } from './dto/create-account.dto';
@@ -34,18 +34,11 @@ export class AccountsService {
     return accounts;
   }
 
-  async findOne(id: string) {
+  async findOne(id: string, relations?: FindOptionsRelations<Account>, select?: FindOptionsSelect<Account>) {
     const account = await this.accountsRepository.findOne({
       where: { id },
-      relations: {
-        transactions: true,
-        user: true
-      },
-      select: {
-        user: {
-          id: true
-        }
-      }
+      relations,
+      select
     });
 
     if (!account) this.throwNotFoundException();
