@@ -2,7 +2,9 @@ import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { TypeOrmExceptionFilter } from '../../common/filters/typeorm/typeorm.filter';
 
 export default (app: INestApplication) => {
-  app.enableCors();
+  app.enableCors({
+    origin: ['http://localhost:3000']
+  });
 
   app.useGlobalPipes(
     new ValidationPipe({
