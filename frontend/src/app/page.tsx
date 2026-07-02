@@ -1,7 +1,7 @@
 export default function Home() {
   return (
     <main className="h-screen flex flex-col items-center justify-center gap-40">
-      <h1 className="text-4xl font-bold">LifeHub</h1>
+      <h1 className="text-2xl lg:text-4xl font-bold">LifeHub</h1>
 
       <div className="flex flex-col items-center justify-center">
         <p>
