@@ -11,20 +11,20 @@ import { LoginRequest } from "@/types/auth.type";
 import { useLogin } from "@/hooks/useLogin";
 import OAuthButtons from "./oauth-buttons";
 import { Separator } from "../ui/separator";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { getErrorMessage } from "@/utils/get-error-message";
 
 export default function LoginForm() {
   const { handleSubmit, register, control } = useForm<LoginRequest>();
 
-  const { mutateAsync, isPending, isError, error, reset } = useLogin();
+  const { mutateAsync, isPending, error, reset } = useLogin();
 
   const email = useWatch({
     control,
     name: "email"
   });
 
-    const password = useWatch({
+  const password = useWatch({
     control,
     name: "password"
   });
@@ -36,7 +36,12 @@ export default function LoginForm() {
     try {
       const response = await mutateAsync(data);
 
-      console.log(response);
+      localStorage.setItem(
+        "accessToken",
+        response.accessToken
+      );
+
+      
     } catch (error) {
       console.error(error);
     }
@@ -102,7 +107,7 @@ export default function LoginForm() {
           <Separator className="flex-1" orientation="horizontal" />
 
           <span>Or sign in with</span>
-          
+
           <Separator className="flex-1" orientation="horizontal" />
         </div>
 

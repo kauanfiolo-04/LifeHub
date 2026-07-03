@@ -11,14 +11,12 @@ export type SignUpRequest = {
 
 export type LoginResponse = {
   accessToken: string;
-  refreshToken: string;
 };
 
 export type SignUpResponse = {
   id: string;
   email: string;
   name: string;
-  hashedRefreshToken: null;
   createdAt: string;
   updatedAt: string;
 }
