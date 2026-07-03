@@ -9,7 +9,7 @@ import { type JwtPayload } from './types/jwt-payload.type';
 import { GithubAuthGuard } from './guards/github-auth.guard';
 import { GoogleAuthGuard } from './guards/google-auth.guard';
 import { type RequestWithOAuth } from './types/oauth-profile.type';
-import { type Response } from 'express';
+import { type Request, type Response } from 'express';
 
 @Controller('auth')
 export class AuthController {
@@ -31,7 +31,7 @@ export class AuthController {
 
     res.cookie('refreshToken', refreshToken, {
       httpOnly: true,
-      sameSite: 'lax',
+      sameSite: 'none',
       secure: this.configService.get<string>('globalConfig.environment') == 'production',
       maxAge: this.configService.get<number>('globalConfig.jwt.jwt_refresh_ttl')
     });
@@ -39,10 +39,11 @@ export class AuthController {
     return { accessToken };
   }
 
-  @UseGuards(JwtAuthGuard)
   @Post('refresh')
-  refresh(@Body() body: { refreshToken: string }, @TokenPayload() payload: JwtPayload) {
-    return this.authService.refreshTokens(payload.sub, body.refreshToken);
+  refresh(@Req() req: Request) {
+    const refreshToken = req.cookies.refreshToken as string;
+
+    return this.authService.refreshTokens(refreshToken);
   }
 
   @Post('logout')

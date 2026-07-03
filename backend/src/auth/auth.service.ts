@@ -77,26 +77,30 @@ export class AuthService {
     return { accessToken, refreshToken };
   }
 
-  async saveRefreshToken(userId: string, refreshToken: string) {
+  async saveRefreshToken(refreshToken: string) {
     const payload = this.jwtService.verify<JwtPayload>(refreshToken, {
       secret: this.configService.get('globalConfig.jwt.jwt_refresh_secret')
     });
 
     const hash = await bc.hash(refreshToken, 10);
 
-    await this.usersService.update(userId, { hashedRefreshToken: hash }, payload);
+    await this.usersService.update(payload.sub, { hashedRefreshToken: hash }, payload);
   }
 
   async login(user: User) {
     const tokens = await this.generateTokens(user);
 
-    await this.saveRefreshToken(user.id, tokens.refreshToken);
+    await this.saveRefreshToken(tokens.refreshToken);
 
     return tokens;
   }
 
-  async refreshTokens(userId: string, refreshToken: string) {
-    const user = await this.usersService.findOne(userId);
+  async refreshTokens(refreshToken: string) {
+    const payload = this.jwtService.verify<JwtPayload>(refreshToken, {
+      secret: this.configService.get('globalConfig.jwt.jwt_refresh_secret')
+    });
+
+    const user = await this.usersService.findOne(payload.sub);
 
     if (!user?.hashedRefreshToken) throw new UnauthorizedException();
 
@@ -106,7 +110,7 @@ export class AuthService {
 
     const tokens = await this.generateTokens(user);
 
-    await this.saveRefreshToken(user.id, tokens.refreshToken);
+    await this.saveRefreshToken(tokens.refreshToken);
 
     return tokens;
   }

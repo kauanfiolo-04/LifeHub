@@ -1,10 +1,13 @@
 import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { TypeOrmExceptionFilter } from '../../common/filters/typeorm/typeorm.filter';
+import cookieParser from 'cookie-parser';
 
 export default (app: INestApplication) => {
   app.enableCors({
     origin: ['http://localhost:3000']
   });
+
+  app.use(cookieParser());
 
   app.useGlobalPipes(
     new ValidationPipe({
