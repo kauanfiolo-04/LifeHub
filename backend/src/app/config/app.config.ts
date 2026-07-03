@@ -4,7 +4,8 @@ import cookieParser from 'cookie-parser';
 
 export default (app: INestApplication) => {
   app.enableCors({
-    origin: ['http://localhost:3000']
+    origin: ['http://localhost:3000'],
+    credentials: true
   });
 
   app.use(cookieParser());
