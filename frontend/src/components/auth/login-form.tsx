@@ -11,8 +11,11 @@ import { LoginRequest } from "@/types/auth.type";
 import { useLogin } from "@/hooks/useLogin";
 import { useEffect, useState } from "react";
 import { getErrorMessage } from "@/utils/get-error-message";
+import { useRouter } from "next/navigation";
 
 export default function LoginForm() {
+  const router = useRouter();
+
   const { handleSubmit, register, control } = useForm<LoginRequest>();
 
   const { mutateAsync, isPending, error, reset } = useLogin();
@@ -41,13 +44,9 @@ export default function LoginForm() {
         response.accessToken
       );
 
-      console.log(response)
-
-      debugger
+      router.replace("/dashboard");
     } catch (error) {
       console.error(error);
-
-      debugger
     }
   };
 
