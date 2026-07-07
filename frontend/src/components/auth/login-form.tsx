@@ -52,7 +52,7 @@ export default function LoginForm() {
   }, [reset, email, password]);
 
   return (
-    <form className="flex flex-col w-full md:w-4/5 gap-10" onSubmit={handleSubmit(handleOnSubmit)}>
+    <form className="flex flex-col w-full gap-10" onSubmit={handleSubmit(handleOnSubmit)}>
       <FieldGroup>
         <Field data-invalid={invalidCredentials} >
           <FieldLabel htmlFor="email">Email</FieldLabel>
@@ -98,21 +98,9 @@ export default function LoginForm() {
         </Field>
       </FieldGroup>
 
-      <div className="flex flex-col gap-2">
-        <Button size="lg" disabled={isPending}>
-          {isPending ? "Signing in..." : "Sign In"}
-        </Button>
-
-        <div className="flex items-center max-w-full gap-2">
-          <Separator className="flex-1" orientation="horizontal" />
-
-          <span>Or sign in with</span>
-
-          <Separator className="flex-1" orientation="horizontal" />
-        </div>
-
-        <OAuthButtons />
-      </div>
+      <Button size="lg" disabled={isPending}>
+        {isPending ? "Signing in..." : "Sign In"}
+      </Button>
     </form>
   );
 }
