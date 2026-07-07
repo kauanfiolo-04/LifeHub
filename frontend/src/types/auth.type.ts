@@ -19,4 +19,8 @@ export type SignUpResponse = {
   name: string;
   createdAt: string;
   updatedAt: string;
-}
+};
+
+export type RefreshResponse = {
+  accessToken: string;
+};

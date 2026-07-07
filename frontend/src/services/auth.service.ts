@@ -3,12 +3,12 @@ import { LoginRequest, LoginResponse, SignUpRequest, SignUpResponse } from "@/ty
 
 export const AuthService = {
   login: async (credentials: LoginRequest): Promise<LoginResponse> => {
-    const { data } = await api.post<LoginResponse>("/auth/login", credentials);
+    const { data } = await api.post<LoginResponse>("/auth/login", credentials, { skipAuth: true, skipRefresh: true });
 
     return data;
   },
   signUp: async (userInfo: SignUpRequest): Promise<SignUpResponse> => {
-    const { data } = await api.post<SignUpResponse>("/auth/signup", userInfo);
+    const { data } = await api.post<SignUpResponse>("/auth/signup", userInfo,  { skipAuth: true, skipRefresh: true });
 
     return data;
   }

@@ -1,13 +1,8 @@
+import { RefreshResponse } from "@/types/auth.type";
 import axios, { AxiosError, InternalAxiosRequestConfig } from "axios";
-
 
 type AxiosRequestConfigWithRetry = InternalAxiosRequestConfig & {
   _retry?: boolean;
-};
-
-type FailedQueueItem = {
-  resolve: (token: string | null) => void;
-  reject: (error: unknown) => void;
 };
 
 export const api = axios.create({
@@ -16,18 +11,12 @@ export const api = axios.create({
 });
 
 let refreshPromise: Promise<string> | null = null;
-let failedQueue: FailedQueueItem[]= [];
 
-const processQueue = (error: unknown, token: string | null = null) => {
-  failedQueue.forEach((prom) => {
-    if (error) prom.reject(error);
-    else prom.resolve(token);
-  });
+api.interceptors.request.use(config => {
+  if (config.skipAuth) {
+    return config;
+  }
 
-  failedQueue = [];
-};
-
-api.interceptors.request.use((config) => {
   const token = localStorage.getItem("accessToken");
 
   if (token) {
@@ -38,47 +27,53 @@ api.interceptors.request.use((config) => {
 });
 
 api.interceptors.response.use(
-  (res) => res,
+  response => response,
   async (error: AxiosError) => {
     const originalRequest = error.config as AxiosRequestConfigWithRetry;
+
+    if (!originalRequest) {
+      return Promise.reject(error);
+    }
+
+    // Não tenta fazer refresh nessas rotas
+    if (originalRequest.skipRefresh) {
+      return Promise.reject(error);
+    }
 
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
 
-      // se já existe refresh em andamento, espera ele
       if (!refreshPromise) {
         refreshPromise = api
-          .post<{ accessToken: string }>("/auth/refresh")
-          .then((res) => {
-            const newToken = res.data.accessToken;
-
-            localStorage.setItem("accessToken", newToken);
-
-            api.defaults.headers.common.Authorization = `Bearer ${newToken}`;
-
-            return newToken;
+          .post<RefreshResponse>("/auth/refresh", undefined, {
+            skipAuth: true,
+            skipRefresh: true
           })
-          .catch((err) => {
+          .then(res => {
+            const accessToken = res.data.accessToken;
+
+            localStorage.setItem("accessToken", accessToken);
+
+            return accessToken;
+          })
+          .catch(err => {
             localStorage.removeItem("accessToken");
             window.location.href = "/login";
+
             throw err;
           })
           .finally(() => {
-            refreshPromise = null; // reset
+            refreshPromise = null;
           });
       }
 
       try {
-        const newToken = await refreshPromise;
+        const accessToken = await refreshPromise;
 
-        originalRequest.headers = originalRequest.headers ?? {};
-        originalRequest.headers.Authorization = `Bearer ${newToken}`;
-
-        processQueue(null, newToken);
+        originalRequest.headers.Authorization = `Bearer ${accessToken}`;
 
         return api(originalRequest);
       } catch (err) {
-        processQueue(err, null);
         return Promise.reject(err);
       }
     }

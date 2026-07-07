@@ -1,6 +1,6 @@
 "use client";
 
-import { EyeOffIcon } from "@hugeicons/core-free-icons";
+import { EyeOffIcon, EyeIcon } from "@hugeicons/core-free-icons";
 import { Field, FieldDescription, FieldGroup, FieldLabel } from "../ui/field";
 import { Input } from "../ui/input";
 import { InputGroup, InputGroupAddon, InputGroupInput } from "../ui/input-group";
@@ -9,15 +9,15 @@ import { Button } from "../ui/button";
 import { useForm, useWatch } from "react-hook-form";
 import { LoginRequest } from "@/types/auth.type";
 import { useLogin } from "@/hooks/useLogin";
-import OAuthButtons from "./oauth-buttons";
-import { Separator } from "../ui/separator";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { getErrorMessage } from "@/utils/get-error-message";
 
 export default function LoginForm() {
   const { handleSubmit, register, control } = useForm<LoginRequest>();
 
   const { mutateAsync, isPending, error, reset } = useLogin();
+
+  const [passType, setPassType] = useState<"password" | "text">("password");
 
   const email = useWatch({
     control,
@@ -41,9 +41,13 @@ export default function LoginForm() {
         response.accessToken
       );
 
-      
+      console.log(response)
+
+      debugger
     } catch (error) {
       console.error(error);
+
+      debugger
     }
   };
 
@@ -52,7 +56,7 @@ export default function LoginForm() {
   }, [reset, email, password]);
 
   return (
-    <form className="flex flex-col w-full gap-10" onSubmit={handleSubmit(handleOnSubmit)}>
+    <form className="flex flex-col w-full gap-10" onSubmit={(e) => handleSubmit(handleOnSubmit)(e)}>
       <FieldGroup>
         <Field data-invalid={invalidCredentials} >
           <FieldLabel htmlFor="email">Email</FieldLabel>
@@ -80,13 +84,20 @@ export default function LoginForm() {
               aria-invalid={invalidCredentials}
               {...register("password")}
               id="password"
-              type="password"
+              type={passType}
               placeholder="Enter your password"
               required
             />
 
-            <InputGroupAddon align="inline-end">
-              <HugeiconsIcon icon={EyeOffIcon} />
+            <InputGroupAddon 
+              align="inline-end" 
+              onClick={() => {
+                setPassType(prev => prev === "password" ? "text" : "password");
+              }}
+            >
+              {passType === "password" ?
+                <HugeiconsIcon icon={EyeOffIcon} />
+                : <HugeiconsIcon icon={EyeIcon} />}
             </InputGroupAddon>
           </InputGroup>
 
@@ -98,7 +109,7 @@ export default function LoginForm() {
         </Field>
       </FieldGroup>
 
-      <Button size="lg" disabled={isPending}>
+      <Button size="lg" disabled={isPending} type="submit">
         {isPending ? "Signing in..." : "Sign In"}
       </Button>
     </form>
