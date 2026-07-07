@@ -8,6 +8,8 @@ export type GlobalConfig = {
 
   environment: string;
 
+  frontend_url: string;
+
   jwt: {
     jwt_access_secret: string;
     jwt_refresh_secret: string;

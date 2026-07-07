@@ -95,10 +95,22 @@ export class AuthService {
     return tokens;
   }
 
+  async logout(payload: JwtPayload) {
+    await this.usersService.update(payload.sub, { hashedRefreshToken: undefined }, payload);
+
+    return { success: true };
+  }
+
   async refreshTokens(refreshToken: string) {
-    const payload = this.jwtService.verify<JwtPayload>(refreshToken, {
-      secret: this.configService.get('globalConfig.jwt.jwt_refresh_secret')
-    });
+    let payload: JwtPayload;
+
+    try {
+      payload = this.jwtService.verify<JwtPayload>(refreshToken, {
+        secret: this.configService.get('globalConfig.jwt.jwt_refresh_secret')
+      });
+    } catch {
+      throw new UnauthorizedException();
+    }
 
     const user = await this.usersService.findOne(payload.sub);
 
@@ -125,7 +137,9 @@ export class AuthService {
         provider: data.provider,
         providerAccountId: data.providerAccountId
       },
-      relations: { user: true }
+      relations: {
+        user: true
+      }
     });
 
     let user: User;
@@ -153,11 +167,10 @@ export class AuthService {
       await this.oauthRepo.save(oauth);
     }
 
-    const tokens = await this.generateTokens(user);
+    return this.login(user);
+  }
 
-    return {
-      user,
-      ...tokens
-    };
+  getMe(userId: string) {
+    return this.usersService.findOne(userId);
   }
 }

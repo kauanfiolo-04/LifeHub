@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Req, Res, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, Res, UnauthorizedException, UseGuards } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { AuthService } from './auth.service';
 import { SignupDTO } from './dto/signup.dto';
@@ -8,7 +8,7 @@ import { TokenPayload } from './decorators/user.decorator';
 import { type JwtPayload } from './types/jwt-payload.type';
 import { GithubAuthGuard } from './guards/github-auth.guard';
 import { GoogleAuthGuard } from './guards/google-auth.guard';
-import { type RequestWithOAuth } from './types/oauth-profile.type';
+import { OAuthProfile, type RequestWithOAuth } from './types/oauth-profile.type';
 import { type Request, type Response } from 'express';
 
 @Controller('auth')
@@ -17,6 +17,21 @@ export class AuthController {
     private readonly authService: AuthService,
     private readonly configService: ConfigService
   ) {}
+
+  private async handleOAuth(user: OAuthProfile, res: Response) {
+    const { refreshToken } = await this.authService.oauthLogin(user);
+
+    res.cookie('refreshToken', refreshToken, {
+      httpOnly: true,
+      sameSite: 'none',
+      secure: this.configService.get<string>('globalConfig.environment') === 'production',
+      maxAge: this.configService.get<number>('globalConfig.jwt.jwt_refresh_ttl')
+    });
+
+    const frontendUrl = this.configService.get<string>('globalConfig.frontend_url');
+
+    return res.redirect(`${frontendUrl}/callback`);
+  }
 
   @Post('signup')
   signup(@Body() body: SignupDTO) {
@@ -43,14 +58,19 @@ export class AuthController {
   refresh(@Req() req: Request) {
     const refreshToken = req.cookies.refreshToken as string;
 
+    if (!refreshToken) {
+      throw new UnauthorizedException();
+    }
+
     return this.authService.refreshTokens(refreshToken);
   }
 
   @Post('logout')
-  logout(@Res({ passthrough: true }) res: Response) {
+  @UseGuards(JwtAuthGuard)
+  logout(@Res({ passthrough: true }) res: Response, @TokenPayload() tokenPayload: JwtPayload) {
     res.clearCookie('refreshToken');
 
-    return { success: true };
+    return this.authService.logout(tokenPayload);
   }
 
   @Get('google')
@@ -59,8 +79,8 @@ export class AuthController {
 
   @Get('google/callback')
   @UseGuards(GoogleAuthGuard)
-  async googleCallback(@Req() req: RequestWithOAuth) {
-    return this.authService.oauthLogin(req.user);
+  async googleCallback(@Req() req: RequestWithOAuth, @Res() res: Response) {
+    return this.handleOAuth(req.user, res);
   }
 
   @Get('github')
@@ -69,13 +89,13 @@ export class AuthController {
 
   @Get('github/callback')
   @UseGuards(GithubAuthGuard)
-  async githubCallback(@Req() req: RequestWithOAuth) {
-    return this.authService.oauthLogin(req.user);
+  async githubCallback(@Req() req: RequestWithOAuth, @Res() res: Response) {
+    return this.handleOAuth(req.user, res);
   }
 
   @UseGuards(JwtAuthGuard)
   @Get('me')
   getMe(@TokenPayload() tokenPayload: JwtPayload) {
-    return tokenPayload;
+    return this.authService.getMe(tokenPayload.sub);
   }
 }

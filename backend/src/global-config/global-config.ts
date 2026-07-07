@@ -11,6 +11,7 @@ export default registerAs(
       synchronize: Boolean(process.env.DATABASE_SYNCHRONIZE)
     },
     environment: process.env.NODE_ENV || 'development',
+    frontend_url: process.env.FRONTEND_URL || 'http://localhost:3000',
     jwt: {
       jwt_access_secret: process.env.JWT_ACCESS_SECRET ?? '',
       jwt_refresh_secret: process.env.JWT_REFRESH_SECRET ?? '',
