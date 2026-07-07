@@ -1,5 +1,5 @@
 import { api } from "@/lib/axios";
-import { LoginRequest, LoginResponse, SignUpRequest, SignUpResponse } from "@/types/auth.type";
+import { LoginRequest, LoginResponse, RefreshResponse, SignUpRequest, SignUpResponse } from "@/types/auth.type";
 
 export const AuthService = {
   login: async (credentials: LoginRequest): Promise<LoginResponse> => {
@@ -11,5 +11,10 @@ export const AuthService = {
     const { data } = await api.post<SignUpResponse>("/auth/signup", userInfo,  { skipAuth: true, skipRefresh: true });
 
     return data;
-  }
-}
+  },
+  refresh: async (): Promise<RefreshResponse> => {
+    const { data } = await api.post<RefreshResponse>("/auth/refresh", undefined, { skipAuth: true, skipRefresh: true });
+
+    return data;
+  },
+};
