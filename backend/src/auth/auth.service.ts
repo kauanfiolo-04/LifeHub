@@ -170,7 +170,13 @@ export class AuthService {
     return this.login(user);
   }
 
-  getMe(userId: string) {
-    return this.usersService.findOne(userId);
+  async getMe(userId: string) {
+    const user = await this.usersService.findOne(userId);
+
+    return {
+      id: user.id,
+      name: user.name,
+      email: user.email
+    };
   }
 }
