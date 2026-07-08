@@ -109,16 +109,16 @@ export class AuthService {
         secret: this.configService.get('globalConfig.jwt.jwt_refresh_secret')
       });
     } catch {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException('Error generating payload');
     }
 
     const user = await this.usersService.findOne(payload.sub);
 
-    if (!user?.hashedRefreshToken) throw new UnauthorizedException();
+    if (!user?.hashedRefreshToken) throw new UnauthorizedException('User without hashedRefreshToken');
 
     const isValid = await bc.compare(refreshToken, user.hashedRefreshToken);
 
-    if (!isValid) throw new UnauthorizedException();
+    if (!isValid) throw new UnauthorizedException('Invalid comparision');
 
     const tokens = await this.generateTokens(user);
 
