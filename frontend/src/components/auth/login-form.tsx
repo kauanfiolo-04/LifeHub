@@ -8,7 +8,7 @@ import { HugeiconsIcon } from "@hugeicons/react";
 import { Button } from "../ui/button";
 import { useForm, useWatch } from "react-hook-form";
 import { LoginRequest } from "@/types/auth.type";
-import { useLogin } from "@/hooks/useLogin";
+import { useLogin } from "@/hooks/auth/useLogin";
 import { useEffect, useState } from "react";
 import { getErrorMessage } from "@/utils/get-error-message";
 import { useRouter } from "next/navigation";

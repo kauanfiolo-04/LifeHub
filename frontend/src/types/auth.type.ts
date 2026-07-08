@@ -24,3 +24,9 @@ export type SignUpResponse = {
 export type RefreshResponse = {
   accessToken: string;
 };
+
+export type MeResponse = {
+  id: string;
+  name: string;
+  email: string;
+}
