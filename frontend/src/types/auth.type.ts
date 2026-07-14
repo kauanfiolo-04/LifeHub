@@ -22,6 +22,10 @@ export type SignUpResponse = {
   };
 };
 
+export type LogoutResponse = {
+  success: boolean;
+}
+
 export type RefreshResponse = {
   accessToken: string;
 };

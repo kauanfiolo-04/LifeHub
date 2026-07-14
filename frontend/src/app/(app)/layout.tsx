@@ -1,3 +1,4 @@
+import Navbar from "@/components/app/navbar/navbar";
 import Link from "next/link";
 import { ReactNode } from "react";
 
@@ -23,11 +24,7 @@ export default function AppLayout({
       {/* Main */}
       <div className="flex-1 flex flex-col">
         {/* Header */}
-        <header className="h-14 border-b flex items-center justify-between px-4">
-          <h1 className="font-medium">LifeHub</h1>
-
-          <div className="text-sm">User</div>
-        </header>
+        <Navbar />
 
         {/* Content */}
         <main className="flex-1 p-6">{children}</main>
