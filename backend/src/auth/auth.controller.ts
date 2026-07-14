@@ -34,8 +34,17 @@ export class AuthController {
   }
 
   @Post('signup')
-  signup(@Body() body: SignupDTO) {
-    return this.authService.signup(body);
+  async signup(@Body() body: SignupDTO, @Res({ passthrough: true }) res: Response) {
+    const { accessToken, refreshToken, user } = await this.authService.signup(body);
+
+    res.cookie('refreshToken', refreshToken, {
+      httpOnly: true,
+      sameSite: 'none',
+      secure: this.configService.get<string>('globalConfig.environment') == 'production',
+      maxAge: this.configService.get<number>('globalConfig.jwt.jwt_refresh_ttl')
+    });
+
+    return { accessToken, user };
   }
 
   @Post('login')

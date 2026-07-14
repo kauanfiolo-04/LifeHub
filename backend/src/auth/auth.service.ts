@@ -39,10 +39,18 @@ export class AuthService {
       passwordHash
     });
 
+    const tokens = await this.generateTokens(user);
+
+    await this.saveRefreshToken(tokens.refreshToken);
+
     return {
-      id: user.id,
-      name: user.name,
-      email: user.email
+      accessToken: tokens.accessToken,
+      refreshToken: tokens.refreshToken,
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email
+      }
     };
   }
 
