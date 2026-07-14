@@ -39,7 +39,11 @@ export class AuthService {
       passwordHash
     });
 
-    return user;
+    return {
+      id: user.id,
+      name: user.name,
+      email: user.email
+    };
   }
 
   async validateUser({ email, password }: LoginDto) {
