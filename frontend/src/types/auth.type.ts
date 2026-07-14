@@ -3,22 +3,23 @@ export type LoginRequest = {
   password: string;
 };
 
+export type LoginResponse = {
+  accessToken: string;
+};
+
 export type SignUpRequest = {
   name: string;
   email: string;
   password: string;
 }; 
 
-export type LoginResponse = {
-  accessToken: string;
-};
-
 export type SignUpResponse = {
-  id: string;
-  email: string;
-  name: string;
-  createdAt: string;
-  updatedAt: string;
+  accessToken: string;
+  user: {
+    id: string;
+    email: string;
+    name: string;
+  };
 };
 
 export type RefreshResponse = {

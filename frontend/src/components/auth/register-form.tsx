@@ -7,110 +7,110 @@ import { InputGroup, InputGroupAddon, InputGroupInput } from "../ui/input-group"
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Button } from "../ui/button";
 import { useForm, useWatch } from "react-hook-form";
-import { LoginRequest, SignUpRequest } from "@/types/auth.type";
+import { SignUpRequest } from "@/types/auth.type";
 import { useEffect, useState } from "react";
 import { getErrorMessage } from "@/utils/get-error-message";
 import { useRouter } from "next/navigation";
 import { useRegister } from "@/hooks/auth/useRegister";
 
-export type RegisterFields = Array<keyof SignUpRequest | "confirm">;
+export type RegisterFields = SignUpRequest & { confirm: string };
 
 export default function RegisterForm() {
-  // const router = useRouter();
+  const router = useRouter();
 
-  const { handleSubmit, register, control } = useForm<SignUpRequest>();
+  const { handleSubmit, register, getValues, formState: { errors: formErrors } } = useForm<RegisterFields>();
 
   const { mutateAsync, isPending, error, reset } = useRegister();
 
   const [passType, setPassType] = useState<"password" | "text">("password");
   const [confirmPassType, setConfirmPassType] = useState<"password" | "text">("password");
-  const [invalidFields, setInvalidFields] = useState<RegisterFields>([]);
 
-  const name = useWatch({
-    control,
-    name: "name"
-  });
+  const errorMessage = error ? getErrorMessage(error) : undefined;
 
-  const email = useWatch({
-    control,
-    name: "email"
-  });
+  const invalidEmail =
+    errorMessage === "Email already in use";
 
-  const password = useWatch({
-    control,
-    name: "password"
-  });
+  const passwordApiError =
+    Array.isArray(errorMessage)
+      ? errorMessage.find(msg =>
+          msg.includes("password must be longer than or equal to 5 characters")
+        )
+      : undefined;
 
-  const invalidCredentials =
-    getErrorMessage(error) === "Credential not found!";
+  const confirmError = formErrors.confirm?.message;
 
-  const handleOnSubmit = async (data: SignUpRequest) => {
+  const handleOnSubmit = async (data: RegisterFields) => {
     try {
-      const response = await mutateAsync(data);
+      const { confirm: _, ...signUpData } = data;
+
+      const response = await mutateAsync(signUpData);
+
+      localStorage.setItem(
+        "accessToken",
+        response.accessToken
+      );
+
+      router.replace("/dashboard");
     } catch (error) {
       console.error(error);
     }
   };
 
-  useEffect(() => {
-    reset();
-  }, [reset, email, password, name]);
-
   return (
     <form className="flex flex-col w-full gap-10" onSubmit={(e) => handleSubmit(handleOnSubmit)(e)}>
       <FieldGroup>
-        <Field data-invalid={invalidCredentials} >
+        <Field>
           <FieldLabel htmlFor="name">Name</FieldLabel>
           <Input
             className="md:h-8"
-            aria-invalid={invalidCredentials}
-            {...register("name")}
+            {...register("name", {
+              onChange: () => reset()
+            })}
             id="name"
             type="text"
             placeholder="John Doe"
             required
           />
-
-          {invalidCredentials && (
-            <FieldDescription>
-              Invalid credentials
-            </FieldDescription>
-          )}
         </Field>
-        
-        <Field data-invalid={invalidCredentials}>
+
+        <Field data-invalid={invalidEmail}>
           <FieldLabel htmlFor="email">Email</FieldLabel>
           <Input
             className="md:h-8"
-            aria-invalid={invalidCredentials}
-            {...register("email")}
+            aria-invalid={invalidEmail}
+            {...register("email", {
+              onChange: () => reset()
+            })}
             id="email"
             type="email"
             placeholder="name@example.com"
             required
           />
 
-          {invalidCredentials && (
+          {invalidEmail && (
             <FieldDescription>
-              Invalid credentials
+              Email Invalid!
             </FieldDescription>
           )}
         </Field>
 
-        <Field data-invalid={invalidCredentials} >
+        <Field data-invalid={!!passwordApiError} >
           <FieldLabel htmlFor="password">Password</FieldLabel>
           <InputGroup className="md:h-8">
             <InputGroupInput
-              aria-invalid={invalidCredentials}
-              {...register("password")}
+              aria-invalid={!!passwordApiError}
+              {...register("password", {
+                onChange: () => reset()
+              })}
               id="password"
               type={passType}
               placeholder="Enter your password"
               required
             />
 
-            <InputGroupAddon 
-              align="inline-end" 
+            <InputGroupAddon
+              className="cursor-pointer"
+              align="inline-end"
               onClick={() => {
                 setPassType(prev => prev === "password" ? "text" : "password");
               }}
@@ -121,26 +121,31 @@ export default function RegisterForm() {
             </InputGroupAddon>
           </InputGroup>
 
-          {invalidCredentials && (
+          {passwordApiError && (
             <FieldDescription>
-              Invalid credentials
+              Must be longer than or equal to 5 characters.
             </FieldDescription>
           )}
         </Field>
 
-        <Field data-invalid={invalidCredentials} >
-          <FieldLabel htmlFor="password">Confirm Password</FieldLabel>
+        <Field data-invalid={!!confirmError} >
+          <FieldLabel htmlFor="confirm">Confirm Password</FieldLabel>
           <InputGroup className="md:h-8">
             <InputGroupInput
-              aria-invalid={invalidCredentials}
-              id="password"
+              aria-invalid={!!confirmError}
+              {...register("confirm", {
+                deps: ["password"],
+                validate: (val) => val === getValues("password") || "Passwords do not match!",
+              })}
+              id="confirm"
               type={confirmPassType}
               placeholder="Confirm your password"
               required
             />
 
-            <InputGroupAddon 
-              align="inline-end" 
+            <InputGroupAddon
+              className="cursor-pointer"
+              align="inline-end"
               onClick={() => {
                 setConfirmPassType(prev => prev === "password" ? "text" : "password");
               }}
@@ -151,9 +156,9 @@ export default function RegisterForm() {
             </InputGroupAddon>
           </InputGroup>
 
-          {invalidCredentials && (
+          {confirmError && (
             <FieldDescription>
-              Invalid credentials
+              {confirmError}
             </FieldDescription>
           )}
         </Field>
