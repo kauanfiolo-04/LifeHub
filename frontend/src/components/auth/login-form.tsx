@@ -12,9 +12,15 @@ import { useLogin } from "@/hooks/auth/useLogin";
 import { useEffect, useState } from "react";
 import { getErrorMessage } from "@/utils/get-error-message";
 import { useRouter } from "next/navigation";
+import { useQueryClient } from "@tanstack/react-query";
+import { queryKeys } from "@/lib/query-keys";
+import { AuthService } from "@/services/auth.service";
+import { setAccessToken } from "@/lib/auth";
 
 export default function LoginForm() {
   const router = useRouter();
+
+  const queryClient = useQueryClient();
 
   const { handleSubmit, register, control } = useForm<LoginRequest>();
 
@@ -39,10 +45,12 @@ export default function LoginForm() {
     try {
       const response = await mutateAsync(data);
 
-      localStorage.setItem(
-        "accessToken",
-        response.accessToken
-      );
+      setAccessToken(response.accessToken);
+
+      await queryClient.fetchQuery({
+        queryKey: queryKeys.me,
+        queryFn: AuthService.me
+      });
 
       router.replace("/dashboard");
     } catch (error) {

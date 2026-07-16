@@ -21,9 +21,10 @@ export default function CallbackPage() {
 
         setAccessToken(accessToken);
 
-        const response = await AuthService.me();
-
-        queryClient.setQueryData(queryKeys.me, response);
+        await queryClient.fetchQuery({
+          queryKey: queryKeys.me,
+          queryFn: AuthService.me
+        });
 
         router.replace("/dashboard");
       } catch {

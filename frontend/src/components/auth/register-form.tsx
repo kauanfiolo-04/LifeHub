@@ -12,11 +12,16 @@ import { useEffect, useState } from "react";
 import { getErrorMessage } from "@/utils/get-error-message";
 import { useRouter } from "next/navigation";
 import { useRegister } from "@/hooks/auth/useRegister";
+import { setAccessToken } from "@/lib/auth";
+import { queryKeys } from "@/lib/query-keys";
+import { useQueryClient } from "@tanstack/react-query";
 
 export type RegisterFields = SignUpRequest & { confirm: string };
 
 export default function RegisterForm() {
   const router = useRouter();
+
+  const queryClient = useQueryClient();
 
   const { handleSubmit, register, getValues, formState: { errors: formErrors } } = useForm<RegisterFields>();
 
@@ -33,8 +38,8 @@ export default function RegisterForm() {
   const passwordApiError =
     Array.isArray(errorMessage)
       ? errorMessage.find(msg =>
-          msg.includes("password must be longer than or equal to 5 characters")
-        )
+        msg.includes("password must be longer than or equal to 5 characters")
+      )
       : undefined;
 
   const confirmError = formErrors.confirm?.message;
@@ -45,10 +50,9 @@ export default function RegisterForm() {
 
       const response = await mutateAsync(signUpData);
 
-      localStorage.setItem(
-        "accessToken",
-        response.accessToken
-      );
+      setAccessToken(response.accessToken);
+
+      queryClient.setQueryData(queryKeys.me, response.user);
 
       router.replace("/dashboard");
     } catch (error) {

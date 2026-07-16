@@ -1,3 +1,5 @@
+import { User } from "./common";
+
 export type LoginRequest = {
   email: string;
   password: string;
@@ -15,11 +17,7 @@ export type SignUpRequest = {
 
 export type SignUpResponse = {
   accessToken: string;
-  user: {
-    id: string;
-    email: string;
-    name: string;
-  };
+  user: User;
 };
 
 export type LogoutResponse = {
@@ -30,8 +28,4 @@ export type RefreshResponse = {
   accessToken: string;
 };
 
-export type MeResponse = {
-  id: string;
-  name: string;
-  email: string;
-}
+export type MeResponse = User;

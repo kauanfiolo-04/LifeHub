@@ -8,7 +8,7 @@ export const AuthService = {
     return data;
   },
   logout: async (): Promise<LogoutResponse> => {
-    const { data } = await api.post<LogoutResponse>("/auth/logout", undefined, { skipAuth: true, skipRefresh: true });
+    const { data } = await api.post<LogoutResponse>("/auth/logout", undefined, { skipRefresh: true });
 
     return data;
   },
