@@ -28,8 +28,11 @@ export class NotesService {
     return newNote;
   }
 
-  async findAll() {
-    const notes = await this.notesRepository.find({ order: { createdAt: 'desc' } });
+  async findAll(userId: string) {
+    const notes = await this.notesRepository.find({
+      where: { id: userId },
+      order: { createdAt: 'desc' }
+    });
 
     return notes;
   }
