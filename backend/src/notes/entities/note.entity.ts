@@ -15,7 +15,7 @@ export class Note {
   @Column('text', { array: true, default: [] })
   tags!: string[];
 
-  @Column()
+  @Column({ type: 'text', nullable: true })
   color?: string;
 
   @ManyToOne(() => User, user => user.notes, { onDelete: 'CASCADE' })
