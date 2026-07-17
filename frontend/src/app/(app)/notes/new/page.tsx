@@ -5,21 +5,28 @@ import { Input } from "@/components/ui/input";
 import { FieldGroup, Field, FieldLabel, FieldDescription } from "@/components/ui/field";
 import useCreateNote from "@/hooks/notes/useCreateNote";
 import { CreateNoteRequest } from "@/types/notes.type";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { Textarea } from "@/components/ui/textarea";
 import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from "@/components/ui/input-group";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { PlusSignIcon } from "@hugeicons/core-free-icons";
 import { useEffect, useRef, useState } from "react";
 import NoteTagsList from "@/components/notes/note-tags-list";
+import { Spinner } from "@/components/ui/spinner";
+import ColorPicker from "@/components/common/colorpicker";
 
 export default function NewNote() {
-  const { register, handleSubmit, reset, setValue } = useForm<CreateNoteRequest>();
+  const { register, handleSubmit, reset, setValue, control } = useForm<CreateNoteRequest>();
   const { mutateAsync, isPending, isError } = useCreateNote();
 
   const [tags, setTags] = useState<string[]>([]);
 
   const tagInputRef = useRef<HTMLInputElement | null>(null);
+
+  const color = useWatch({
+    control,
+    name: "color"
+  });
 
   const handleAddTag = () => {
     const inputTag = tagInputRef.current;
@@ -99,10 +106,23 @@ export default function NewNote() {
               <NoteTagsList tags={tags} setTags={setTags}/>
             </FieldDescription>
           </Field>
+
+          <Field>
+            <ColorPicker 
+              color={color}
+              setColor={(newColor) => {
+                console.log(newColor)
+                setValue("color", newColor)}}
+            />
+          </Field>
         </FieldGroup>
 
         <Button size="lg" disabled={isPending} type="submit">
-          {isPending ? "Signing in..." : "Sign In"}
+          {isPending ? (
+            <>
+              <Spinner /> Creating...
+            </>
+          ) : "Create"}
         </Button>
       </form>
     </div>
