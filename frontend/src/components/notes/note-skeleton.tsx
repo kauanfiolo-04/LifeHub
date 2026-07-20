@@ -3,7 +3,7 @@ import { Skeleton } from "../ui/skeleton";
 
 export default function NoteSkeleton() {
   return (
-    <Card className="h-52 md:h-96 aspect-3/4">
+    <Card className="w-full h-52 md:h-96 aspect-3/4">
       <CardHeader>
         <CardTitle>
           <Skeleton className="w-full h-4" />

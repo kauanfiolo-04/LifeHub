@@ -27,7 +27,7 @@ export default function AppLayout({
         <Navbar />
 
         {/* Content */}
-        <main className="flex-1 p-6 mt-14">{children}</main>
+        <main className="flex-1 p-6 pt-20">{children}</main>
       </div>
     </div>
   );

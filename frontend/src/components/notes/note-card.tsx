@@ -1,5 +1,6 @@
 import { Note } from "@/types/notes.type";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../ui/card";
+import { getAccessibleTextColor } from "@/utils/get-acessible-text-color";
 
 interface NoteCardProps {
   note: Note;
@@ -7,7 +8,9 @@ interface NoteCardProps {
 
 export default function NoteCard({ note }: NoteCardProps) {
   return (
-    <Card className="h-52 md:h-96 aspect-3/4">
+    <Card className="w-full h-52 md:h-96 aspect-3/4"
+      style={{ backgroundColor: note.color, color: note.color ? getAccessibleTextColor(note.color) : undefined  }}
+    >
       <CardHeader>
         <CardTitle>{note.title}</CardTitle>
       </CardHeader>

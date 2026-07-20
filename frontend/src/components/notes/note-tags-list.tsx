@@ -12,7 +12,7 @@ export default function NoteTagsList({ tags, setTags }: NoteTagsListProps) {
 
   return tags.map((tag, idx, self) => (
     <span
-      key={tag}
+      key={`${tag}-${idx}`}
       className="hover:line-through hover:text-destructive cursor-pointer"
       onClick={() => handleDeleteTag(tag)}
     >

@@ -14,7 +14,7 @@ export default function NotesPage() {
   const router = useRouter();
   
   return (
-    <div className="flex flex-col items-start">
+    <div className="flex flex-col items-start w-full">
       <div className="flex w-full justify-between items-center">
         <h1 className="text-2xl font-bold">Notes</h1>
 
@@ -23,7 +23,7 @@ export default function NotesPage() {
         </Button>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 justify-items-center mt-6">
+      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 justify-items-center gap-4 mt-6 w-full">
         {isLoading ? (
           Array.from({ length: 6 }).map((_, index) => (
             <NoteSkeleton key={index} />

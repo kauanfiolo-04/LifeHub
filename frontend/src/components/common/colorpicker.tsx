@@ -3,6 +3,7 @@ import { Button } from "../ui/button";
 import { Card } from "../ui/card";
 import { HexAlphaColorPicker } from "react-colorful";
 import { Input } from "../ui/input";
+import { getAccessibleTextColor } from "@/utils/get-acessible-text-color";
 
 export interface ColorPickerProps {
   color?: string;
@@ -13,13 +14,11 @@ export default function ColorPicker({ color, setColor }: ColorPickerProps) {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button
+        <Button variant="ghost"
           className={`border border-input bg-input/20 rounded-md w-full px-2 py-0.5
             text-sm transition-colors outline-none text-black flex items-center justify-between
           `}
         >
-          <span>Color:</span>
-
           <span className="flex items-center gap-1.5" style={{ color: color ?? "#000000" }}>
             <div className="h-4 w-4 border" style={{ backgroundColor: color }} /> {color ?? "#000000"}
           </span>
@@ -28,7 +27,7 @@ export default function ColorPicker({ color, setColor }: ColorPickerProps) {
 
       <DialogContent style={{ backgroundColor: color }}>
         <DialogHeader>
-          <DialogTitle className="text-xl">Color select</DialogTitle>
+          <DialogTitle className="text-xl font-bold" style={{ color: color ? getAccessibleTextColor(color) : undefined }}>Color select</DialogTitle>
         </DialogHeader>
 
         <Card className="items-center">

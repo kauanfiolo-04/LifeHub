@@ -14,8 +14,11 @@ import { useEffect, useRef, useState } from "react";
 import NoteTagsList from "@/components/notes/note-tags-list";
 import { Spinner } from "@/components/ui/spinner";
 import ColorPicker from "@/components/common/colorpicker";
+import { useRouter } from "next/navigation";
 
 export default function NewNote() {
+  const router = useRouter();
+
   const { register, handleSubmit, reset, setValue, control } = useForm<CreateNoteRequest>();
   const { mutateAsync, isPending, isError } = useCreateNote();
 
@@ -29,20 +32,26 @@ export default function NewNote() {
   });
 
   const handleAddTag = () => {
-    const inputTag = tagInputRef.current;
+    const inputTagVal = tagInputRef.current?.value;
 
-    if (!inputTag) return;
+    if (!inputTagVal) return;
 
-    setTags(prev => [...prev, inputTag.value]);
+    if (!inputTagVal.length) return;
+
+    if (tags.includes(inputTagVal)) return;
+
+    setTags(prev => [...prev, inputTagVal]);
   };
 
   const handleOnSubmit = async (data: CreateNoteRequest) => {
     try {
-      // const response = await mutateAsync(data);
+      const response = await mutateAsync(data);
+
+      if (response.id) router.push("/notes");
 
       // reset();
 
-      console.log(data);
+      // console.log(data);
     } catch (error) {
       console.error(error);
     }
@@ -108,11 +117,10 @@ export default function NewNote() {
           </Field>
 
           <Field>
+            <FieldLabel>Color</FieldLabel>
             <ColorPicker 
               color={color}
-              setColor={(newColor) => {
-                console.log(newColor)
-                setValue("color", newColor)}}
+              setColor={(newColor) => setValue("color", newColor)}
             />
           </Field>
         </FieldGroup>

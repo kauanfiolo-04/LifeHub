@@ -1,5 +1,5 @@
 import { Note } from "@/types/notes.type";
-import NoteCard from "./notes-card";
+import NoteCard from "./note-card";
 import NoteSkeleton from "./note-skeleton";
 
 interface NotesPropsList {
