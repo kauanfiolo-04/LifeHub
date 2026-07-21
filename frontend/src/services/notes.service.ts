@@ -17,9 +17,14 @@ export const NotesService = {
 
     return data;
   },
-  update: async (id: string, updateNoteDTO: UpdateNoteRequest) => {
-    const { data } = await api.patch<Note>(`/notes/${id}`, updateNoteDTO);
+  update: async (noteId: string, updateNoteDTO: UpdateNoteRequest) => {
+    const { data } = await api.patch<Note>(`/notes/${noteId}`, updateNoteDTO);
 
     return data;
-  }
+  },
+  delete: async (noteId: string) => {
+    const { data } = await api.delete<Note>(`/notes/${noteId}`);
+
+    return data;
+  },
 };

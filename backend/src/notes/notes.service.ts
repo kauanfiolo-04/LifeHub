@@ -48,17 +48,21 @@ export class NotesService {
   }
 
   async update(id: string, dto: UpdateNoteDTO, payload: JwtPayload) {
-    const updatedNote = await this.notesRepository.preload({ id, ...dto });
+    const note = await this.notesRepository.findOne({ where: { id }, relations: { user: true } });
 
-    if (!updatedNote) this.throwNotFoundException();
+    if (!note) this.throwNotFoundException();
 
-    if (payload.sub !== updatedNote.user.id) throw new UnauthorizedException(`You can't change another user note.`);
+    if (payload.sub !== note.user.id) throw new UnauthorizedException(`You can't change another user note.`);
 
-    return await this.notesRepository.save(updatedNote);
+    Object.assign(note, dto);
+
+    return await this.notesRepository.save(note);
   }
 
   async remove(id: string, payload: JwtPayload) {
-    const note = await this.findOne(id);
+    const note = await this.notesRepository.findOne({ where: { id }, relations: { user: true } });
+
+    if (!note) this.throwNotFoundException();
 
     if (payload.sub !== note.user.id) throw new UnauthorizedException(`You can't change delete user note.`);
 
