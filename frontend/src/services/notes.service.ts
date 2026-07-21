@@ -1,5 +1,5 @@
 import { api } from "@/lib/axios";
-import { CreateNoteRequest, Note } from "@/types/notes.type";
+import { CreateNoteRequest, Note, UpdateNoteRequest } from "@/types/notes.type";
 
 export const NotesService = {
   findAll: async () => {
@@ -9,6 +9,16 @@ export const NotesService = {
   },
   create: async (createNoteDto: CreateNoteRequest) => {
     const { data } = await api.post<Note>("/notes", createNoteDto);
+
+    return data;
+  },
+  findOne: async (noteId: string) => {
+    const { data } = await api.get<Note>(`/notes/${noteId}`);
+
+    return data;
+  },
+  update: async (id: string, updateNoteDTO: UpdateNoteRequest) => {
+    const { data } = await api.patch<Note>(`/notes/${id}`, updateNoteDTO);
 
     return data;
   }

@@ -8,14 +8,16 @@ import { getAccessibleTextColor } from "@/utils/get-acessible-text-color";
 export interface ColorPickerProps {
   color?: string;
   setColor: (color: string) => void;
+  readOnly?: boolean;
 }
 
-export default function ColorPicker({ color, setColor }: ColorPickerProps) {
+export default function ColorPicker({ color, setColor, readOnly = false }: ColorPickerProps) {
   return (
     <Dialog>
-      <DialogTrigger asChild>
+      <DialogTrigger asChild disabled={readOnly}>
         <Button variant="ghost"
-          className={`border border-input bg-input/20 rounded-md w-full px-2 py-0.5
+          className={`
+            border border-input bg-input/20 rounded-md w-full px-2 py-0.5 disabled:opacity-100!
             text-sm transition-colors outline-none text-black flex items-center justify-between
           `}
         >

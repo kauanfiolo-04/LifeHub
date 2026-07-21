@@ -9,7 +9,7 @@ export default function useCreateNote(){
     mutationFn: NotesService.create,
     onSuccess: () => {
       queryClient.invalidateQueries({ 
-        queryKey: queryKeys.notes 
+        queryKey: queryKeys.notes.all
       })
     }
   });

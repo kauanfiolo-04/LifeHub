@@ -69,7 +69,7 @@ export default function NewNote() {
 
   return (
     <div className="flex flex-col">
-      <h1 className="text-2xl font-bold">Create a new note</h1>
+      <h1 className="text-2xl font-bold mb-8">Create a new note</h1>
 
       <form className="flex flex-col w-full md:max-w-2xl gap-10" onSubmit={(e) => handleSubmit(handleOnSubmit)(e)}>
         <FieldGroup>
