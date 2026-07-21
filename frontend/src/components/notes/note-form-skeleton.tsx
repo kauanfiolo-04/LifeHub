@@ -26,6 +26,13 @@ export default function NoteFormSkeleton() {
           <Skeleton className="h-7 md:h-8 w-full min-w-0 rounded-md" />
         </Field>
       </FieldGroup>
+      
+      <div className="flex flex-col w-full gap-4">
+        <Skeleton className="h-8" />
+
+        <Skeleton className="h-8" />
+      </div>
+      <Skeleton />
     </form>
   );
 }
