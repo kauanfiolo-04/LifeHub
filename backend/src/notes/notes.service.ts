@@ -56,7 +56,11 @@ export class NotesService {
 
     Object.assign(note, dto);
 
-    return await this.notesRepository.save(note);
+    const response = await this.notesRepository.save(note);
+
+    const { user: _, ...data } = response;
+
+    return data;
   }
 
   async remove(id: string, payload: JwtPayload) {
