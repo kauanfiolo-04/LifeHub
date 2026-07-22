@@ -20,10 +20,22 @@ export default function NoteCard({ note }: NoteCardProps) {
         <CardTitle>{note.title}</CardTitle>
       </CardHeader>
 
-      <CardContent className="w-full h-48">
-        <p className="line-clamp-4">
-          {note.content}
-        </p>
+      <CardContent className="w-full">
+        <div className="h-48">
+          <p className="line-clamp-4">
+            {note.content}
+          </p>
+        </div>
+
+        {!!note.tags.length && (
+          <div className="flex w-full">
+            {note.tags.map((tag, idx, self) => (
+              <span key={`${tag}-${idx}`}>
+                {idx === (self.length - 1) ? tag : `${tag}, `}
+              </span>
+            ))}
+          </div>
+        )}
       </CardContent>
 
       <CardFooter className="mt-auto">

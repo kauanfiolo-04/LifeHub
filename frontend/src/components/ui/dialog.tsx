@@ -4,9 +4,10 @@ import * as React from "react"
 import { Dialog as DialogPrimitive } from "radix-ui"
 
 import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
+import { Button, buttonVariants } from "@/components/ui/button"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { Cancel01Icon } from "@hugeicons/core-free-icons"
+import { VariantProps } from "class-variance-authority"
 
 function Dialog({
   ...props
@@ -52,9 +53,11 @@ function DialogContent({
   className,
   children,
   showCloseButton = true,
+  closeBtnVariant = "ghost",
   ...props
 }: React.ComponentProps<typeof DialogPrimitive.Content> & {
-  showCloseButton?: boolean
+  showCloseButton?: boolean,
+  closeBtnVariant?: Pick<VariantProps<typeof buttonVariants>, "variant">["variant"]
 }) {
   return (
     <DialogPortal>
@@ -71,8 +74,8 @@ function DialogContent({
         {showCloseButton && (
           <DialogPrimitive.Close data-slot="dialog-close" asChild>
             <Button
-              variant="ghost"
-              className="absolute top-2 right-2"
+              variant={closeBtnVariant}
+              className="absolute top-4 right-4"
               size="icon-sm"
             >
               <HugeiconsIcon icon={Cancel01Icon} strokeWidth={2} />

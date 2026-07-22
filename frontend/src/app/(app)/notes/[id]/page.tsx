@@ -27,15 +27,13 @@ export default function Note() {
 
   const { data: note, isPending: loadingNote } = useNote(id);
 
-  const { register, handleSubmit, setValue, control } = useForm<UpdateNoteRequest>();
+  const { register, handleSubmit, setValue, control, formState: { errors } } = useForm<UpdateNoteRequest>();
 
   const { mutateAsync: updateNote, isPending: updatingNote, isError: updateError } = useUpdateNote();
 
   const { mutateAsync: deleteNote, isPending: deletingNote, isError: deleteError } = useDeleteNote();
 
   const [isEditing, setIsEditing] = useState(false);
-
-  const [tags, setTags] = useState<string[]>([]);
 
   const tagInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -44,10 +42,22 @@ export default function Note() {
     name: "color"
   });
 
-  const isError = 
+  const content = useWatch({
+    control,
+    name: "content",
+    defaultValue: ""
+  });
+
+  const tags = useWatch({
+    control,
+    name: "tags",
+    defaultValue: [],
+  });
+
+  const isError =
     deleteError || updateError;
 
-  const isPending = 
+  const isPending =
     updatingNote || deletingNote
 
   const resetNote = useCallback((note: Note) => {
@@ -59,6 +69,8 @@ export default function Note() {
   }, [setValue]);
 
   const handleAddTag = () => {
+    if (!tags) return;
+
     const inputTagVal = tagInputRef.current?.value;
 
     if (!inputTagVal) return;
@@ -67,15 +79,26 @@ export default function Note() {
 
     if (tags.includes(inputTagVal)) return;
 
-    setTags(prev => [...prev, inputTagVal]);
+    setValue("tags", [...tags, inputTagVal], {
+      shouldDirty: true,
+    });
+
+    if (tagInputRef.current) tagInputRef.current.value = "";
   };
+
+  const removeTag = (tag: string) => {
+    if (!tags) return;
+
+    setValue(
+      "tags",
+      tags.filter(t => t !== tag),
+      { shouldDirty: true }
+    );
+  }
 
   const handleOnSubmit = async (data: UpdateNoteRequest) => {
     try {
-      const _response = await updateNote({ id, data });
-
-      setIsEditing(false);
-
+      await updateNote({ id, data }, { onSuccess: () => setIsEditing(false) });
     } catch (error) {
       console.error(error);
     }
@@ -83,24 +106,16 @@ export default function Note() {
 
   const handleDeleteNote = async () => {
     try {
-      const _response = await deleteNote({ id }, { onSuccess: () => router.replace("/notes") });
+      await deleteNote({ id }, { onSuccess: () => router.replace("/notes") });
     } catch (error) {
       console.error(error);
     }
   };
 
   useEffect(() => {
-    setValue("tags", tags);
-
-    const inputTag = tagInputRef.current;
-
-    if (!inputTag) return;
-
-    inputTag.value = "";
-  }, [tags, setValue]);
-
-  useEffect(() => {
     if (!note) return;
+
+    console.log("note: ", note)
 
     resetNote(note);
   }, [note, resetNote]);
@@ -114,29 +129,52 @@ export default function Note() {
       ) : (
         <form className="flex flex-col w-full md:max-w-2xl gap-10" onSubmit={(e) => handleSubmit(handleOnSubmit)(e)}>
           <FieldGroup>
-            <Field data-invalid={isError} >
+            <Field data-invalid={isError || !!errors.title?.message} >
               <FieldLabel htmlFor="title">Title</FieldLabel>
               <Input
                 className="md:h-8"
-                aria-invalid={isError}
-                {...register("title")}
+                aria-invalid={isError || !!errors.title?.message}
+                {...register("title", {
+                  maxLength: {
+                    value: 100,
+                    message: "Title cannot exceed 100 characters"
+                  }
+                })}
                 id="title"
                 type="text"
                 required
                 readOnly={!isEditing}
               />
 
+              {errors.title && (
+                <FieldDescription>
+                  {errors.title.message}
+                </FieldDescription>
+              )}
             </Field>
 
-            <Field data-invalid={isError} >
+            <Field data-invalid={isError || !!errors.content?.message} >
               <FieldLabel htmlFor="content">Content</FieldLabel>
               <Textarea
-                aria-invalid={isError}
-                {...register("content")}
+                aria-invalid={isError || !!errors.content?.message}
+                {...register("content", {
+                  maxLength: {
+                    value: 255,
+                    message: "Content cannot exceed 255 characters"
+                  }
+                })}
                 id="content"
                 required
                 readOnly={!isEditing}
               />
+
+              <FieldDescription className="text-end">
+                <span
+                  style={{ color: content ? (content.length > 255 ? "var(--destructive)" : undefined) : undefined }}
+                >
+                  {content?.length ?? 0}/255
+                </span>
+              </FieldDescription>
             </Field>
 
             <Field data-invalid={isError}>
@@ -156,7 +194,7 @@ export default function Note() {
               </InputGroup>
 
               <FieldDescription>
-                <NoteTagsList tags={tags} setTags={setTags} />
+                <NoteTagsList tags={tags ?? []} removeTag={removeTag} />
               </FieldDescription>
             </Field>
 
@@ -170,10 +208,9 @@ export default function Note() {
             </Field>
           </FieldGroup>
 
-
           {isEditing ? (
             <div className="flex w-full items-center gap-4">
-              <Button 
+              <Button
                 size="lg"
                 type="button"
                 variant="destructive"
@@ -186,7 +223,7 @@ export default function Note() {
                 Cancel
               </Button>
 
-              <Button 
+              <Button
                 size="lg"
                 disabled={isPending}
                 type="submit"

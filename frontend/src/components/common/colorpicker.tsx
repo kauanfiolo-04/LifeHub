@@ -27,7 +27,7 @@ export default function ColorPicker({ color, setColor, readOnly = false }: Color
         </Button>
       </DialogTrigger>
 
-      <DialogContent style={{ backgroundColor: color }}>
+      <DialogContent style={{ backgroundColor: color }} closeBtnVariant="secondary">
         <DialogHeader>
           <DialogTitle className="text-xl font-bold" style={{ color: color ? getAccessibleTextColor(color) : undefined }}>Color select</DialogTitle>
         </DialogHeader>

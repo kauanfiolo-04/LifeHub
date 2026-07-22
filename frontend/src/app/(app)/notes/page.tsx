@@ -1,7 +1,7 @@
 "use client";
 
+import NoteCard from "@/components/notes/note-card";
 import NoteSkeleton from "@/components/notes/note-skeleton";
-import NotesList from "@/components/notes/notes-list";
 import { Button } from "@/components/ui/button";
 import { useNotes } from "@/hooks/notes/useNotes";
 import { PlusSignIcon } from "@hugeicons/core-free-icons";
@@ -28,9 +28,9 @@ export default function NotesPage() {
           Array.from({ length: 6 }).map((_, index) => (
             <NoteSkeleton key={index} />
           ))
-        ) : (
-          <NotesList notes={notes ?? []} />
-        )}
+        ) : 
+          (notes ?? []).map(note => (<NoteCard key={note.id} note={note}/>))
+        }
       </div>
     </div>
   );

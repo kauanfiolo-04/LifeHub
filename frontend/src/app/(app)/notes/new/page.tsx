@@ -10,7 +10,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from "@/components/ui/input-group";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { PlusSignIcon } from "@hugeicons/core-free-icons";
-import { useEffect, useRef, useState } from "react";
+import { useRef } from "react";
 import NoteTagsList from "@/components/notes/note-tags-list";
 import { Spinner } from "@/components/ui/spinner";
 import ColorPicker from "@/components/common/colorpicker";
@@ -19,10 +19,8 @@ import { useRouter } from "next/navigation";
 export default function NewNote() {
   const router = useRouter();
 
-  const { register, handleSubmit, reset, setValue, control } = useForm<CreateNoteRequest>();
+  const { register, handleSubmit, setValue, control, formState: { errors } } = useForm<CreateNoteRequest>();
   const { mutateAsync, isPending, isError } = useCreateNote();
-
-  const [tags, setTags] = useState<string[]>([]);
 
   const tagInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -31,7 +29,21 @@ export default function NewNote() {
     name: "color"
   });
 
-  const handleAddTag = () => {
+  const content = useWatch({
+    control,
+    name: "content",
+    defaultValue: ""
+  });
+
+    const tags = useWatch({
+    control,
+    name: "tags",
+    defaultValue: [],
+  });
+
+    const handleAddTag = () => {
+    if (!tags) return;
+
     const inputTagVal = tagInputRef.current?.value;
 
     if (!inputTagVal) return;
@@ -40,32 +52,30 @@ export default function NewNote() {
 
     if (tags.includes(inputTagVal)) return;
 
-    setTags(prev => [...prev, inputTagVal]);
+    setValue("tags", [...tags, inputTagVal], {
+      shouldDirty: true,
+    });
+
+    if (tagInputRef.current) tagInputRef.current.value = "";
   };
+
+  const removeTag = (tag: string) => {
+    if (!tags) return;
+
+    setValue(
+      "tags",
+      tags.filter(t => t !== tag),
+      { shouldDirty: true }
+    );
+  }
 
   const handleOnSubmit = async (data: CreateNoteRequest) => {
     try {
-      const response = await mutateAsync(data);
-
-      if (response.id) router.push("/notes");
-
-      // reset();
-
-      // console.log(data);
+      await mutateAsync(data, { onSuccess: () => router.push("/notes") });
     } catch (error) {
       console.error(error);
     }
   }
-
-  useEffect(() => {
-    setValue("tags", tags);
-
-    const inputTag = tagInputRef.current;
-
-    if (!inputTag) return;
-
-    inputTag.value = "";
-  }, [tags, setValue]);
 
   return (
     <div className="flex flex-col">
@@ -73,27 +83,49 @@ export default function NewNote() {
 
       <form className="flex flex-col w-full md:max-w-2xl gap-10" onSubmit={(e) => handleSubmit(handleOnSubmit)(e)}>
         <FieldGroup>
-          <Field data-invalid={isError} >
+          <Field data-invalid={isError || !!errors.title?.message} >
             <FieldLabel htmlFor="title">Title</FieldLabel>
             <Input
               className="md:h-8"
-              aria-invalid={isError}
-              {...register("title")}
+              aria-invalid={isError || !!errors.title?.message}
+              {...register("title", {
+                maxLength: {
+                  value: 100,
+                  message: "Title cannot exceed 100 characters"
+                }
+              })}
               id="title"
               type="text"
               required
             />
 
+            {errors.title && (
+              <FieldDescription>
+                {errors.title.message}
+              </FieldDescription>
+            )}
           </Field>
 
-          <Field data-invalid={isError} >
+          <Field data-invalid={isError || !!errors.content?.message} >
             <FieldLabel htmlFor="content">Content</FieldLabel>
             <Textarea
-              aria-invalid={isError}
-              {...register("content")}
+              aria-invalid={isError || !!errors.content?.message}
+              {...register("content", {
+                maxLength: {
+                  value: 255,
+                  message: "Content cannot exceed 255 characters"
+                }
+              })}
               id="content"
-              required
             />
+
+            <FieldDescription className="text-end">
+              <span 
+                style={{ color: content.length > 255 ? "var(--destructive)" : undefined }}
+              >
+                {content.length}/255
+              </span>
+            </FieldDescription>
           </Field>
 
           <Field data-invalid={isError}>
@@ -112,13 +144,13 @@ export default function NewNote() {
             </InputGroup>
 
             <FieldDescription>
-              <NoteTagsList tags={tags} setTags={setTags}/>
+              <NoteTagsList tags={tags ?? []} removeTag={removeTag} />
             </FieldDescription>
           </Field>
 
           <Field>
             <FieldLabel>Color</FieldLabel>
-            <ColorPicker 
+            <ColorPicker
               color={color}
               setColor={(newColor) => setValue("color", newColor)}
             />

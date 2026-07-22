@@ -1,20 +1,14 @@
-import { Dispatch, SetStateAction } from "react";
-
 interface NoteTagsListProps {
   tags: string[];
-  setTags: Dispatch<SetStateAction<string[]>>;
+  removeTag: (tag: string) => void;
 }
 
-export default function NoteTagsList({ tags, setTags }: NoteTagsListProps) {
-  const handleDeleteTag = (tag: string) => {
-    setTags(prev => prev.filter(str => str !== tag));
-  }
-
+export default function NoteTagsList({ tags, removeTag }: NoteTagsListProps) {
   return tags.map((tag, idx, self) => (
     <span
       key={`${tag}-${idx}`}
       className="hover:line-through hover:text-destructive cursor-pointer"
-      onClick={() => handleDeleteTag(tag)}
+      onClick={() => removeTag(tag)}
     >
       {idx === (self.length - 1) ? tag : `${tag}, `}
     </span>
