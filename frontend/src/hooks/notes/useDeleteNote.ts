@@ -9,7 +9,7 @@ export function useDeleteNote() {
     mutationFn: ({ id }: { id: string }) => NotesService.delete(id),
 
     onSuccess: (_, { id }) => {
-      queryClient.invalidateQueries({
+      queryClient.removeQueries({
         queryKey: queryKeys.notes.detail(id),
       });
 

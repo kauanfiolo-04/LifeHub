@@ -48,7 +48,7 @@ export default function Note() {
     deleteError || updateError;
 
   const isPending = 
-    updateNote || deletingNote
+    updatingNote || deletingNote
 
   const resetNote = useCallback((note: Note) => {
     setValue("title", note.title);
@@ -72,9 +72,10 @@ export default function Note() {
 
   const handleOnSubmit = async (data: UpdateNoteRequest) => {
     try {
-      const response = await updateNote({ id, data });
+      const _response = await updateNote({ id, data });
 
-      console.log(response);
+      setIsEditing(false);
+
     } catch (error) {
       console.error(error);
     }
@@ -82,9 +83,7 @@ export default function Note() {
 
   const handleDeleteNote = async () => {
     try {
-      const response = await deleteNote({ id });
-
-      router.replace("/notes");
+      const _response = await deleteNote({ id }, { onSuccess: () => router.replace("/notes") });
     } catch (error) {
       console.error(error);
     }
@@ -175,7 +174,8 @@ export default function Note() {
           {isEditing ? (
             <div className="flex w-full items-center gap-4">
               <Button 
-                size="lg" 
+                size="lg"
+                type="button"
                 variant="destructive"
                 className="w-[calc(25%-8px)]"
                 onClick={() => {
@@ -188,11 +188,11 @@ export default function Note() {
 
               <Button 
                 size="lg"
-                disabled={updatingNote}
+                disabled={isPending}
                 type="submit"
                 className="w-[calc(75%-8px)]"
               >
-                {updatingNote ? (
+                {isPending ? (
                   <>
                     <Spinner /> Saving...
                   </>
@@ -203,6 +203,7 @@ export default function Note() {
           ) : (
             <div className="flex flex-col w-full gap-2">
               <Button
+                type="button"
                 size="lg"
                 variant="secondary"
                 onClick={() => setIsEditing(true)}
@@ -212,6 +213,7 @@ export default function Note() {
 
               <Button
                 size="lg"
+                type="button"
                 variant="destructive"
                 onClick={handleDeleteNote}
               >

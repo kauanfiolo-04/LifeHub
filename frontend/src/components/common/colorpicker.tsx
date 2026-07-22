@@ -22,7 +22,7 @@ export default function ColorPicker({ color, setColor, readOnly = false }: Color
           `}
         >
           <span className="flex items-center gap-1.5" style={{ color: color ?? "#000000" }}>
-            <div className="h-4 w-4 border" style={{ backgroundColor: color }} /> {color ?? "#000000"}
+            <div className="h-4 w-4 border" style={{ backgroundColor: color ?? "#000000" }} /> {color ?? "#000000"}
           </span>
         </Button>
       </DialogTrigger>
@@ -34,7 +34,7 @@ export default function ColorPicker({ color, setColor, readOnly = false }: Color
 
         <Card className="items-center">
           <HexAlphaColorPicker
-            color={color}
+            color={color ?? "#000000"}
             onChangeEnd={newColor => setColor(newColor.toUpperCase())}
           />
 
