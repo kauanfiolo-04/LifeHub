@@ -15,6 +15,7 @@ import NoteTagsList from "@/components/notes/note-tags-list";
 import { Spinner } from "@/components/ui/spinner";
 import ColorPicker from "@/components/common/colorpicker";
 import { useRouter } from "next/navigation";
+import { addNotification } from "@/utils/notifications";
 
 export default function NewNote() {
   const router = useRouter();
@@ -71,7 +72,13 @@ export default function NewNote() {
 
   const handleOnSubmit = async (data: CreateNoteRequest) => {
     try {
-      await mutateAsync(data, { onSuccess: () => router.push("/notes") });
+      await mutateAsync(data, { 
+        onSuccess: () => {
+          addNotification.success("Note created with success!")
+          router.push("/notes");
+        }, 
+        onError: () => addNotification.error("Try again later")
+      });
     } catch (error) {
       console.error(error);
     }

@@ -4,6 +4,7 @@ import "./globals.css";
 import { cn } from "@/lib/utils";
 import { QueryProvider } from "@/providers/query-provider";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { Toaster } from "sonner";
 
 const inter = Inter({subsets:['latin'],variable:'--font-sans'});
 
@@ -38,6 +39,7 @@ export default function RootLayout({
 
           <ReactQueryDevtools initialIsOpen={false} />
         </QueryProvider>
+        <Toaster />
       </body>
     </html>
   );

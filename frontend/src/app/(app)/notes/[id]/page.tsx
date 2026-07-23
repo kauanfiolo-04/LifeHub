@@ -18,6 +18,7 @@ import { useUpdateNote } from "@/hooks/notes/useUpdateNote";
 import { useNote } from "@/hooks/notes/useNote";
 import NoteFormSkeleton from "@/components/notes/note-form-skeleton";
 import { useDeleteNote } from "@/hooks/notes/useDeleteNote";
+import { addNotification } from "@/utils/notifications";
 
 
 export default function Note() {
@@ -98,7 +99,13 @@ export default function Note() {
 
   const handleOnSubmit = async (data: UpdateNoteRequest) => {
     try {
-      await updateNote({ id, data }, { onSuccess: () => setIsEditing(false) });
+      await updateNote({ id, data }, { 
+        onSuccess: () => {
+          setIsEditing(false);
+          addNotification.success("Note edited with success!");
+        },
+        onError: () => addNotification.error("Try again later!")
+      });
     } catch (error) {
       console.error(error);
     }
@@ -106,7 +113,13 @@ export default function Note() {
 
   const handleDeleteNote = async () => {
     try {
-      await deleteNote({ id }, { onSuccess: () => router.replace("/notes") });
+      await deleteNote({ id }, { 
+        onSuccess: () => {
+          router.replace("/notes");
+          addNotification.success("Note deleted with success!");
+        },
+        onError: () => addNotification.error("Try again later!")
+      });
     } catch (error) {
       console.error(error);
     }
@@ -114,8 +127,6 @@ export default function Note() {
 
   useEffect(() => {
     if (!note) return;
-
-    console.log("note: ", note)
 
     resetNote(note);
   }, [note, resetNote]);
