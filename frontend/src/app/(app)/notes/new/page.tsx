@@ -35,16 +35,16 @@ export default function NewNote() {
     defaultValue: ""
   });
 
-    const tags = useWatch({
+  const tags = useWatch({
     control,
     name: "tags",
     defaultValue: [],
   });
 
-    const handleAddTag = () => {
+  const handleAddTag = () => {
     if (!tags) return;
 
-    const inputTagVal = tagInputRef.current?.value;
+    const inputTagVal = tagInputRef.current?.value.trim().toLowerCase();
 
     if (!inputTagVal) return;
 
@@ -120,7 +120,7 @@ export default function NewNote() {
             />
 
             <FieldDescription className="text-end">
-              <span 
+              <span
                 style={{ color: content.length > 255 ? "var(--destructive)" : undefined }}
               >
                 {content.length}/255
@@ -134,6 +134,9 @@ export default function NewNote() {
               <InputGroupInput
                 ref={tagInputRef}
                 type="text"
+                onChange={(e) => {
+                  e.target.value = e.target.value.toLowerCase();
+                }}
               />
 
               <InputGroupAddon align="inline-end">

@@ -71,7 +71,7 @@ export default function Note() {
   const handleAddTag = () => {
     if (!tags) return;
 
-    const inputTagVal = tagInputRef.current?.value;
+    const inputTagVal = tagInputRef.current?.value.trim().toLowerCase();
 
     if (!inputTagVal) return;
 
@@ -184,6 +184,9 @@ export default function Note() {
                   ref={tagInputRef}
                   type="text"
                   readOnly={!isEditing}
+                  onChange={(e) => {
+                    e.target.value = e.target.value.toLowerCase();
+                  }}
                 />
 
                 <InputGroupAddon align="inline-end">
