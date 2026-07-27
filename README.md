@@ -3,12 +3,11 @@ An app that you can put your ideas, your finance, and your tasks. All that in th
 
 # Frontend
 
-I'm gonna use Next.JS with Auth.js, TailwindCSS and some UI lib
-
+I'm using NextJS with App Router, shadcnUI for the components, TailwindCSS for CSS styling and TanStack Query to make the requests and storage data.
 
 # Backend
 
-I'm gonna use Nest.JS, TypeORM and Neon (NoSQL PostgreSQL database)
+I've used Nest.JS with TypeORM and Neon (NoSQL PostgreSQL database) as my database. I included JWT authentication with oAuth provider.
 
 # Database
 
