@@ -1,21 +1,87 @@
 import Link from "next/link";
 import { DropdownMenuAvatar } from "./navbar/dropdown-avatar";
+import { 
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
+  SidebarHeader,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem
+} from "../ui/sidebar";
+import { ClipboardPenLineIcon, AcuteIcon, AccountSetting03Icon } from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
 
-export default function Sidebar() {
+export default function AppSidebar() {
+  const items = [
+    {
+      title: "Dashboard",
+      url: "/dashboard",
+      icon: undefined,
+    },
+    {
+      title: "Tasks",
+      url: "/tasks",
+      icon: undefined,
+    },
+    {
+      title: "Finance",
+      url: "/finance",
+      icon: undefined,
+    },
+    {
+      title: "Notes",
+      url: "/notes",
+      icon: ClipboardPenLineIcon,
+    },
+  ];
+  
   return (
-    <aside className="w-64 border-r p-4 hidden md:block">
-      <div className="flex justify-between items-center w-full mb-6">
-        <h2 className="font-bold text-lg">LifeHub</h2>
+    <Sidebar collapsible="icon">
+      <SidebarHeader>
+        <h2 className="px-2 text-lg font-bold">
+          LifeHub
+        </h2>
+      </SidebarHeader>
 
-        <DropdownMenuAvatar />
-      </div>
+      <SidebarContent>
+        <SidebarGroup>
+          <SidebarGroupLabel>Pages</SidebarGroupLabel>
 
-      <nav className="flex flex-col gap-2">
-        <Link href="/dashboard">Dashboard</Link>
-        <Link href="/tasks">Tasks</Link>
-        <Link href="/finance">Finance</Link>
-        <Link href="/notes">Notes</Link>
-      </nav>
-    </aside>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {items.map((item) => (
+                <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton asChild tooltip={item.title}>
+                    <Link href={item.url}>
+                      <HugeiconsIcon icon={item.icon ?? AcuteIcon} size={16} />
+                      <span>{item.title}</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+      </SidebarContent>
+
+      <SidebarFooter>
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <SidebarMenuButton asChild tooltip="Configurações">
+              <Link href="/settings">
+                <HugeiconsIcon icon={AccountSetting03Icon} size={16} />
+                <span>Configurações</span>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+
+          <DropdownMenuAvatar />
+        </SidebarMenu>
+      </SidebarFooter>
+    </Sidebar>
   );
 }
