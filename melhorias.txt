@@ -1,1 +1,1 @@
-Remover transactions dentro de account da resposta do Post transaction OK
+Adicionar sistema de busca e paginação no notes

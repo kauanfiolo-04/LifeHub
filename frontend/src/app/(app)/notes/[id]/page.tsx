@@ -8,7 +8,7 @@ import { useForm, useWatch } from "react-hook-form";
 import { Textarea } from "@/components/ui/textarea";
 import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from "@/components/ui/input-group";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { Edit02Icon, PlusSignIcon } from "@hugeicons/core-free-icons";
+import { Edit02Icon, InformationCircleIcon, PlusSignIcon } from "@hugeicons/core-free-icons";
 import { useCallback, useEffect, useRef, useState } from "react";
 import NoteTagsList from "@/components/notes/note-tags-list";
 import { Spinner } from "@/components/ui/spinner";
@@ -19,6 +19,7 @@ import { useNote } from "@/hooks/notes/useNote";
 import NoteFormSkeleton from "@/components/notes/note-form-skeleton";
 import { useDeleteNote } from "@/hooks/notes/useDeleteNote";
 import { addNotification } from "@/utils/notifications";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 
 export default function Note() {
@@ -189,7 +190,18 @@ export default function Note() {
             </Field>
 
             <Field data-invalid={isError}>
-              <FieldLabel>Tags</FieldLabel>
+              <FieldLabel>
+                Tags
+                <Tooltip>
+                  <TooltipTrigger>
+                    <HugeiconsIcon icon={InformationCircleIcon} size={12}/>
+                  </TooltipTrigger>
+
+                  <TooltipContent>
+                    <p>To remove a tag, just click on it.</p>
+                  </TooltipContent>
+                </Tooltip>
+              </FieldLabel>
               <InputGroup>
                 <InputGroupInput
                   ref={tagInputRef}
