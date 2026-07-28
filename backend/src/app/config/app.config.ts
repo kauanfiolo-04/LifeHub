@@ -4,7 +4,7 @@ import cookieParser from 'cookie-parser';
 
 export default (app: INestApplication) => {
   app.enableCors({
-    origin: ['http://localhost:3000'],
+    origin: ['http://localhost:3000', 'https://lifehub-frontend-lemon.vercel.app'],
     credentials: true
   });
 
