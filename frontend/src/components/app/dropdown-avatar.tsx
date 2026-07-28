@@ -1,5 +1,3 @@
-"use client";
-
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import {
@@ -10,6 +8,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu"
+import { useSidebar } from "@/components/ui/sidebar";
 import { Spinner } from "@/components/ui/spinner";
 import { useLogout } from "@/hooks/auth/useLogout";
 import { useMe } from "@/hooks/auth/useMe"
@@ -20,14 +19,17 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation"
 import { useEffect } from "react"
 
+
 export function DropdownMenuAvatar() {
-  const { data: user, isPending: userPending } = useMe();
-
   const router = useRouter();
-
+  
   const queryClient = useQueryClient();
   
+  const { data: user, isPending: userPending } = useMe();
+  
   const { mutateAsync: logout, isPending: logPending } = useLogout();
+
+  const { isMobile, state } = useSidebar();
 
   const handleLogout = async () => {
     try {
@@ -67,23 +69,34 @@ export function DropdownMenuAvatar() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size="icon" className="rounded-full">
-          <Avatar>
-            {/* <AvatarImage src="https://github.com/shadcn.png" alt="shadcn" /> */}
-            <AvatarFallback>{userName}</AvatarFallback>
-          </Avatar>
-        </Button>
+        {isMobile || state === "collapsed" ? (
+          <Button variant="ghost" size="icon" className="rounded-full md:w-full md:mb-2 md:h-auto">
+            <Avatar>
+              {/* <AvatarImage src="https://github.com/shadcn.png" alt="shadcn" /> */}
+              <AvatarFallback>{userName}</AvatarFallback>
+            </Avatar>
+          </Button>
+        ) : (
+          <Button variant="ghost" className="flex justify-start gap-2 h-auto py-2 w-full">
+            <Avatar>
+              {/* <AvatarImage src="https://github.com/shadcn.png" alt="shadcn" /> */}
+              <AvatarFallback>{userName}</AvatarFallback>
+            </Avatar>
+
+            <div className="text-xs text-start">
+              <p>{user?.name ?? ""}</p>
+              <p>{user?.email ?? ""}</p>
+            </div>
+          </Button>
+        )}
       </DropdownMenuTrigger>
+
       <DropdownMenuContent align="end">
         <DropdownMenuGroup>
           <DropdownMenuItem onClick={() => router.push("/account")}>
             <HugeiconsIcon icon={AccountSetting03Icon} />
             Account
           </DropdownMenuItem>
-          {/* <DropdownMenuItem>
-            <BellIcon />
-            Notifications
-          </DropdownMenuItem> */}
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={handleLogout}>
