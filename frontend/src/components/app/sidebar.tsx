@@ -19,7 +19,7 @@ import {
   SidebarMenuSubItem,
   useSidebar
 } from "../ui/sidebar";
-import { ClipboardPenLineIcon, AcuteIcon, Cancel01Icon, PlusMinus01Icon, ArrowDown01Icon } from "@hugeicons/core-free-icons";
+import { ClipboardPenLineIcon, AcuteIcon, Cancel01Icon, ArrowDown01Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Button } from "../ui/button";
 import { IconSvgObject } from "@/types/common";

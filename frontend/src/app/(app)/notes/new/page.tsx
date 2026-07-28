@@ -7,23 +7,17 @@ import useCreateNote from "@/hooks/notes/useCreateNote";
 import { CreateNoteRequest } from "@/types/notes.type";
 import { useForm, useWatch } from "react-hook-form";
 import { Textarea } from "@/components/ui/textarea";
-import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from "@/components/ui/input-group";
-import { HugeiconsIcon } from "@hugeicons/react";
-import { PlusSignIcon } from "@hugeicons/core-free-icons";
-import { useRef } from "react";
-import NoteTagsList from "@/components/notes/note-tags-list";
 import { Spinner } from "@/components/ui/spinner";
 import ColorPicker from "@/components/common/colorpicker";
 import { useRouter } from "next/navigation";
 import { addNotification } from "@/utils/notifications";
+import NoteTagField from "@/components/notes/note-tag-field";
 
 export default function NewNote() {
   const router = useRouter();
 
   const { register, handleSubmit, setValue, control, formState: { errors } } = useForm<CreateNoteRequest>();
   const { mutateAsync, isPending, isError } = useCreateNote();
-
-  const tagInputRef = useRef<HTMLInputElement | null>(null);
 
   const color = useWatch({
     control,
@@ -41,34 +35,6 @@ export default function NewNote() {
     name: "tags",
     defaultValue: [],
   });
-
-  const handleAddTag = () => {
-    if (!tags) return;
-
-    const inputTagVal = tagInputRef.current?.value.trim().toLowerCase();
-
-    if (!inputTagVal) return;
-
-    if (!inputTagVal.length) return;
-
-    if (tags.includes(inputTagVal)) return;
-
-    setValue("tags", [...tags, inputTagVal], {
-      shouldDirty: true,
-    });
-
-    if (tagInputRef.current) tagInputRef.current.value = "";
-  };
-
-  const removeTag = (tag: string) => {
-    if (!tags) return;
-
-    setValue(
-      "tags",
-      tags.filter(t => t !== tag),
-      { shouldDirty: true }
-    );
-  }
 
   const handleOnSubmit = async (data: CreateNoteRequest) => {
     try {
@@ -135,28 +101,11 @@ export default function NewNote() {
             </FieldDescription>
           </Field>
 
-          <Field data-invalid={isError}>
-            <FieldLabel>Tags</FieldLabel>
-            <InputGroup>
-              <InputGroupInput
-                ref={tagInputRef}
-                type="text"
-                onChange={(e) => {
-                  e.target.value = e.target.value.toLowerCase();
-                }}
-              />
-
-              <InputGroupAddon align="inline-end">
-                <InputGroupButton onClick={handleAddTag}>
-                  Add <HugeiconsIcon icon={PlusSignIcon} />
-                </InputGroupButton>
-              </InputGroupAddon>
-            </InputGroup>
-
-            <FieldDescription>
-              <NoteTagsList tags={tags ?? []} removeTag={removeTag} />
-            </FieldDescription>
-          </Field>
+            <NoteTagField 
+              tags={tags}
+              isError={isError}
+              setValue={setValue}
+            />
 
           <Field>
             <FieldLabel>Color</FieldLabel>

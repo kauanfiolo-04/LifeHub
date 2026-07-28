@@ -20,6 +20,9 @@ import NoteFormSkeleton from "@/components/notes/note-form-skeleton";
 import { useDeleteNote } from "@/hooks/notes/useDeleteNote";
 import { addNotification } from "@/utils/notifications";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import NoteTagField from "@/components/notes/note-tag-field";
 
 
 export default function Note() {
@@ -36,8 +39,6 @@ export default function Note() {
   const { mutateAsync: deleteNote, isPending: deletingNote, isError: deleteError } = useDeleteNote();
 
   const [isEditing, setIsEditing] = useState(false);
-
-  const tagInputRef = useRef<HTMLInputElement | null>(null);
 
   const color = useWatch({
     control,
@@ -69,34 +70,6 @@ export default function Note() {
     setValue("tags", note.tags);
     setValue("title", note.title);
   }, [setValue]);
-
-  const handleAddTag = () => {
-    if (!tags) return;
-
-    const inputTagVal = tagInputRef.current?.value.trim().toLowerCase();
-
-    if (!inputTagVal) return;
-
-    if (!inputTagVal.length) return;
-
-    if (tags.includes(inputTagVal)) return;
-
-    setValue("tags", [...tags, inputTagVal], {
-      shouldDirty: true,
-    });
-
-    if (tagInputRef.current) tagInputRef.current.value = "";
-  };
-
-  const removeTag = (tag: string) => {
-    if (!tags) return;
-
-    setValue(
-      "tags",
-      tags.filter(t => t !== tag),
-      { shouldDirty: true }
-    );
-  }
 
   const handleOnSubmit = async (data: UpdateNoteRequest) => {
     try {
@@ -189,40 +162,12 @@ export default function Note() {
               </FieldDescription>
             </Field>
 
-            <Field data-invalid={isError}>
-              <FieldLabel>
-                Tags
-                <Tooltip>
-                  <TooltipTrigger>
-                    <HugeiconsIcon icon={InformationCircleIcon} size={12}/>
-                  </TooltipTrigger>
-
-                  <TooltipContent>
-                    <p>To remove a tag, just click on it.</p>
-                  </TooltipContent>
-                </Tooltip>
-              </FieldLabel>
-              <InputGroup>
-                <InputGroupInput
-                  ref={tagInputRef}
-                  type="text"
-                  readOnly={!isEditing}
-                  onChange={(e) => {
-                    e.target.value = e.target.value.toLowerCase();
-                  }}
-                />
-
-                <InputGroupAddon align="inline-end">
-                  <InputGroupButton onClick={handleAddTag}>
-                    Add <HugeiconsIcon icon={PlusSignIcon} />
-                  </InputGroupButton>
-                </InputGroupAddon>
-              </InputGroup>
-
-              <FieldDescription>
-                <NoteTagsList tags={tags ?? []} removeTag={removeTag} />
-              </FieldDescription>
-            </Field>
+            <NoteTagField 
+              tags={tags}
+              isError={isError}
+              readOnly={!isEditing}
+              setValue={setValue}
+            />
 
             <Field>
               <FieldLabel>Color</FieldLabel>
