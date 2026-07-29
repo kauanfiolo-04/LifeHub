@@ -6,11 +6,9 @@ import { FieldGroup, Field, FieldLabel, FieldDescription } from "@/components/ui
 import { type Note, UpdateNoteRequest } from "@/types/notes.type";
 import { useForm, useWatch } from "react-hook-form";
 import { Textarea } from "@/components/ui/textarea";
-import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from "@/components/ui/input-group";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { Edit02Icon, InformationCircleIcon, PlusSignIcon } from "@hugeicons/core-free-icons";
-import { useCallback, useEffect, useRef, useState } from "react";
-import NoteTagsList from "@/components/notes/note-tags-list";
+import { Edit02Icon } from "@hugeicons/core-free-icons";
+import { useCallback, useEffect,  useState } from "react";
 import { Spinner } from "@/components/ui/spinner";
 import ColorPicker from "@/components/common/colorpicker";
 import { useParams, useRouter } from "next/navigation";
@@ -19,9 +17,6 @@ import { useNote } from "@/hooks/notes/useNote";
 import NoteFormSkeleton from "@/components/notes/note-form-skeleton";
 import { useDeleteNote } from "@/hooks/notes/useDeleteNote";
 import { addNotification } from "@/utils/notifications";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { useIsMobile } from "@/hooks/use-mobile";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import NoteTagField from "@/components/notes/note-tag-field";
 
 

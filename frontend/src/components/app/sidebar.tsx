@@ -94,7 +94,7 @@ export default function AppSidebar() {
                 <Collapsible key={item.title}>
                   <SidebarMenuItem>
                     <CollapsibleTrigger asChild>
-                      <SidebarMenuButton tooltip={item.title} className="group">
+                      <SidebarMenuButton tooltip={item.title} className="group cursor-pointer">
                         <HugeiconsIcon icon={item.icon ?? AcuteIcon} size={16} />
 
                         <span>{item.title}</span>
