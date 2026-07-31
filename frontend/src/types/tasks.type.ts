@@ -25,9 +25,9 @@ export type Task = {
 export type CreateTaskRequest = {
   title: string;
   description?: string;
-  status?: TaskStatus;
+  status: TaskStatus;
   priority: TaskPriority;
-  dueDate?: string;
+  dueDate?: Date;
 };
 
 export type UpdateTaskRequest = Partial<CreateTaskRequest>;
