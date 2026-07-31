@@ -79,7 +79,7 @@ export default function TasksPage() {
     <div>
       <h1 className="text-2xl font-bold mb-8">New Task</h1>
 
-      <form className="flex flex-col w-full md:max-w-2xl gap-10" onSubmit={(e) => handleSubmit(handleOnSubmit)(e)}>
+      <form className="flex flex-col w-full md:max-w-xl gap-10 mx-auto" onSubmit={(e) => handleSubmit(handleOnSubmit)(e)}>
         <FieldGroup>
           <Field>
             <FieldLabel htmlFor="title">Title</FieldLabel>
