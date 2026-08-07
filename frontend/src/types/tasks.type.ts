@@ -11,6 +11,15 @@ export enum TaskStatus {
   CANCELLED = 'cancelled'
 }
 
+export enum TaskSortBy {
+  CREATED_AT = "createdAt",
+  UPDATED_AT = "updatedAt",
+  DUE_DATE = "dueDate",
+  PRIORITY = "priority",
+  TITLE = "title",
+  STATUS = "status",
+}
+
 export type Task = {
   id: string;
   title: string;
@@ -21,6 +30,11 @@ export type Task = {
   createdAt?: Date;
   updatedAt?: Date;
 };
+
+export type FindAllTaskSearchParam = {
+  search?: string;
+  sortBy?: TaskSortBy;
+}
 
 export type CreateTaskRequest = {
   title: string;

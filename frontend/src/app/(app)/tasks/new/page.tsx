@@ -44,7 +44,7 @@ export default function TasksPage() {
   const dueDate = useWatch({
     control,
     name: "dueDate",
-    defaultValue: now
+    defaultValue: undefined
   });
 
   const handleStatus = (val: TaskStatus) => 
@@ -72,8 +72,8 @@ export default function TasksPage() {
 
   useEffect(() => {
     setValue("status", TaskStatus.IN_PROGRESS);
-    setValue("dueDate", now);
-  }, [setValue, now])
+    setValue("dueDate", undefined);
+  }, [setValue])
 
   return (
     <div>

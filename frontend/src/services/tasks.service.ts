@@ -1,9 +1,9 @@
 import { api } from "@/lib/axios";
-import { CreateTaskRequest, Task } from "@/types/tasks.type";
+import { CreateTaskRequest, FindAllTaskSearchParam, Task } from "@/types/tasks.type";
 
 export const TasksService = {
-  findAll: async () => {
-    const { data } = await api.get<Task[]>("/tasks");
+  findAll: async (params: FindAllTaskSearchParam) => {
+    const { data } = await api.get<Task[]>("/tasks", { params });
 
     return data;
   },
