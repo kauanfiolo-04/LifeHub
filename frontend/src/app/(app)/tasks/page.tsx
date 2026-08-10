@@ -56,6 +56,7 @@ export default function TasksPage() {
           <div className="w-1/4">
             <TasksFilterList
               checkFilter={handleCheckFilter}
+              isMobile={isMobile}
             />
           </div>
         )}

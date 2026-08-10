@@ -1,12 +1,16 @@
 import { TaskSortBy, TaskStatus, TaskPriority } from "@/types/tasks.type";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { ArrowDown01Icon } from "@hugeicons/core-free-icons";
+import { ArrowDown01Icon, CancelCircleIcon } from "@hugeicons/core-free-icons";
 import { Field, FieldLabel } from "../ui/field";
 import { Checkbox } from "../ui/checkbox";
+import { Card, CardContent, CardHeader } from "../ui/card";
+import { DrawerClose } from "../ui/drawer";
+import { Button } from "../ui/button";
 
 interface TasksFilterListProps {
   checkFilter: (value: string) => void;
+  isMobile: boolean;
 }
 
 export type TaskFilter = {
@@ -75,42 +79,54 @@ const filters: TaskFilter[] = [
   }
 ];
 
-export default function TasksFilterList({ checkFilter }: TasksFilterListProps) {
+export default function TasksFilterList({ checkFilter, isMobile }: TasksFilterListProps) {
   return (
-    <div className="w-full">
-      <p className="text-xl">Filters</p>
+    <Card className="ring-0 md:ring-1">
+      <CardHeader className="flex justify-between items-center">
+        <p className="text-xl">Filters</p>
 
-      {filters.map(filter => (
-        <Collapsible key={filter.title}>
-          <CollapsibleTrigger className="cursor-pointer flex items-center">
-            <span>{filter.title}</span>
+        {isMobile && (
+          <DrawerClose asChild>
+            <Button variant="ghost">
+              <HugeiconsIcon icon={CancelCircleIcon} size={14} />
+            </Button>
+          </DrawerClose>
+        )}
+      </CardHeader>
 
-            <div
-              className="ml-auto transition-transform group-data-[state=open]:rotate-180"
-            >
-              <HugeiconsIcon
-                icon={ArrowDown01Icon}
-                size={14}
-              />
-            </div>
-          </CollapsibleTrigger>
+      <CardContent>
+        {filters.map(filter => (
+          <Collapsible defaultOpen key={filter.title}>
+            <CollapsibleTrigger className="cursor-pointer flex items-center group gap-2">
+              <span className="text-sm">{filter.title}</span>
 
-          <CollapsibleContent>
-            {filter.items.map(item => (
-              <Field orientation="horizontal" key={item.value}>
-                <Checkbox 
-                  id={item.value}
-                  onCheckedChange={() => checkFilter(item.value)}
+              <div
+                className="ml-auto transition-transform group-data-[state=open]:rotate-180"
+              >
+                <HugeiconsIcon
+                  icon={ArrowDown01Icon}
+                  size={14}
                 />
+              </div>
+            </CollapsibleTrigger>
 
-                <FieldLabel htmlFor={item.value}>
-                  {item.label}
-                </FieldLabel>
-              </Field>
-            ))}
-          </CollapsibleContent>
-        </Collapsible>
-      ))}
-    </div>
+            <CollapsibleContent className="my-2">
+              {filter.items.map(item => (
+                <Field orientation="horizontal" key={item.value} className="mb-1">
+                  <Checkbox 
+                    id={item.value}
+                    onCheckedChange={() => checkFilter(item.value)}
+                  />
+
+                  <FieldLabel htmlFor={item.value}>
+                    {item.label}
+                  </FieldLabel>
+                </Field>
+              ))}
+            </CollapsibleContent>
+          </Collapsible>
+        ))}
+      </CardContent>
+    </Card>
   );
 }

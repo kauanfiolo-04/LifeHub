@@ -41,7 +41,7 @@ export default function TaskSearchOrder({ searchValue, onSearch, isMobile, check
         </Button>
 
         {isMobile && (
-          <Drawer direction="left" fixed>
+          <Drawer direction="left" fixed >
             <DrawerTrigger asChild>
               <Button variant="outline" className="gap-2 w-[calc(50%-8px)]">
                 <span>Filters</span>
@@ -52,6 +52,7 @@ export default function TaskSearchOrder({ searchValue, onSearch, isMobile, check
             <DrawerContent>
               <TasksFilterList 
                 checkFilter={checkFilter}
+                isMobile={isMobile}
               />
             </DrawerContent>
           </Drawer>
