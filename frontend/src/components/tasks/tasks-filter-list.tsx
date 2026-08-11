@@ -7,6 +7,7 @@ import { Checkbox } from "../ui/checkbox";
 import { Card, CardContent, CardHeader } from "../ui/card";
 import { DrawerClose } from "../ui/drawer";
 import { Button } from "../ui/button";
+import { Separator } from "../ui/separator";
 
 interface TasksFilterListProps {
   checkFilter: (value: string) => void;
@@ -83,7 +84,7 @@ export default function TasksFilterList({ checkFilter, isMobile }: TasksFilterLi
   return (
     <Card className="ring-0 md:ring-1">
       <CardHeader className="flex justify-between items-center">
-        <p className="text-xl">Filters</p>
+        <p className="text-xl font-semibold">Filters</p>
 
         {isMobile && (
           <DrawerClose asChild>
@@ -95,10 +96,10 @@ export default function TasksFilterList({ checkFilter, isMobile }: TasksFilterLi
       </CardHeader>
 
       <CardContent>
-        {filters.map(filter => (
+        {filters.map((filter, idx) => (
           <Collapsible defaultOpen key={filter.title}>
-            <CollapsibleTrigger className="cursor-pointer flex items-center group gap-2">
-              <span className="text-sm">{filter.title}</span>
+            <CollapsibleTrigger className="w-full cursor-pointer flex items-center justify-between group gap-2 h-7">
+              <span className="text-sm font-semibold">{filter.title}</span>
 
               <div
                 className="ml-auto transition-transform group-data-[state=open]:rotate-180"
@@ -111,8 +112,8 @@ export default function TasksFilterList({ checkFilter, isMobile }: TasksFilterLi
             </CollapsibleTrigger>
 
             <CollapsibleContent className="my-2">
-              {filter.items.map(item => (
-                <Field orientation="horizontal" key={item.value} className="mb-1">
+              {filter.items.map((item) => (
+                <Field orientation="horizontal" key={item.value} className="my-1.5">
                   <Checkbox 
                     id={item.value}
                     onCheckedChange={() => checkFilter(item.value)}
@@ -124,6 +125,8 @@ export default function TasksFilterList({ checkFilter, isMobile }: TasksFilterLi
                 </Field>
               ))}
             </CollapsibleContent>
+
+            {idx !== filters.length - 1 && <Separator />}
           </Collapsible>
         ))}
       </CardContent>

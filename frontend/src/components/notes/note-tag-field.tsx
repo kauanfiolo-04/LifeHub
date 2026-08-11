@@ -6,7 +6,7 @@ import { InputGroup, InputGroupInput, InputGroupAddon, InputGroupButton } from "
 import { Popover, PopoverTrigger, PopoverContent } from "../ui/popover";
 import { Tooltip, TooltipTrigger, TooltipContent } from "../ui/tooltip";
 import NoteTagsList from "./note-tags-list";
-import { useIsMobile } from "@/hooks/use-mobile";
+import { useIsMobile } from "@/hooks/useMobile";
 import { useRef } from "react";
 import { UseFormSetValue } from "react-hook-form";
 import { CreateNoteRequest } from "@/types/notes.type";

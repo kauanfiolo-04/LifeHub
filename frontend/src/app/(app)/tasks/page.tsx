@@ -1,13 +1,15 @@
 "use client";
 
 import NoteSkeleton from "@/components/notes/note-skeleton";
-import TaskSearchOrder from "@/components/tasks/task-search-order";
+import TaskSearch from "@/components/tasks/task-search";
 import TasksFilterList from "@/components/tasks/tasks-filter-list";
 import { Button } from "@/components/ui/button";
+import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
 import { useTasks } from "@/hooks/tasks/useTasks";
-import { useIsMobile } from "@/hooks/use-mobile";
+import { useDebounce } from "@/hooks/useDebounce";
+import { useIsMobile } from "@/hooks/useMobile";
 import { Task, TaskSortBy } from "@/types/tasks.type";
-import { PlusSignIcon } from "@hugeicons/core-free-icons";
+import { FilterMailIcon, PlusSignIcon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -23,8 +25,9 @@ export default function TasksPage() {
   const [sortBy, setSortBy] = useState<TaskSortBy | undefined>();
   const [selectedFilters, setSelectedtFilters] = useState<string[]>([]);
 
-  const { data: tasks, isLoading, refetch } = useTasks({ search, sortBy });
+  const debouncedSearch = useDebounce<string | undefined>(search, 400);
 
+  const { data: tasks, isLoading, refetch } = useTasks({ search: debouncedSearch, sortBy });
 
   const handleSearch = ({ search }: { search: string }) => {
     setSearch(search);
@@ -53,7 +56,7 @@ export default function TasksPage() {
 
       <div className="flex gap-4 w-full">
         {!isMobile && (
-          <div className="w-1/4">
+          <div className="w-60">
             <TasksFilterList
               checkFilter={handleCheckFilter}
               isMobile={isMobile}
@@ -62,12 +65,34 @@ export default function TasksPage() {
         )}
 
         <div className="w-full">
-          <TaskSearchOrder
-            onSearch={handleSearch}
-            searchValue={search}
-            isMobile={isMobile}
-            checkFilter={handleCheckFilter}
-          />
+          <div className="flex flex-col md:flex-row gap-4">
+            <TaskSearch 
+              searchValue={search}
+              onSearch={handleSearch}
+            />
+
+            <div className="w-full gap-4 flex">
+              
+
+              {isMobile && (
+                <Drawer direction="left" fixed >
+                  <DrawerTrigger asChild>
+                    <Button variant="outline" className="gap-2 w-[calc(50%-8px)]">
+                      <span>Filters</span>
+
+                      <HugeiconsIcon icon={FilterMailIcon} />
+                    </Button>
+                  </DrawerTrigger>
+                  <DrawerContent>
+                    <TasksFilterList
+                      checkFilter={handleCheckFilter}
+                      isMobile={isMobile}
+                    />
+                  </DrawerContent>
+                </Drawer>
+              )}
+            </div>
+          </div>
 
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 justify-items-center gap-4 w-full">
             {isLoading ? (
