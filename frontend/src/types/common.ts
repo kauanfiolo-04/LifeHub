@@ -5,7 +5,7 @@ export type User = {
 }
 
 export type IconSvgObject = ([string, {
-    [key: string]: string | number;
+  [key: string]: string | number;
 }])[] | readonly (readonly [string, {
-    readonly [key: string]: string | number;
+  readonly [key: string]: string | number;
 }])[];

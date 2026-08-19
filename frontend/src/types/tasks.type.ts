@@ -12,12 +12,10 @@ export enum TaskStatus {
 }
 
 export enum TaskSortBy {
-  CREATED_AT = "createdAt",
-  UPDATED_AT = "updatedAt",
-  DUE_DATE = "dueDate",
   PRIORITY = "priority",
-  TITLE = "title",
-  STATUS = "status",
+  DUE_DATE = "dueDate",
+  CREATED_AT = "createdAt",
+  UPDATED_AT = "updatedAt"
 }
 
 export type Task = {

@@ -1,16 +1,18 @@
 import { TaskSortBy, TaskStatus, TaskPriority } from "@/types/tasks.type";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { ArrowDown01Icon, CancelCircleIcon } from "@hugeicons/core-free-icons";
+import { ArrowDown01Icon, CancelCircleIcon, Delete02Icon } from "@hugeicons/core-free-icons";
 import { Field, FieldLabel } from "../ui/field";
 import { Checkbox } from "../ui/checkbox";
-import { Card, CardContent, CardHeader } from "../ui/card";
+import { Card, CardContent, CardFooter, CardHeader } from "../ui/card";
 import { DrawerClose } from "../ui/drawer";
 import { Button } from "../ui/button";
 import { Separator } from "../ui/separator";
 
 interface TasksFilterListProps {
   checkFilter: (value: string) => void;
+  clearFilters: () => void;
+  selectedFilters: string[];
   isMobile: boolean;
 }
 
@@ -80,7 +82,7 @@ const filters: TaskFilter[] = [
   }
 ];
 
-export default function TasksFilterList({ checkFilter, isMobile }: TasksFilterListProps) {
+export default function TasksFilterList({ checkFilter, selectedFilters, clearFilters, isMobile }: TasksFilterListProps) {
   return (
     <Card className="ring-0 md:ring-1">
       <CardHeader className="flex justify-between items-center">
@@ -88,7 +90,7 @@ export default function TasksFilterList({ checkFilter, isMobile }: TasksFilterLi
 
         {isMobile && (
           <DrawerClose asChild>
-            <Button variant="ghost">
+            <Button variant="ghost" className="px-0">
               <HugeiconsIcon icon={CancelCircleIcon} size={14} />
             </Button>
           </DrawerClose>
@@ -117,6 +119,7 @@ export default function TasksFilterList({ checkFilter, isMobile }: TasksFilterLi
                   <Checkbox 
                     id={item.value}
                     onCheckedChange={() => checkFilter(item.value)}
+                    checked={selectedFilters.some(str => str === item.value)}
                   />
 
                   <FieldLabel htmlFor={item.value}>
@@ -130,6 +133,22 @@ export default function TasksFilterList({ checkFilter, isMobile }: TasksFilterLi
           </Collapsible>
         ))}
       </CardContent>
+
+      {!!selectedFilters.length && (
+        <>
+          <Separator />
+
+          <CardFooter>
+            <Button onClick={clearFilters} className="w-full justify-start gap-2" variant="secondary">
+              <HugeiconsIcon icon={Delete02Icon} />
+
+              <p>
+                Clear Filters
+              </p>
+            </Button>
+          </CardFooter>
+        </>
+      )}
     </Card>
   );
 }

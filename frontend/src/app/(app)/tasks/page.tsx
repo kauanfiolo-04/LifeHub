@@ -1,6 +1,7 @@
 "use client";
 
 import NoteSkeleton from "@/components/notes/note-skeleton";
+import TaskOrder from "@/components/tasks/task-order";
 import TaskSearch from "@/components/tasks/task-search";
 import TasksFilterList from "@/components/tasks/tasks-filter-list";
 import { Button } from "@/components/ui/button";
@@ -20,14 +21,15 @@ export default function TasksPage() {
 
   const isMobile = useIsMobile();
 
-  const [tasksToShow, setTasksToShow] = useState<Task[]>([]);
   const [search, setSearch] = useState<string | undefined>();
   const [sortBy, setSortBy] = useState<TaskSortBy | undefined>();
   const [selectedFilters, setSelectedtFilters] = useState<string[]>([]);
-
+  
   const debouncedSearch = useDebounce<string | undefined>(search, 400);
-
+  
   const { data: tasks, isLoading, refetch } = useTasks({ search: debouncedSearch, sortBy });
+
+  const [tasksToShow, setTasksToShow] = useState<Task[]>(tasks ?? []);
 
   const handleSearch = ({ search }: { search: string }) => {
     setSearch(search);
@@ -39,6 +41,18 @@ export default function TasksPage() {
         prev.filter(el => el !== value) : [...prev, value]
     )
   };
+
+  const clearFilters = () => {
+    setSelectedtFilters([]);
+  };
+
+  const handleSortBy = (value: TaskSortBy) => {
+    setSortBy(value);
+  };
+
+  const clearSortBy = () => {
+    setSortBy(undefined);
+  }
 
   useEffect(() => {
     refetch();
@@ -58,7 +72,9 @@ export default function TasksPage() {
         {!isMobile && (
           <div className="w-60">
             <TasksFilterList
+              selectedFilters={selectedFilters}
               checkFilter={handleCheckFilter}
+              clearFilters={clearFilters}
               isMobile={isMobile}
             />
           </div>
@@ -71,9 +87,7 @@ export default function TasksPage() {
               onSearch={handleSearch}
             />
 
-            <div className="w-full gap-4 flex">
-              
-
+            <div className="w-full md:w-auto gap-4 flex">
               {isMobile && (
                 <Drawer direction="left" fixed >
                   <DrawerTrigger asChild>
@@ -85,12 +99,21 @@ export default function TasksPage() {
                   </DrawerTrigger>
                   <DrawerContent>
                     <TasksFilterList
+                      selectedFilters={selectedFilters}
                       checkFilter={handleCheckFilter}
+                      clearFilters={clearFilters}
                       isMobile={isMobile}
                     />
                   </DrawerContent>
                 </Drawer>
               )}
+
+              <TaskOrder 
+                order={sortBy}
+                selectOrder={handleSortBy}
+                clearOrder={clearSortBy}
+                isMobile={isMobile}
+              />
             </div>
           </div>
 
@@ -100,7 +123,7 @@ export default function TasksPage() {
                 <NoteSkeleton key={index} />
               ))
             ) :
-              (tasks ?? []).map(task => (<p key={task.id}>{task.title}</p>))
+              (tasksToShow).map(task => (<p key={task.id}>{task.title}</p>))
             }
           </div>
         </div>
