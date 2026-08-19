@@ -1,10 +1,11 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
 import { CreateTaskDTO } from './dto/create-task.dto';
 import { UpdateTaskDTO } from './dto/update-task.dto';
 import { TasksService } from './tasks.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { TokenPayload } from '../auth/decorators/user.decorator';
 import { type JwtPayload } from '../auth/types/jwt-payload.type';
+import { TaskSortBy } from './enum/task-sort-by';
 
 @Controller('tasks')
 export class TasksController {
@@ -17,8 +18,8 @@ export class TasksController {
   }
 
   @Get()
-  findAll() {
-    return this.tasksService.findAll();
+  findAll(@Query('search') search?: string, @Query('sortBy') sortBy?: TaskSortBy) {
+    return this.tasksService.findAll(search, sortBy);
   }
 
   @Get(':id')

@@ -1,9 +1,10 @@
 import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
 import { CreateTaskDTO } from './dto/create-task.dto';
 import { UpdateTaskDTO } from './dto/update-task.dto';
 import { Task } from './entities/task.entity';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { TaskSortBy } from './enum/task-sort-by';
+import { type FindOptionsOrder, ILike, Repository } from 'typeorm';
 import { type JwtPayload } from '../auth/types/jwt-payload.type';
 
 @Injectable()
@@ -28,8 +29,40 @@ export class TasksService {
     return newTask;
   }
 
-  async findAll() {
-    const tasks = await this.tasksRepository.find({ order: { createdAt: 'desc' } });
+  async findAll(search?: string, orderBy?: TaskSortBy) {
+    const searchTerm = search?.trim();
+
+    let order: FindOptionsOrder<Task> | undefined;
+
+    switch (orderBy) {
+      case TaskSortBy.DUE_DATE:
+        order = { dueDate: 'asc' };
+        break;
+
+      case TaskSortBy.PRIORITY:
+        order = { priority: 'desc' };
+        break;
+
+      case TaskSortBy.CREATED_AT:
+        order = { createdAt: 'desc' };
+        break;
+
+      case TaskSortBy.UPDATED_AT:
+        order = { updatedAt: 'desc' };
+        break;
+
+      default:
+        order = { createdAt: 'desc' };
+        break;
+    }
+
+    const tasks = await this.tasksRepository.find({
+      where: searchTerm ? [{ title: ILike(`%${searchTerm}%`) }, { description: ILike(`%${searchTerm}%`) }] : undefined,
+      order,
+      relations: {
+        user: true
+      }
+    });
 
     return tasks;
   }
