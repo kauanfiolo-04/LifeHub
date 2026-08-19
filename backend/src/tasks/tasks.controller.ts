@@ -17,9 +17,10 @@ export class TasksController {
     return this.tasksService.create(body, payload);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get()
-  findAll(@Query('search') search?: string, @Query('sortBy') sortBy?: TaskSortBy) {
-    return this.tasksService.findAll(search, sortBy);
+  findAll(@TokenPayload() payload: JwtPayload, @Query('search') search?: string, @Query('sortBy') sortBy?: TaskSortBy) {
+    return this.tasksService.findAll(payload, search, sortBy);
   }
 
   @Get(':id')

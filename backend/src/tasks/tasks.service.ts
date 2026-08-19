@@ -29,7 +29,7 @@ export class TasksService {
     return newTask;
   }
 
-  async findAll(search?: string, orderBy?: TaskSortBy) {
+  async findAll(payload: JwtPayload, search?: string, orderBy?: TaskSortBy) {
     const searchTerm = search?.trim();
 
     let order: FindOptionsOrder<Task> | undefined;
@@ -57,7 +57,12 @@ export class TasksService {
     }
 
     const tasks = await this.tasksRepository.find({
-      where: searchTerm ? [{ title: ILike(`%${searchTerm}%`) }, { description: ILike(`%${searchTerm}%`) }] : undefined,
+      where: searchTerm
+        ? [
+            { user: { id: payload.sub }, title: ILike(`%${searchTerm}%`) },
+            { user: { id: payload.sub }, description: ILike(`%${searchTerm}%`) }
+          ]
+        : { user: { id: payload.sub } },
       order,
       relations: {
         user: true
