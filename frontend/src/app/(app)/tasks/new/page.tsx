@@ -88,6 +88,10 @@ export default function TasksPage() {
                 maxLength: {
                   value: 100,
                   message: "Title cannot exceed 100 characters"
+                },
+                minLength: {
+                  value: 5,
+                  message: "Title must be longer than 5 characters"
                 }
               })}
               id="title"
