@@ -1,5 +1,8 @@
 "use client";
 
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useForm, useWatch } from "react-hook-form";
 import SelectTaskEnum from "@/components/tasks/select-task-enum";
 import { Button } from "@/components/ui/button";
 import { DatePicker } from "@/components/ui/date-picker";
@@ -10,9 +13,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { useCreateTask } from "@/hooks/tasks/useCreateTask";
 import { CreateTaskRequest, TaskPriority, TaskStatus } from "@/types/tasks.type";
 import { addNotification } from "@/utils/notifications";
-import { useRouter } from "next/navigation";
-import { useEffect, useMemo } from "react";
-import { useForm, useWatch } from "react-hook-form";
 
 export default function TasksPage() {
   const router = useRouter();
@@ -20,8 +20,6 @@ export default function TasksPage() {
   const { register, handleSubmit, control, setValue, formState: { errors } } = useForm<CreateTaskRequest>();
 
   const { mutateAsync, isPending, isError } = useCreateTask();
-
-  const now = useMemo(() => new Date(), []);
 
   const description = useWatch({
     control,

@@ -9,11 +9,11 @@ import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
 import { useTasks } from "@/hooks/tasks/useTasks";
 import { useDebounce } from "@/hooks/useDebounce";
 import { useIsMobile } from "@/hooks/useMobile";
-import { Task, TaskSortBy } from "@/types/tasks.type";
+import { TaskSortBy } from "@/types/tasks.type";
 import { FilterMailIcon, PlusSignIcon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 export default function TasksPage() {
 
@@ -29,7 +29,18 @@ export default function TasksPage() {
   
   const { data: tasks, isLoading, refetch } = useTasks({ search: debouncedSearch, sortBy });
 
-  const [tasksToShow, setTasksToShow] = useState<Task[]>(tasks ?? []);
+  const tasksToShow = useMemo(() => {
+  if (!tasks) return [];
+
+  const result = tasks;
+
+  // futuramente:
+  // if (selectedFilters.includes(...)) {
+  //   result = result.filter(...);
+  // }
+
+  return result;
+}, [tasks]);
 
   const handleSearch = ({ search }: { search: string }) => {
     setSearch(search);
@@ -56,7 +67,7 @@ export default function TasksPage() {
 
   useEffect(() => {
     refetch();
-  }, [refetch, search, sortBy]);
+  }, [refetch, debouncedSearch, sortBy]);
 
   return (
     <div className="flex flex-col items-start w-full">

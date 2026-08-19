@@ -1,29 +1,46 @@
+import { TaskPriority, TaskStatus } from "@/types/tasks.type";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "../ui/select";
 
-interface SelectTaskEnumProps<T> {
+interface SelectTaskEnumProps<T extends TaskStatus | TaskPriority> {
   value?: T;
-  items: Record<string, T>;
+  items: typeof TaskStatus | typeof TaskPriority;
   onSelect: (val: T) => void;
 }
 
-export default function SelectTaskEnum<T extends string>({ value, items, onSelect }: SelectTaskEnumProps<T>) {
+export default function SelectTaskEnum<T extends TaskStatus | TaskPriority>(
+  { value, items, onSelect }: SelectTaskEnumProps<T>
+) {
+  const entries = Object.entries(items).filter(
+    ([key]) => isNaN(Number(key))
+  );
+
   return (
-    <Select value={value} onValueChange={(val) => onSelect(val as T)}>
+    <Select
+      value={value?.toString()}
+      onValueChange={(val) => {
+        const item = entries.find(
+          ([, value]) => value.toString() === val
+        );
+
+        if (item) {
+          onSelect(item[1] as T);
+        }
+      }}
+    >
       <SelectTrigger>
         <SelectValue />
       </SelectTrigger>
 
       <SelectContent>
         <SelectGroup>
-          <SelectLabel>Status</SelectLabel>
+          <SelectLabel>Select</SelectLabel>
 
-          {Object.entries(items).map(([key, val]) => (
-            <SelectItem key={key} value={val}>
+          {entries.map(([key, val]) => (
+            <SelectItem key={key} value={val.toString()}>
               {key
                 .toLowerCase()
                 .replace(/_/g, " ")
-                .replace(/^\w/, (c) => c.toUpperCase())
-              }
+                .replace(/^\w/, (c) => c.toUpperCase())}
             </SelectItem>
           ))}
         </SelectGroup>
