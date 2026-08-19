@@ -1,6 +1,7 @@
 "use client";
 
 import NoteSkeleton from "@/components/notes/note-skeleton";
+import TaskItem from "@/components/tasks/task-item";
 import TaskOrder from "@/components/tasks/task-order";
 import TaskSearch from "@/components/tasks/task-search";
 import TasksFilterList from "@/components/tasks/tasks-filter-list";
@@ -134,7 +135,7 @@ export default function TasksPage() {
                 <NoteSkeleton key={index} />
               ))
             ) :
-              (tasksToShow).map(task => (<p key={task.id}>{task.title}</p>))
+              (tasksToShow).map(task => <TaskItem key={task.id} task={task} />)
             }
           </div>
         </div>

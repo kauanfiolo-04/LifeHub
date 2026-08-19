@@ -21,36 +21,35 @@ interface NoteTagFieldProps {
 export default function NoteTagField({ tags, isError, readOnly = false, setValue }: NoteTagFieldProps) {
   const isMobile = useIsMobile();
 
-    const tagInputRef = useRef<HTMLInputElement | null>(null);
-  
-    const addTag = () => {
-      if (!tags) return;
-  
-      const inputTagVal = tagInputRef.current?.value.trim().toLowerCase();
-  
-      if (!inputTagVal) return;
-  
-      if (!inputTagVal.length) return;
-  
-      if (tags.includes(inputTagVal)) return;
-  
-      setValue("tags", [...tags, inputTagVal], {
-        shouldDirty: true,
-      });
-  
-      if (tagInputRef.current) tagInputRef.current.value = "";
-    };
-  
-    const removeTag = (tag: string) => {
-      if (!tags) return;
-  
-      setValue(
-        "tags",
-        tags.filter(t => t !== tag),
-        { shouldDirty: true }
-      );
-    }
-  
+  const tagInputRef = useRef<HTMLInputElement | null>(null);
+
+  const addTag = () => {
+    if (!tags) return;
+
+    const inputTagVal = tagInputRef.current?.value.trim().toLowerCase();
+
+    if (!inputTagVal) return;
+
+    if (!inputTagVal.length) return;
+
+    if (tags.includes(inputTagVal)) return;
+
+    setValue("tags", [...tags, inputTagVal], {
+      shouldDirty: true,
+    });
+
+    if (tagInputRef.current) tagInputRef.current.value = "";
+  };
+
+  const removeTag = (tag: string) => {
+    if (!tags) return;
+
+    setValue(
+      "tags",
+      tags.filter(t => t !== tag),
+      { shouldDirty: true }
+    );
+  }
 
   return (
     <Field data-invalid={isError}>
