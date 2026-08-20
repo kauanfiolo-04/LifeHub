@@ -10,7 +10,11 @@ interface TaskItemProps {
   task: Task;
 }
 
-const DueDate = ({ date }: { date: Date | undefined }) => {
+interface DueDateProps { 
+  date: Date | undefined;
+}
+
+const DueDate = ({ date }: DueDateProps) => {
   if (!date) return;
 
   let stringDate = new Date(date).toLocaleDateString();

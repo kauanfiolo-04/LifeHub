@@ -19,7 +19,7 @@ import {
   SidebarMenuSubItem,
   useSidebar
 } from "../ui/sidebar";
-import { ClipboardPenLineIcon, AcuteIcon, Cancel01Icon, ArrowDown01Icon } from "@hugeicons/core-free-icons";
+import { AcuteIcon, Cancel01Icon, ArrowDown01Icon, Note01Icon, Task01Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Button } from "../ui/button";
 import { IconSvgObject } from "@/types/common";
@@ -41,7 +41,17 @@ const items: MenuItem[] = [
   {
     title: "Tasks",
     url: "/tasks",
-    icon: undefined,
+    icon: Task01Icon,
+    children: [
+      {
+        title: "All",
+        url: "/tasks"
+      },
+      {
+        title: "Create Task",
+        url: "/tasks/new"
+      }
+    ]
   },
   {
     title: "Finance",
@@ -51,7 +61,7 @@ const items: MenuItem[] = [
   {
     title: "Notes",
     url: "/notes",
-    icon: ClipboardPenLineIcon,
+    icon: Note01Icon,
     children: [
       {
         title: "All",

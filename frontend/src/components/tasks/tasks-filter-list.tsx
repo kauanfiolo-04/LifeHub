@@ -10,7 +10,7 @@ import { Button } from "../ui/button";
 import { Separator } from "../ui/separator";
 
 interface TasksFilterListProps {
-  checkFilter: (value: string) => void;
+  checkFilter: (value: TaskSortBy | TaskPriority | TaskStatus | string) => void;
   clearFilters: () => void;
   selectedFilters: string[];
   isMobile: boolean;
@@ -51,15 +51,15 @@ const filters: TaskFilter[] = [
     items: [
       {
         label: "Low",
-        value: TaskPriority.LOW
+        value: TaskPriority.LOW.toString()
       },
       {
         label: "Medium",
-        value: TaskPriority.MEDIUM
+        value: TaskPriority.MEDIUM.toString()
       },
       {
         label: "High",
-        value: TaskPriority.HIGH
+        value: TaskPriority.HIGH.toString()
       }
     ]
   },
@@ -84,7 +84,7 @@ const filters: TaskFilter[] = [
 
 export default function TasksFilterList({ checkFilter, selectedFilters, clearFilters, isMobile }: TasksFilterListProps) {
   return (
-    <Card className="ring-0 md:ring-1">
+    <Card className="ring-0 md:ring-1 w-full">
       <CardHeader className="flex justify-between items-center">
         <p className="text-xl font-semibold">Filters</p>
 
@@ -117,12 +117,12 @@ export default function TasksFilterList({ checkFilter, selectedFilters, clearFil
               {filter.items.map((item) => (
                 <Field orientation="horizontal" key={item.value} className="my-1.5">
                   <Checkbox 
-                    id={item.value}
+                    id={String(item.value)}
                     onCheckedChange={() => checkFilter(item.value)}
                     checked={selectedFilters.some(str => str === item.value)}
                   />
 
-                  <FieldLabel htmlFor={item.value}>
+                  <FieldLabel htmlFor={String(item.value)}>
                     {item.label}
                   </FieldLabel>
                 </Field>

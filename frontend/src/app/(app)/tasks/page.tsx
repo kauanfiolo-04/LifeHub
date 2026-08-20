@@ -10,7 +10,7 @@ import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
 import { useTasks } from "@/hooks/tasks/useTasks";
 import { useDebounce } from "@/hooks/useDebounce";
 import { useIsMobile } from "@/hooks/useMobile";
-import { TaskSortBy } from "@/types/tasks.type";
+import { TaskSortBy, TaskStatus, TaskPriority } from "@/types/tasks.type";
 import { FilterMailIcon, PlusSignIcon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { useRouter } from "next/navigation";
@@ -47,10 +47,12 @@ export default function TasksPage() {
     setSearch(search);
   };
 
-  const handleCheckFilter = (value: string) => {
+  const handleCheckFilter = (value: TaskSortBy | TaskPriority | TaskStatus | string) => {
+    const strValue = String(value); // converte pois TaskPriority é number
+
     setSelectedtFilters(
-      prev => prev.includes(value) ?
-        prev.filter(el => el !== value) : [...prev, value]
+      prev => prev.includes(strValue) ?
+        prev.filter(el => el !== strValue) : [...prev, strValue]
     )
   };
 
