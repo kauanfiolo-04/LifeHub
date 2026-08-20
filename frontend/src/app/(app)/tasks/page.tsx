@@ -84,7 +84,7 @@ export default function TasksPage() {
 
       <div className="flex gap-4 w-full">
         {!isMobile && (
-          <div className="w-60">
+          <div className="min-w-60">
             <TasksFilterList
               selectedFilters={selectedFilters}
               checkFilter={handleCheckFilter}
@@ -94,7 +94,7 @@ export default function TasksPage() {
           </div>
         )}
 
-        <div className="w-full">
+        <div className="flex flex-col gap-4 w-full">
           <div className="flex flex-col md:flex-row gap-4">
             <TaskSearch 
               searchValue={search}
@@ -131,7 +131,7 @@ export default function TasksPage() {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 justify-items-center gap-4 w-full">
+          <div className="flex flex-col md:grid md:grid-cols-2 lg:grid-cols-3 justify-items-center gap-4 w-full">
             {isLoading ? (
               Array.from({ length: 6 }).map((_, index) => (
                 <NoteSkeleton key={index} />

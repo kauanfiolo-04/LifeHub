@@ -1,4 +1,4 @@
-import { Task } from "@/types/tasks.type";
+import { Task, TaskPriority, TaskStatus } from "@/types/tasks.type";
 import { Card, CardContent } from "../ui/card";
 import { Field } from "../ui/field";
 import { Checkbox } from "../ui/checkbox";
@@ -12,6 +12,14 @@ interface TaskItemProps {
 
 interface DueDateProps { 
   date: Date | undefined;
+}
+
+interface PriorityProps {
+  priority: TaskPriority;
+}
+
+interface StatusProps {
+  status: TaskStatus;
 }
 
 const DueDate = ({ date }: DueDateProps) => {
@@ -32,22 +40,91 @@ const DueDate = ({ date }: DueDateProps) => {
   );
 };
 
+const Priority = ({ priority }: PriorityProps) => {
+  let color: string | undefined;
+  let label= "";
+
+  switch(priority) {
+    case TaskPriority.HIGH:
+      color = "red";
+      label = "High"
+      break;
+    
+    case TaskPriority.MEDIUM: 
+      color = "yellow";
+      label = "Medium"
+      break;
+
+    case TaskPriority.LOW:
+      color = "green";
+      label = "Low"
+      break;
+  }
+
+  return (
+    <div className="flex items-center">
+      <div className="rounded-full w-2 h-2" style={{ backgroundColor: color }} />
+
+      <span>{label}</span>
+    </div>
+  );
+};
+
+const Status = ({ status }: StatusProps) => {
+  let color: string | undefined;
+  let label= "";
+
+  switch(status) {
+    case TaskStatus.PENDING:
+      color = "red";
+      label = "Pending"
+      break;
+    
+    case TaskStatus.IN_PROGRESS: 
+      color = "yellow";
+      label = "In progress"
+      break;
+
+    case TaskStatus.CANCELLED: 
+      color = "orange";
+      label = "Cancelled"
+      break;
+
+    case TaskStatus.COMPLETED:
+      color = "green";
+      label = "Completed"
+      break;
+  }
+
+  return (
+    <div className="flex items-center">
+      <div className="rounded-full w-2 h-2" style={{ backgroundColor: color }} />
+
+      <span>{label}</span>
+    </div>
+  );
+};
+
 export default function TaskItem({ task }: TaskItemProps) {
 
   return (
-    <Card>
+    <Card className="w-full">
       <CardContent>
-        <Field orientation="horizontal">
+        <div>
           <Checkbox />
 
           <div>
             <p>{task.title}</p>
 
-            <div>
+            <div className="flex">
               <DueDate date={task.dueDate} />
+
+              <Priority priority={task.priority} />
+
+              <Status status={task.status} />
             </div>
           </div>
-        </Field>
+        </div>
       </CardContent>
     </Card>
   );
