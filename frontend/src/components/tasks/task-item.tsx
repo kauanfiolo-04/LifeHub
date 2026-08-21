@@ -33,7 +33,7 @@ const DueDate = ({ date }: DueDateProps) => {
 
   return (
     <div className="flex gap-2 items-center">
-      <HugeiconsIcon icon={Calendar03Icon} />
+      <HugeiconsIcon size={18} icon={Calendar03Icon} />
 
       <span>{stringDate}</span>
     </div>
@@ -62,7 +62,7 @@ const Priority = ({ priority }: PriorityProps) => {
   }
 
   return (
-    <div className="flex items-center">
+    <div className="flex items-center gap-1">
       <div className="rounded-full w-2 h-2" style={{ backgroundColor: color }} />
 
       <span>{label}</span>
@@ -97,7 +97,7 @@ const Status = ({ status }: StatusProps) => {
   }
 
   return (
-    <div className="flex items-center">
+    <div className="flex items-center gap-1">
       <div className="rounded-full w-2 h-2" style={{ backgroundColor: color }} />
 
       <span>{label}</span>
@@ -110,16 +110,20 @@ export default function TaskItem({ task }: TaskItemProps) {
   return (
     <Card className="w-full">
       <CardContent>
-        <div>
+        <div className="flex gap-4 items-center">
           <Checkbox />
 
-          <div>
-            <p>{task.title}</p>
-
-            <div className="flex">
-              <DueDate date={task.dueDate} />
+          <div className="flex flex-col gap-2 w-full">
+            <div className="flex justify-between items-center">
+              <p className="text-sm font-bold">{task.title}</p>
 
               <Priority priority={task.priority} />
+            </div>
+
+            <p className="text-xs text-gray-600 line-clamp-3">{task.description}</p>
+
+            <div className="flex justify-between items-center">
+              <DueDate date={task.dueDate} />
 
               <Status status={task.status} />
             </div>
