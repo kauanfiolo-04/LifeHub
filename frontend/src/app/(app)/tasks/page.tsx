@@ -5,6 +5,7 @@ import TaskItem from "@/components/tasks/task-item";
 import TaskOrder from "@/components/tasks/task-order";
 import TaskSearch from "@/components/tasks/task-search";
 import TasksFilterList, { getFiltersListGroups } from "@/components/tasks/tasks-filter-list";
+import TaskItemSkeleton from "@/components/tasks/tasks-item-skeletor";
 import { Button } from "@/components/ui/button";
 import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
 import { useTasks } from "@/hooks/tasks/useTasks";
@@ -155,7 +156,7 @@ export default function TasksPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 justify-items-center gap-4 w-full">
             {isFetching ? (
               Array.from({ length: 6 }).map((_, index) => (
-                <NoteSkeleton key={index} />
+                <TaskItemSkeleton key={index} />
               ))
             ) :
               (tasksToShow).map(task => <TaskItem key={task.id} task={task} router={router} />)
