@@ -13,7 +13,7 @@ export default function TaskSearch({ searchValue, onSearch }: TaskSearchProps) {
   const { register, handleSubmit } = useForm<{ search: string }>();
 
   return (
-    <form onSubmit={(e) => handleSubmit(onSearch)(e)}>
+    <form onSubmit={(e) => handleSubmit(onSearch)(e)} className="w-full">
       <ButtonGroup className="w-full md:min-w-2xl">
         <Input
           {...register("search", { 

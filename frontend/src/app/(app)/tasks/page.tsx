@@ -28,20 +28,20 @@ export default function TasksPage() {
   
   const debouncedSearch = useDebounce<string | undefined>(search, 400);
   
-  const { data: tasks, isLoading, refetch } = useTasks({ search: debouncedSearch, sortBy });
+  const { data: tasks, refetch, isFetching } = useTasks({ search: debouncedSearch, sortBy });
 
   const tasksToShow = useMemo(() => {
-  if (!tasks) return [];
+    if (!tasks) return [];
 
-  const result = tasks;
+    const result = tasks;
 
-  // futuramente:
-  // if (selectedFilters.includes(...)) {
-  //   result = result.filter(...);
-  // }
+    // futuramente:
+    // if (selectedFilters.includes(...)) {
+    //   result = result.filter(...);
+    // }
 
-  return result;
-}, [tasks]);
+    return result;
+  }, [tasks]);
 
   const handleSearch = ({ search }: { search: string }) => {
     setSearch(search);
@@ -131,13 +131,13 @@ export default function TasksPage() {
             </div>
           </div>
 
-          <div className="flex flex-col md:grid md:grid-cols-2 lg:grid-cols-3 justify-items-center gap-4 w-full">
-            {isLoading ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 justify-items-center gap-4 w-full">
+            {isFetching ? (
               Array.from({ length: 6 }).map((_, index) => (
                 <NoteSkeleton key={index} />
               ))
             ) :
-              (tasksToShow).map(task => <TaskItem key={task.id} task={task} />)
+              (tasksToShow).map(task => <TaskItem key={task.id} task={task} router={router} />)
             }
           </div>
         </div>

@@ -1,13 +1,15 @@
 import { Task, TaskPriority, TaskStatus } from "@/types/tasks.type";
 import { Card, CardContent } from "../ui/card";
-import { Field } from "../ui/field";
 import { Checkbox } from "../ui/checkbox";
-import { isToday, isTomorrow } from "date-fns";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Calendar03Icon } from "@hugeicons/core-free-icons";
+import { getTaskDateLabel } from "@/utils/get-task-date-label";
+import { useRouter } from "next/navigation";
+import { type AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 
 interface TaskItemProps {
   task: Task;
+  router: AppRouterInstance;
 }
 
 interface DueDateProps { 
@@ -25,17 +27,11 @@ interface StatusProps {
 const DueDate = ({ date }: DueDateProps) => {
   if (!date) return;
 
-  let stringDate = new Date(date).toLocaleDateString();
-
-  if (isToday(date)) stringDate = "Today";
-
-  if (isTomorrow(date)) stringDate = "Tomorrow";
-
   return (
     <div className="flex gap-2 items-center">
       <HugeiconsIcon size={18} icon={Calendar03Icon} />
 
-      <span>{stringDate}</span>
+      <span className="text-sm">{getTaskDateLabel(date)}</span>
     </div>
   );
 };
@@ -65,7 +61,7 @@ const Priority = ({ priority }: PriorityProps) => {
     <div className="flex items-center gap-1">
       <div className="rounded-full w-2 h-2" style={{ backgroundColor: color }} />
 
-      <span>{label}</span>
+      <span className="text-xs">{label}</span>
     </div>
   );
 };
@@ -100,33 +96,33 @@ const Status = ({ status }: StatusProps) => {
     <div className="flex items-center gap-1">
       <div className="rounded-full w-2 h-2" style={{ backgroundColor: color }} />
 
-      <span>{label}</span>
+      <span className="text-xs">{label}</span>
     </div>
   );
 };
 
-export default function TaskItem({ task }: TaskItemProps) {
-
+export default function TaskItem({ task, router }: TaskItemProps) {
   return (
-    <Card className="w-full">
-      <CardContent>
-        <div className="flex gap-4 items-center">
-          <Checkbox />
+    <Card 
+      className="w-full min-h-36 cursor-pointer hover:shadow-lg transition-shadow ease-in-out duration-500" 
+      onClick={() => router.push(`/tasks/${task.id}`)}
+    >
+      <CardContent className="h-full">
+        <div className="flex flex-col justify-between w-full h-full">
+          <div className="flex justify-between items-center">
+            <p className="text-lg font-bold">{task.title}</p>
 
-          <div className="flex flex-col gap-2 w-full">
-            <div className="flex justify-between items-center">
-              <p className="text-sm font-bold">{task.title}</p>
+            <Priority priority={task.priority} />
+          </div>
 
-              <Priority priority={task.priority} />
-            </div>
+          <p className="text-sm text-gray-600 line-clamp-2">
+            {task.description}
+          </p>
 
-            <p className="text-xs text-gray-600 line-clamp-3">{task.description}</p>
+          <div className="flex justify-between items-center">
+            <DueDate date={task.dueDate} />
 
-            <div className="flex justify-between items-center">
-              <DueDate date={task.dueDate} />
-
-              <Status status={task.status} />
-            </div>
+            <Status status={task.status} />
           </div>
         </div>
       </CardContent>
