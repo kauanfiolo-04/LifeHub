@@ -11,7 +11,7 @@ export class Task {
   @Column({ length: 100 })
   title!: string;
 
-  @Column({ type: 'text', nullable: true })
+  @Column({ type: 'text', nullable: true, length: 500 })
   description?: string;
 
   @Column({ type: 'enum', enum: TaskStatus, default: TaskStatus.IN_PROGRESS })
