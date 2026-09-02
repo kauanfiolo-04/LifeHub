@@ -3,7 +3,7 @@ import { TasksService } from "@/services/tasks.service";
 import { UpdateTaskRequest } from "@/types/tasks.type";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-export function useUpdateNote() {
+export function useUpdateTask() {
   const queryClient = useQueryClient();
 
   return useMutation({

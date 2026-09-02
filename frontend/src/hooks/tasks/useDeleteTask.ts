@@ -2,7 +2,7 @@ import { queryKeys } from "@/lib/query-keys";
 import { TasksService } from "@/services/tasks.service";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-export function useDeleteNote() {
+export function useDeleteTask() {
   const queryClient = useQueryClient();
 
   return useMutation({
