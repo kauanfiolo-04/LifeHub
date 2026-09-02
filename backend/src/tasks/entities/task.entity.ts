@@ -11,7 +11,7 @@ export class Task {
   @Column({ length: 100 })
   title!: string;
 
-  @Column({ nullable: true, length: 500 })
+  @Column({ type: 'varchar', nullable: true, length: 500 })
   description?: string;
 
   @Column({ type: 'enum', enum: TaskStatus, default: TaskStatus.IN_PROGRESS })

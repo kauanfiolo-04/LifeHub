@@ -13,7 +13,7 @@ export class CreateTaskDTO {
   @IsString()
   @IsNotEmpty()
   @MinLength(5)
-  @MaxLength(255)
+  @MaxLength(500)
   description?: string;
 
   @IsOptional()
