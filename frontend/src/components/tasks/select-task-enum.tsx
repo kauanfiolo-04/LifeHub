@@ -5,10 +5,11 @@ interface SelectTaskEnumProps<T extends TaskStatus | TaskPriority> {
   value?: T;
   items: typeof TaskStatus | typeof TaskPriority;
   onSelect: (val: T) => void;
+  readOnly?: boolean;
 }
 
 export default function SelectTaskEnum<T extends TaskStatus | TaskPriority>(
-  { value, items, onSelect }: SelectTaskEnumProps<T>
+  { value, items, onSelect, readOnly = false }: SelectTaskEnumProps<T>
 ) {
   const entries = Object.entries(items).filter(
     ([key]) => isNaN(Number(key))
@@ -26,6 +27,7 @@ export default function SelectTaskEnum<T extends TaskStatus | TaskPriority>(
           onSelect(item[1] as T);
         }
       }}
+      disabled={readOnly}
     >
       <SelectTrigger>
         <SelectValue />

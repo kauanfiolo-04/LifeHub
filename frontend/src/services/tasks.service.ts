@@ -5,12 +5,18 @@ export const TasksService = {
   findAll: async (params: FindAllTaskSearchParam) => {
     const { data } = await api.get<Task[]>("/tasks", { params });
 
-    return data;
+    return data.map((task) => ({
+      ...task,
+      dueDate: new Date(task.dueDate),
+    }));
   },
   findOne: async (taskId: string) => {
     const { data } = await api.get<Task>(`/tasks/${taskId}`);
 
-    return data;
+    return {
+      ...data,
+      dueDate: new Date(data.dueDate),
+    };
   },
   create: async (createTaskDto: CreateTaskRequest) => {
     const { data } = await api.post<Task>("/tasks", createTaskDto);

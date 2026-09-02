@@ -13,9 +13,12 @@ import { Calendar03Icon } from "@hugeicons/core-free-icons"
 interface DatePickerProps {
   value?: Date;
   onChange?: (date?: Date) => void;
+  readOnly?: boolean;
 }
 
-export function DatePicker({ value, onChange } : DatePickerProps) {
+export function DatePicker({ value, onChange, readOnly = false } : DatePickerProps) {
+  console.log(value);
+
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -23,6 +26,7 @@ export function DatePicker({ value, onChange } : DatePickerProps) {
           variant="outline"
           data-empty={!value}
           className="w-70 justify-start text-left font-normal data-[empty=true]:text-muted-foreground"
+          disabled={readOnly}
         >
           <HugeiconsIcon icon={Calendar03Icon} />
           <span>{value ? value.toLocaleDateString() : "Pick a date"}</span>
