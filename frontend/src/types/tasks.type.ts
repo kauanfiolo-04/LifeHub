@@ -24,7 +24,7 @@ export type Task = {
   description?: string;
   status: TaskStatus;
   priority: TaskPriority;
-  dueDate?: Date;
+  dueDate: Date;
   createdAt?: Date;
   updatedAt?: Date;
 };

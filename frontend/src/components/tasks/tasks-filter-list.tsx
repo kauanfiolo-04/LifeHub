@@ -24,7 +24,7 @@ export type TaskFilter = {
   }>;
 };
 
-const filters: TaskFilter[] = [
+const FiltersList: TaskFilter[] = [
   {
     title: "Status",
     items: [
@@ -82,6 +82,14 @@ const filters: TaskFilter[] = [
   }
 ];
 
+export const getFiltersListGroups = (selectedFilters: string[]) => {
+  return FiltersList.map((filter) =>
+    selectedFilters.filter((selected) =>
+      filter.items.some((item) => item.value === selected)
+    )
+  );
+};
+
 export default function TasksFilterList({ checkFilter, selectedFilters, clearFilters, isMobile }: TasksFilterListProps) {
   return (
     <Card className="ring-0 md:ring-1 w-full">
@@ -98,7 +106,7 @@ export default function TasksFilterList({ checkFilter, selectedFilters, clearFil
       </CardHeader>
 
       <CardContent>
-        {filters.map((filter, idx) => (
+        {FiltersList.map((filter, idx) => (
           <Collapsible defaultOpen key={filter.title}>
             <CollapsibleTrigger className="w-full cursor-pointer flex items-center justify-between group gap-2 h-7">
               <span className="text-sm font-semibold">{filter.title}</span>
@@ -129,7 +137,7 @@ export default function TasksFilterList({ checkFilter, selectedFilters, clearFil
               ))}
             </CollapsibleContent>
 
-            {idx !== filters.length - 1 && <Separator />}
+            {idx !== FiltersList.length - 1 && <Separator />}
           </Collapsible>
         ))}
       </CardContent>

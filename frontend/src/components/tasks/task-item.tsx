@@ -1,10 +1,8 @@
 import { Task, TaskPriority, TaskStatus } from "@/types/tasks.type";
 import { Card, CardContent } from "../ui/card";
-import { Checkbox } from "../ui/checkbox";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Calendar03Icon } from "@hugeicons/core-free-icons";
 import { getTaskDateLabel } from "@/utils/get-task-date-label";
-import { useRouter } from "next/navigation";
 import { type AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 
 interface TaskItemProps {

@@ -4,13 +4,14 @@ import NoteSkeleton from "@/components/notes/note-skeleton";
 import TaskItem from "@/components/tasks/task-item";
 import TaskOrder from "@/components/tasks/task-order";
 import TaskSearch from "@/components/tasks/task-search";
-import TasksFilterList from "@/components/tasks/tasks-filter-list";
+import TasksFilterList, { getFiltersListGroups } from "@/components/tasks/tasks-filter-list";
 import { Button } from "@/components/ui/button";
 import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
 import { useTasks } from "@/hooks/tasks/useTasks";
 import { useDebounce } from "@/hooks/useDebounce";
 import { useIsMobile } from "@/hooks/useMobile";
-import { TaskSortBy, TaskStatus, TaskPriority } from "@/types/tasks.type";
+import { TaskSortBy, TaskStatus, TaskPriority, Task } from "@/types/tasks.type";
+import { matchesDateFilter } from "@/utils/matches-date-filter";
 import { FilterMailIcon, PlusSignIcon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { useRouter } from "next/navigation";
@@ -30,18 +31,38 @@ export default function TasksPage() {
   
   const { data: tasks, refetch, isFetching } = useTasks({ search: debouncedSearch, sortBy });
 
+  const filterTasks = (
+    tasks: Task[],
+    selectedFilters: string[]
+  ) => {
+    const groups = getFiltersListGroups(selectedFilters);
+
+    const [statusFilters, priorityFilters, dateFilters] = groups;
+
+    return tasks.filter((task) => {
+      const matchesStatus =
+        statusFilters.length === 0 ||
+        statusFilters.includes(task.status);
+
+      const matchesPriority =
+        priorityFilters.length === 0 ||
+        priorityFilters.includes(String(task.priority));
+
+      const matchesDate =
+        dateFilters.length === 0 ||
+        dateFilters.some((filter) =>
+          matchesDateFilter(task, filter)
+        );
+
+      return matchesStatus && matchesPriority && matchesDate;
+    });
+  };
+
   const tasksToShow = useMemo(() => {
     if (!tasks) return [];
 
-    const result = tasks;
-
-    // futuramente:
-    // if (selectedFilters.includes(...)) {
-    //   result = result.filter(...);
-    // }
-
-    return result;
-  }, [tasks]);
+    return filterTasks(tasks, selectedFilters)
+  }, [tasks, selectedFilters]);
 
   const handleSearch = ({ search }: { search: string }) => {
     setSearch(search);
