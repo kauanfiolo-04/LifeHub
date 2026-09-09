@@ -51,16 +51,15 @@ export default function TasksPage() {
   const handlePriority = (val: TaskPriority) => 
     setValue("priority", val);
 
-  const handleDate = (date?: Date) => {
+  const handleDate = (date?: Date) => 
     setValue("dueDate", date);
-  }
 
   const handleOnSubmit = async (data: CreateTaskRequest) => {
     try {
       await mutateAsync(data, {
         onSuccess: () => {
           addNotification.success("Task created with success!");
-          // router.push("/tasks");
+          router.push("/tasks");
         },
         onError: () => addNotification.error("Try again later")
       });
@@ -152,7 +151,11 @@ export default function TasksPage() {
           <Field>
             <FieldLabel>Due date</FieldLabel>
 
-            <DatePicker value={dueDate} onChange={handleDate} />
+            <DatePicker 
+              value={dueDate} 
+              onChange={handleDate}
+              invalid={isError || !!errors.dueDate?.message}
+            />
           </Field>
 
         </FieldGroup>

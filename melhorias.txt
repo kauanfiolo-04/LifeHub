@@ -1,2 +1,1 @@
-Adicionar sistema de paginação no notes
-Adicionar sistema de aria-invalid nos componentes de DatePicker e ColorPicker
+Adicionar sistema de paginação

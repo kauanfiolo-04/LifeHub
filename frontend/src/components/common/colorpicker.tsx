@@ -9,13 +9,15 @@ export interface ColorPickerProps {
   color?: string;
   setColor: (color: string) => void;
   readOnly?: boolean;
+  invalid?: boolean; 
 }
 
-export default function ColorPicker({ color, setColor, readOnly = false }: ColorPickerProps) {
+export default function ColorPicker({ color, setColor, readOnly = false, invalid = false }: ColorPickerProps) {
   return (
     <Dialog>
       <DialogTrigger asChild disabled={readOnly}>
         <Button variant="ghost"
+          aria-invalid={invalid}
           className={`
             border border-input bg-input/20 rounded-md w-full px-2 py-0.5 disabled:opacity-100!
             text-sm transition-colors outline-none text-black flex items-center justify-between

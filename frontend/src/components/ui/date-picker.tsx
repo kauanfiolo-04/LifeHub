@@ -14,10 +14,10 @@ interface DatePickerProps {
   value?: Date;
   onChange?: (date?: Date) => void;
   readOnly?: boolean;
+  invalid?: boolean;
 }
 
-export function DatePicker({ value, onChange, readOnly = false } : DatePickerProps) {
-  console.log(value);
+export function DatePicker({ value, onChange, readOnly = false, invalid = false } : DatePickerProps) {
 
   return (
     <Popover>
@@ -25,6 +25,7 @@ export function DatePicker({ value, onChange, readOnly = false } : DatePickerPro
         <Button
           variant="outline"
           data-empty={!value}
+          aria-invalid={invalid}
           className="w-70 justify-start text-left font-normal data-[empty=true]:text-muted-foreground"
           disabled={readOnly}
         >

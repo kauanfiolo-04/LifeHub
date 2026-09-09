@@ -19,7 +19,6 @@ import { type Task, TaskPriority, TaskStatus, UpdateTaskRequest } from "@/types/
 import SelectTaskEnum from "@/components/tasks/select-task-enum";
 import { DatePicker } from "@/components/ui/date-picker";
 
-
 export default function Task() {
   const { id } = useParams<{ id: string }>();
 
@@ -205,6 +204,7 @@ export default function Task() {
                 value={dueDate}
                 onChange={handleDate}
                 readOnly={!isEditing}
+                invalid={isError}
               />
             </Field>
 
