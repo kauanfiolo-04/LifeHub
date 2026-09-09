@@ -11,8 +11,18 @@ export const queryKeys = {
     detail: (id: string) => ["tasks", id] as const,
   },
 
-  accounts: {
-    all: ["accounts"] as const,
-    detail: (id: string) => ["accounts", id] as const,
-  },
+  finance: {
+    accounts: {
+      all: ["accounts"] as const,
+      detail: (id: string) => ["accounts", id] as const,
+    },
+    transactions: {
+      all: ["transactions"] as const,
+      detail: (id: string) => ["transactions", id] as const,
+    },
+    categories: {
+      all: ["categories"] as const,
+      detail: (id: string) => ["categories", id] as const,
+    },
+  }
 };
