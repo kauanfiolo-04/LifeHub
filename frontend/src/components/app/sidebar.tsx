@@ -19,7 +19,7 @@ import {
   SidebarMenuSubItem,
   useSidebar
 } from "../ui/sidebar";
-import { AcuteIcon, Cancel01Icon, ArrowDown01Icon, Note01Icon, Task01Icon } from "@hugeicons/core-free-icons";
+import { AcuteIcon, Cancel01Icon, ArrowDown01Icon, Note01Icon, Task01Icon, BadgeDollarSignIcon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Button } from "../ui/button";
 import { IconSvgObject } from "@/types/common";
@@ -34,9 +34,23 @@ interface MenuItem {
 
 const items: MenuItem[] = [
   {
-    title: "Dashboard",
-    url: "/dashboard",
-    icon: undefined,
+    title: "Finance",
+    url: "/finance",
+    icon: BadgeDollarSignIcon,
+    children: [
+      {
+        title: "All",
+        url: "/finance"
+      },
+      {
+        title: "Accounts",
+        url: "/finance/accounts"
+      },
+      {
+        title: "Transactions",
+        url: "/finance/transactions"
+      },
+    ]
   },
   {
     title: "Tasks",
@@ -52,11 +66,6 @@ const items: MenuItem[] = [
         url: "/tasks/new"
       }
     ]
-  },
-  {
-    title: "Finance",
-    url: "/finance",
-    icon: undefined,
   },
   {
     title: "Notes",
