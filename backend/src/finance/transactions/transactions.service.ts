@@ -43,7 +43,6 @@ export class TransactionsService {
   }
 
   async findAll(payload: JwtPayload, accName?: string) {
-    console.log(accName);
     const transactions = await this.transactionsRepository.find({
       where: accName
         ? {
