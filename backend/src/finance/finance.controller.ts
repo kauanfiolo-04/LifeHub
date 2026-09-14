@@ -10,7 +10,7 @@ export class FinanceController {
 
   @UseGuards(JwtAuthGuard)
   @Get()
-  metrics(@TokenPayload() payload: JwtPayload, @Query('accName') accName?: string) {
+  metrics(@TokenPayload() payload: JwtPayload, @Query('accountName') accName?: string) {
     return this.financeService.getMetrics(payload, accName);
   }
 }
