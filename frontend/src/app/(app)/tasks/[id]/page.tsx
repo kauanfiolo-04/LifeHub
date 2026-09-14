@@ -117,7 +117,7 @@ export default function Task() {
 
   return (
     <div className="flex flex-col">
-      <h1 className="text-2xl font-bold mb-8">Note</h1>
+      <h1 className="text-2xl font-bold mb-8">Task</h1>
 
       {loadingTask ? (
         <NoteFormSkeleton />
