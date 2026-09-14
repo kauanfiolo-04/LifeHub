@@ -1,5 +1,6 @@
 "use client";
 
+import AccountSelect from "@/components/finance/account-select";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useAccounts } from "@/hooks/finance/accounts/useAccounts";
 import { useFinance } from "@/hooks/finance/useFinance";
@@ -23,27 +24,11 @@ export default function FinancePage() {
       </div>
 
       <div className="flex w-full items-center justify-between">
-        <Select onValueChange={setAccName}>
-          <SelectTrigger>
-            <SelectValue placeholder="All accounts"/>
-          </SelectTrigger>
-
-          <SelectContent>
-            <SelectItem value="all">
-              {/* <Image width={12} height={12} src="https://thumbs.dreamstime.com/b/ma%C3%A7%C3%A3-quadrada-em-um-fundo-branco-6016067.jpg" /> */}
-              All accounts
-            </SelectItem>
-            {accs?.map(acc => (
-              <SelectItem
-                key={acc.id}
-                value={acc.name.toLowerCase()}
-              >
-                <p>{acc.name}</p>
-                <span>{acc.type.toWellFormed()}</span>
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        <AccountSelect
+          value={accName}
+          accounts={accs ?? []} 
+          setValue={setAccName}
+        />
       </div>
     </div>
   );
