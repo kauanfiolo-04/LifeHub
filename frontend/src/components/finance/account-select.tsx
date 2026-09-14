@@ -1,6 +1,7 @@
 import { Account } from "@/types/finance/accounts.type";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import { Dispatch, SetStateAction } from "react";
+import { formatToLabel } from "@/utils/format-to-label";
 
 interface AccountSelectProps {
   value: string;
@@ -10,15 +11,15 @@ interface AccountSelectProps {
 
 export default function AccountSelect({ value, accounts, setValue }: AccountSelectProps) {
   return (
-    <Select onValueChange={setValue}>
-      <SelectTrigger>
+    <Select defaultValue="all" onValueChange={setValue}>
+      <SelectTrigger className="w-[calc(50%-8px)] md:w-40">
         <div>
           <SelectValue>
             <p className="text-sm">
               {((val) => {
                 if (val === "all") return "All accounts";
 
-                return val;
+                return formatToLabel(val);
               })(value)}
             </p>
           </SelectValue>
@@ -37,7 +38,7 @@ export default function AccountSelect({ value, accounts, setValue }: AccountSele
           >
             <div>
               <p className="text-sm">{acc.name}</p>
-              <span className="text-xs text-gray-400">{acc.type.toWellFormed()}</span>
+              <span className="text-xs text-gray-400">{formatToLabel(acc.type)}</span>
             </div>
           </SelectItem>
         ))}

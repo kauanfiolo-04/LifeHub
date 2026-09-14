@@ -39,7 +39,8 @@ export default function LoginForm() {
   });
 
   const invalidCredentials =
-    getErrorMessage(error) === "Credential not found!";
+    getErrorMessage(error) === "Credential not found!"
+    || getErrorMessage(error) === "Invalid Credentials!"
 
   const handleOnSubmit = async (data: LoginRequest) => {
     try {
