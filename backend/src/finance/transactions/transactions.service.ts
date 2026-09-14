@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Transaction } from './entities/transaction.entity';
-import { FindOptionsRelations, FindOptionsSelect, Repository } from 'typeorm';
+import { FindOptionsRelations, FindOptionsSelect, ILike, Repository } from 'typeorm';
 import { CreateTransactionDTO } from './dto/create-transaction.dto';
 import { UpdateTransactionDTO } from './dto/update-transaction.dto';
 import { AccountsService } from '../accounts/accounts.service';
@@ -42,8 +42,20 @@ export class TransactionsService {
     return newTransaction;
   }
 
-  async findAll() {
+  async findAll(payload: JwtPayload, accName?: string) {
     const transactions = await this.transactionsRepository.find({
+      where: accName
+        ? {
+            account: {
+              user: { id: payload.sub },
+              name: ILike(`%${accName}%`)
+            }
+          }
+        : {
+            account: {
+              user: { id: payload.sub }
+            }
+          },
       order: { createdAt: 'desc' },
       relations: { account: true },
       select: { account: { id: true } }

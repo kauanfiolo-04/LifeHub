@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
 import { TokenPayload } from '../../auth/decorators/user.decorator';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { type JwtPayload } from '../../auth/types/jwt-payload.type';
@@ -16,9 +16,10 @@ export class TransactionsController {
     return this.transactionService.create(body, payload);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get()
-  findAll() {
-    return this.transactionService.findAll();
+  findAll(@TokenPayload() payload: JwtPayload, @Query('accountName') accName?: string) {
+    return this.transactionService.findAll(payload, accName);
   }
 
   @Get(':id')

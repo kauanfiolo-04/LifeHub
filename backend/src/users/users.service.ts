@@ -40,9 +40,13 @@ export class UsersService {
   }
 
   async findAll() {
-    const users = await this.userRepository.find({ order: { createdAt: 'desc' } });
+    // const users = await this.userRepository.find({ order: { createdAt: 'desc' } });
 
-    return users;
+    // return users;
+
+    return new Promise(resolve => {
+      resolve([]);
+    });
   }
 
   async findOne(id: string) {
