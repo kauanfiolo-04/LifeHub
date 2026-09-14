@@ -1,6 +1,9 @@
 import LoginForm from "@/components/auth/login-form";
 import OAuthButtons from "@/components/auth/oauth-buttons";
 import { Separator } from "@/components/ui/separator";
+import Image from "next/image";
+
+import LoginImg from "@/../public/images/Login.jpg";
 
 export default function LoginPage() {
   return (
@@ -28,7 +31,11 @@ export default function LoginPage() {
 
       {/* Image Wrapper */}
       <div className="hidden md:block w-3/5">
-        Imagem
+        <Image 
+          className="h-full"
+          src={LoginImg}
+          alt="Mato"
+        />
       </div>
     </div>
   );

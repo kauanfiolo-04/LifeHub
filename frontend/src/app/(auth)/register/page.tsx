@@ -2,6 +2,9 @@ import OAuthButtons from "@/components/auth/oauth-buttons";
 import RegisterForm from "@/components/auth/register-form";
 import { Separator } from "@/components/ui/separator";
 
+import RegisterImg from "@/../public/images/Register.jpg";
+import Image from "next/image";
+
 export default function RegisterPage() {
   return (
     <div className="flex h-screen">
@@ -28,7 +31,11 @@ export default function RegisterPage() {
 
       {/* Image Wrapper */}
       <div className="hidden md:block w-3/5">
-        Imagem
+        <Image
+          className="h-full"
+          src={RegisterImg}
+          alt="Mato"
+        />
       </div>
     </div>
   );
