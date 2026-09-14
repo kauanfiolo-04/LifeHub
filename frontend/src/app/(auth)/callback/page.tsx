@@ -26,7 +26,7 @@ export default function CallbackPage() {
           queryFn: AuthService.me
         });
 
-        router.replace("/dashboard");
+        router.replace("/finance");
       } catch {
         router.replace("/login");
       }

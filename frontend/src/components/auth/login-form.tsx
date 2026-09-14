@@ -52,7 +52,7 @@ export default function LoginForm() {
         queryFn: AuthService.me
       });
 
-      router.replace("/dashboard");
+      router.replace("/finance");
     } catch (error) {
       console.error(error);
     }

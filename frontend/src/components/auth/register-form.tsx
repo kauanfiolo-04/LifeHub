@@ -6,9 +6,9 @@ import { Input } from "../ui/input";
 import { InputGroup, InputGroupAddon, InputGroupInput } from "../ui/input-group";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Button } from "../ui/button";
-import { useForm, useWatch } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { SignUpRequest } from "@/types/auth.type";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { getErrorMessage } from "@/utils/get-error-message";
 import { useRouter } from "next/navigation";
 import { useRegister } from "@/hooks/auth/useRegister";
@@ -54,7 +54,7 @@ export default function RegisterForm() {
 
       queryClient.setQueryData(queryKeys.me, response.user);
 
-      router.replace("/dashboard");
+      router.replace("/finance");
     } catch (error) {
       console.error(error);
     }

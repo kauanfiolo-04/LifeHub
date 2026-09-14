@@ -1,18 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { Repository } from 'typeorm';
-import { Transaction } from './transactions/entities/transaction.entity';
-import { InjectRepository } from '@nestjs/typeorm';
 import { TransactionsService } from './transactions/transactions.service';
 import { JwtPayload } from '../auth/types/jwt-payload.type';
-import { AccountsService } from './accounts/accounts.service';
 import { TransactionType } from './transactions/enum/transaction-type.enum';
 
 @Injectable()
 export class FinanceService {
-  constructor(
-    private readonly transactionsService: TransactionsService,
-    private readonly accountsService: AccountsService
-  ) {}
+  constructor(private readonly transactionsService: TransactionsService) {}
 
   async getMetrics(payload: JwtPayload, accName?: string) {
     const transactions = await this.transactionsService.findAll(payload, accName);
@@ -31,6 +24,6 @@ export class FinanceService {
         return acc;
       }, 0);
 
-    return { totalExpenses, totalIncomes };
+    return { totalExpenses, totalIncomes, amount: totalIncomes - totalExpenses };
   }
 }
