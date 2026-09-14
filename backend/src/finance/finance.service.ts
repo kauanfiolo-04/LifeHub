@@ -10,20 +10,24 @@ export class FinanceService {
   async getMetrics(payload: JwtPayload, accName?: string) {
     const transactions = await this.transactionsService.findAll(payload, accName);
 
-    const totalExpenses = transactions
-      .filter(item => item.type === TransactionType.EXPENSE)
-      .reduce((acc, cur) => {
-        acc += cur.amount;
-        return acc;
-      }, 0);
+    const metrics = transactions.reduce(
+      (acc, transaction) => {
+        if (transaction.type === TransactionType.EXPENSE) {
+          acc.totalExpenses += Number(transaction.amount);
+        }
 
-    const totalIncomes = transactions
-      .filter(item => item.type === TransactionType.INCOME)
-      .reduce((acc, cur) => {
-        acc += cur.amount;
-        return acc;
-      }, 0);
+        if (transaction.type === TransactionType.INCOME) {
+          acc.totalIncomes += Number(transaction.amount);
+        }
 
-    return { totalExpenses, totalIncomes, amount: totalIncomes - totalExpenses };
+        return acc;
+      },
+      { totalExpenses: 0, totalIncomes: 0 }
+    );
+
+    return {
+      ...metrics,
+      balance: metrics.totalIncomes - metrics.totalExpenses
+    };
   }
 }
