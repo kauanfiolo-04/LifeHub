@@ -28,8 +28,11 @@ export class AccountsService {
     return newAccount;
   }
 
-  async findAll() {
-    const accounts = await this.accountsRepository.find({ order: { createdAt: 'desc' } });
+  async findAll(payload: JwtPayload) {
+    const accounts = await this.accountsRepository.find({
+      where: { user: { id: payload.sub } },
+      order: { createdAt: 'desc' }
+    });
 
     return accounts;
   }

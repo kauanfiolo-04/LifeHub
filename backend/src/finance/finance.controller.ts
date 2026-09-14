@@ -1,4 +1,4 @@
-import { Controller, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get, Query, UseGuards } from '@nestjs/common';
 import { FinanceService } from './finance.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { TokenPayload } from '../auth/decorators/user.decorator';
@@ -9,6 +9,7 @@ export class FinanceController {
   constructor(private readonly financeService: FinanceService) {}
 
   @UseGuards(JwtAuthGuard)
+  @Get()
   metrics(@TokenPayload() payload: JwtPayload, @Query('accName') accName?: string) {
     return this.financeService.getMetrics(payload, accName);
   }

@@ -17,7 +17,14 @@ export class Transaction {
   @Column({ type: 'enum', enum: TransactionType })
   type!: TransactionType;
 
-  @Column({ type: 'decimal', precision: 10, scale: 2 })
+  @Column('numeric', {
+    precision: 10,
+    scale: 2,
+    transformer: {
+      to: (value: number) => value,
+      from: (value: string) => parseFloat(value) // Converte a string do Postgres para number ao ler
+    }
+  })
   amount!: number;
 
   @ManyToOne(() => Account, account => account.transactions)

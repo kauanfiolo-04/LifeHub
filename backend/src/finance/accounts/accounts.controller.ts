@@ -16,9 +16,10 @@ export class AccountsController {
     return this.accountsService.create(body, payload);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get()
-  findAll() {
-    return this.accountsService.findAll();
+  findAll(@TokenPayload() payload: JwtPayload) {
+    return this.accountsService.findAll(payload);
   }
 
   @Get(':id')
