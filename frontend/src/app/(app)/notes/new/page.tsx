@@ -51,7 +51,7 @@ export default function NewNote() {
   }
 
   return (
-    <div className="flex flex-col">
+    <>
       <h1 className="text-2xl font-bold mb-8">Create a new note</h1>
 
       <form className="flex flex-col w-full md:max-w-xl gap-10 mx-auto" onSubmit={(e) => handleSubmit(handleOnSubmit)(e)}>
@@ -124,6 +124,6 @@ export default function NewNote() {
           ) : "Create"}
         </Button>
       </form>
-    </div>
+    </>
   );
 }

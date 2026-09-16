@@ -95,7 +95,7 @@ export default function TasksPage() {
   }, [refetch, debouncedSearch, sortBy]);
 
   return (
-    <div className="flex flex-col items-start w-full">
+    <>
       <div className="flex w-full justify-between items-center mb-8">
         <h1 className="text-2xl font-bold">Tasks</h1>
 
@@ -164,6 +164,6 @@ export default function TasksPage() {
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }

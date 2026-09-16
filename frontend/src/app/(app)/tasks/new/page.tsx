@@ -74,7 +74,7 @@ export default function TasksPage() {
   }, [setValue])
 
   return (
-    <div>
+    <>
       <h1 className="text-2xl font-bold mb-8">New Task</h1>
 
       <form className="flex flex-col w-full md:max-w-xl gap-10 mx-auto" onSubmit={(e) => handleSubmit(handleOnSubmit)(e)}>
@@ -168,6 +168,6 @@ export default function TasksPage() {
           ) : "Create"}
         </Button>
       </form>
-    </div>
+    </>
   );
 }

@@ -4,7 +4,7 @@ import { HugeiconsIcon } from "@hugeicons/react";
 
 export default function AccountsPage() {
   return (
-    <div className="flex flex-col w-full">
+    <>
       <div className="flex w-full justify-between items-center mb-8">
         <h1 className="text-2xl font-bold">Accounts</h1>
 
@@ -12,6 +12,6 @@ export default function AccountsPage() {
           <HugeiconsIcon icon={PlusSignIcon} />
         </Button>
       </div>
-    </div>
+    </>
   );
 }

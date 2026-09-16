@@ -14,7 +14,7 @@ export default function NotesPage() {
   const router = useRouter();
   
   return (
-    <div className="flex flex-col items-start w-full">
+    <>
       <div className="flex w-full justify-between items-center mb-8">
         <h1 className="text-2xl font-bold">Notes</h1>
 
@@ -32,6 +32,6 @@ export default function NotesPage() {
           (notes ?? []).map(note => (<NoteCard key={note.id} note={note}/>))
         }
       </div>
-    </div>
+    </>
   );
 }

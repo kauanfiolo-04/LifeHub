@@ -101,7 +101,7 @@ export default function Note() {
   }, [note, resetNote]);
 
   return (
-    <div className="flex flex-col">
+    <>
       <h1 className="text-2xl font-bold mb-8">Note</h1>
 
       {loadingNote ? (
@@ -226,6 +226,6 @@ export default function Note() {
           )}
         </form>
       )}
-    </div>
+    </>
   );
 }

@@ -23,8 +23,8 @@ export default function FinancePage() {
   }, [finance, accs]);
 
   return (
-    <div className="flex flex-col w-full gap-8">
-      <div className="flex w-full justify-between items-center">
+    <>
+      <div className="flex w-full justify-between items-center mb-8">
         <h1 className="text-2xl font-bold">Finance</h1>
       </div>
 
@@ -44,6 +44,6 @@ export default function FinancePage() {
       <MetricsBoxes 
         metrics={finance ?? { balance: 0, totalExpenses: 0, totalIncomes: 0 }}
       />
-    </div>
+    </>
   );
 }
