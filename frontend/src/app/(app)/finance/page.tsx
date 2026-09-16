@@ -28,22 +28,24 @@ export default function FinancePage() {
         <h1 className="text-2xl font-bold">Finance</h1>
       </div>
 
-      <div className="flex w-full items-center justify-between">
-        <AccountSelect
-          value={accName}
-          accounts={accs ?? []} 
-          setValue={setAccName}
-        />
+      <div className="flex flex-col gap-8">
+        <div className="flex w-full items-center justify-between">
+          <AccountSelect
+            value={accName}
+            accounts={accs ?? []} 
+            setValue={setAccName}
+          />
 
-        <Button className="w-[calc(50%-8px)] md:w-40 gap-2" variant="outline" onClick={() => router.push("/transactions/new")}>
-          <HugeiconsIcon icon={PlusSignIcon} />
-          <span>New transaction</span>
-        </Button>
+          <Button className="w-[calc(50%-8px)] md:w-40 gap-2" variant="outline" onClick={() => router.push("/transactions/new")}>
+            <HugeiconsIcon icon={PlusSignIcon} />
+            <span>New transaction</span>
+          </Button>
+        </div>
+        
+        <MetricsBoxes 
+          metrics={finance ?? { balance: 0, totalExpenses: 0, totalIncomes: 0 }}
+        />
       </div>
-      
-      <MetricsBoxes 
-        metrics={finance ?? { balance: 0, totalExpenses: 0, totalIncomes: 0 }}
-      />
     </>
   );
 }
