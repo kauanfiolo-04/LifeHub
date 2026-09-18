@@ -52,9 +52,9 @@ export default function NewNote() {
 
   return (
     <>
-      <h1 className="text-2xl font-bold mb-8">Create a new note</h1>
+      <h1 className="text-2xl font-bold mb-8">Create note</h1>
 
-      <form className="flex flex-col w-full md:max-w-xl gap-10 mx-auto" onSubmit={(e) => handleSubmit(handleOnSubmit)(e)}>
+      <form className="flex flex-col w-full md:max-w-xl gap-10" onSubmit={(e) => handleSubmit(handleOnSubmit)(e)}>
         <FieldGroup>
           <Field data-invalid={isError || !!errors.title?.message} >
             <FieldLabel htmlFor="title">Title</FieldLabel>
@@ -65,6 +65,10 @@ export default function NewNote() {
                 maxLength: {
                   value: 100,
                   message: "Title cannot exceed 100 characters"
+                },
+                minLength: {
+                  value: 3,
+                  message: "Title must be longer than 3 characthers"
                 }
               })}
               id="title"

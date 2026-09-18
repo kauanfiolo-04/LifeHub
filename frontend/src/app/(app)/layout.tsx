@@ -17,7 +17,7 @@ export default function AppLayout({
 
         <SidebarTrigger className="hidden md:flex absolute" />
 
-        <main className="flex-1 p-6 overflow-y-auto">
+        <main className="flex-1 p-6 2xl:p-8 overflow-y-auto">
           <div className="flex flex-col w-full 2xl:max-w-330">
             {children}
           </div>

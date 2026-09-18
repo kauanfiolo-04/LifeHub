@@ -3,7 +3,7 @@ import { IsString, IsNotEmpty, MinLength, MaxLength, IsArray, IsOptional } from 
 export class CreateNoteDTO {
   @IsString()
   @IsNotEmpty()
-  @MinLength(5)
+  @MinLength(3)
   @MaxLength(255)
   title!: string;
 

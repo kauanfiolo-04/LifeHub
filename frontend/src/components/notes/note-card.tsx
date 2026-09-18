@@ -21,11 +21,11 @@ export default function NoteCard({ note }: NoteCardProps) {
       </CardHeader>
 
       <CardContent className="w-full">
-        <div className="h-48">
+        <Card className="h-48 p-2">
           <p className="line-clamp-4">
             {note.content}
           </p>
-        </div>
+        </Card>
 
         {!!note.tags.length && (
           <div className="flex w-full">
