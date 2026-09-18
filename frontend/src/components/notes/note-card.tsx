@@ -21,14 +21,14 @@ export default function NoteCard({ note }: NoteCardProps) {
       </CardHeader>
 
       <CardContent className="w-full">
-        <Card className="h-48 p-2">
+        <Card className="h-23 md:h-48 p-2">
           <p className="line-clamp-4">
             {note.content}
           </p>
         </Card>
 
         {!!note.tags.length && (
-          <div className="flex w-full">
+          <div className="flex w-full mt-1">
             {note.tags.map((tag, idx, self) => (
               <span key={`${tag}-${idx}`}>
                 {idx === (self.length - 1) ? tag : `${tag}, `}
