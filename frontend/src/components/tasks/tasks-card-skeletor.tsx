@@ -1,7 +1,7 @@
 import { Card, CardContent } from "../ui/card";
 import { Skeleton } from "../ui/skeleton";
 
-export default function TaskItemSkeleton() {
+export default function TaskCardSkeleton() {
   return (
     <Card
       className="w-full min-h-36"

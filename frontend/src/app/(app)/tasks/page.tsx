@@ -1,10 +1,10 @@
 "use client";
 
-import TaskItem from "@/components/tasks/task-item";
+import TaskCard from "@/components/tasks/task-card";
 import TaskOrder from "@/components/tasks/task-order";
 import Search from "@/components/common/search";
 import TasksFilterList, { getFiltersListGroups } from "@/components/tasks/tasks-filter-list";
-import TaskItemSkeleton from "@/components/tasks/tasks-item-skeletor";
+import TaskCardSkeleton from "@/components/tasks/tasks-card-skeletor";
 import { Button } from "@/components/ui/button";
 import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
 import { useTasks } from "@/hooks/tasks/useTasks";
@@ -155,10 +155,10 @@ export default function TasksPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 justify-items-center gap-4 w-full">
             {isFetching ? (
               Array.from({ length: 6 }).map((_, index) => (
-                <TaskItemSkeleton key={index} />
+                <TaskCardSkeleton key={index} />
               ))
             ) :
-              (tasksToShow).map(task => <TaskItem key={task.id} task={task} router={router} />)
+              (tasksToShow).map(task => <TaskCard key={task.id} task={task} router={router} />)
             }
           </div>
         </div>

@@ -5,7 +5,7 @@ import { Calendar03Icon } from "@hugeicons/core-free-icons";
 import { getTaskDateLabel } from "@/utils/get-task-date-label";
 import { type AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 
-interface TaskItemProps {
+interface TaskCardProps {
   task: Task;
   router: AppRouterInstance;
 }
@@ -99,7 +99,7 @@ const Status = ({ status }: StatusProps) => {
   );
 };
 
-export default function TaskItem({ task, router }: TaskItemProps) {
+export default function TaskCard({ task, router }: TaskCardProps) {
   return (
     <Card 
       className="w-full min-h-36 cursor-pointer hover:shadow-lg transition-shadow ease-in-out duration-500" 
