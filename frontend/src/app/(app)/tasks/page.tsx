@@ -4,7 +4,7 @@ import TaskCard from "@/components/tasks/task-card";
 import TaskOrder from "@/components/tasks/task-order";
 import Search from "@/components/common/search";
 import TasksFilterList, { getFiltersListGroups } from "@/components/tasks/tasks-filter-list";
-import TaskCardSkeleton from "@/components/tasks/tasks-card-skeletor";
+import TaskCardSkeleton from "@/components/tasks/tasks-card-skeleton";
 import { Button } from "@/components/ui/button";
 import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
 import { useTasks } from "@/hooks/tasks/useTasks";
