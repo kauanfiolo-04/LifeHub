@@ -42,10 +42,18 @@ export class AccountsService {
     return newAccount;
   }
 
-  async findAll(payload: JwtPayload) {
+  async findAll(payload: JwtPayload, showTransac: boolean) {
     const accounts = await this.accountsRepository.find({
       where: { user: { id: payload.sub } },
-      order: { createdAt: 'desc' }
+      order: { createdAt: 'desc' },
+      relations: {
+        transactions: showTransac
+      },
+      select: showTransac
+        ? {
+            transactions: { id: true, amount: true }
+          }
+        : undefined
     });
 
     return accounts;

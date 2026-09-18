@@ -2,8 +2,8 @@ import { api } from "@/lib/axios";
 import { Account, CreateAccountRequest, UpdateAccountRequest } from "@/types/finance/accounts.type";
 
 export const AccountsService = {
-  findAll: async () => {
-    const { data } = await api.get<Account[]>("/accounts");
+  findAll: async (showTransac?: boolean) => {
+    const { data } = await api.get<Account[]>("/accounts", { params: { showTransac } });
 
     return data;
   },

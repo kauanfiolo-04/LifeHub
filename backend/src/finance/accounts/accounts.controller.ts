@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
 import { AccountsService } from './accounts.service';
 import { CreateAccountDTO } from './dto/create-account.dto';
 import { TokenPayload } from '../../auth/decorators/user.decorator';
@@ -18,8 +18,8 @@ export class AccountsController {
 
   @UseGuards(JwtAuthGuard)
   @Get()
-  findAll(@TokenPayload() payload: JwtPayload) {
-    return this.accountsService.findAll(payload);
+  findAll(@TokenPayload() payload: JwtPayload, @Query('showTransac') showTransac?: boolean) {
+    return this.accountsService.findAll(payload, !!showTransac);
   }
 
   @Get(':id')

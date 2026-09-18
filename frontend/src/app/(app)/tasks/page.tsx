@@ -1,9 +1,8 @@
 "use client";
 
-import NoteSkeleton from "@/components/notes/note-skeleton";
 import TaskItem from "@/components/tasks/task-item";
 import TaskOrder from "@/components/tasks/task-order";
-import TaskSearch from "@/components/tasks/task-search";
+import Search from "@/components/common/search";
 import TasksFilterList, { getFiltersListGroups } from "@/components/tasks/tasks-filter-list";
 import TaskItemSkeleton from "@/components/tasks/tasks-item-skeletor";
 import { Button } from "@/components/ui/button";
@@ -118,7 +117,7 @@ export default function TasksPage() {
 
         <div className="flex flex-col gap-4 w-full">
           <div className="flex flex-col md:flex-row gap-4">
-            <TaskSearch 
+            <Search 
               searchValue={search}
               onSearch={handleSearch}
             />

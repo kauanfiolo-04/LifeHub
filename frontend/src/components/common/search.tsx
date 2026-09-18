@@ -4,12 +4,13 @@ import { ButtonGroup } from "../ui/button-group";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Search01Icon } from "@hugeicons/core-free-icons";
 import { Button } from "../ui/button";
-interface TaskSearchProps {
+
+interface SearchProps {
   onSearch: ({ search }: { search: string }) => void;
   searchValue?: string;
 }
 
-export default function TaskSearch({ searchValue, onSearch }: TaskSearchProps) {
+export default function Search({ searchValue, onSearch }: SearchProps) {
   const { register, handleSubmit } = useForm<{ search: string }>();
 
   return (

@@ -14,7 +14,7 @@ export const queryKeys = {
   finance: {
     getFinance: (accName?: string) => ["finance", accName] as const,
     accounts: {
-      all: ["accounts"] as const,
+      all: (showTransac?: boolean) => ["accounts", showTransac] as const,
       detail: (id: string) => ["accounts", id] as const,
     },
     transactions: {
