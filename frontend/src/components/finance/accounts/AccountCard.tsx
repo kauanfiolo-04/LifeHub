@@ -3,7 +3,7 @@ import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
 import { formatToLabel } from "@/utils/format-to-label";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Delete02Icon } from "@hugeicons/core-free-icons";
-import { Button } from "../ui/button";
+import { Button } from "../../ui/button";
 import { TransactionType } from "@/types/finance/transactions.type";
 import AccountIcon from "./AccountIcon";
 import { useRouter } from "next/navigation";

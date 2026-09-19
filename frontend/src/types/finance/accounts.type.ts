@@ -19,6 +19,7 @@ export type Account = {
 export type CreateAccountRequest = {
   name: string;
   type: AccountType;
+  initialBalance?: number;
 };
 
 export type UpdateAccountRequest = Partial<CreateAccountRequest>;

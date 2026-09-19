@@ -1,5 +1,5 @@
 import { Account } from "@/types/finance/accounts.type";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../ui/select";
 import { Dispatch, SetStateAction } from "react";
 import { formatToLabel } from "@/utils/format-to-label";
 

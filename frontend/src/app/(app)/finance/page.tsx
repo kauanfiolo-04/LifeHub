@@ -1,6 +1,6 @@
 "use client";
 
-import AccountSelect from "@/components/finance/account-select";
+import AccountSelect from "@/components/finance/accounts/account-select";
 import MetricsBoxes from "@/components/finance/metrics-boxes";
 import { Button } from "@/components/ui/button";
 import { useAccounts } from "@/hooks/finance/accounts/useAccounts";
