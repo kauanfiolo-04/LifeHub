@@ -14,7 +14,7 @@ export default function AccountTypeSelect({ value, setValue }: AccountTypeSelect
       value={value}
       onValueChange={setValue}
     >
-      <SelectTrigger>
+      <SelectTrigger className="w-full">
         <SelectValue />
       </SelectTrigger>
 

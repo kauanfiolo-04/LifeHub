@@ -25,21 +25,15 @@ export default function CreateAccountPage() {
     defaultValue: AccountType.CHECKING
   });
 
-  const handleName = (val: string) => 
-    setValue("name", val);
-
   const handleType = (val: AccountType) => 
     setValue("type", val);
-
-  const handleInitialBalance = (val?: number) => 
-    setValue("initialBalance", val);
 
   const handleOnSubmit = async (data: CreateAccountRequest) => {
     try {
       await mutateAsync(data, {
         onSuccess: () => {
-          addNotification.success("Task created with success!");
-          router.push("/tasks");
+          addNotification.success("Account created with success!");
+          router.push("/finance/accounts");
         },
         onError: () => addNotification.error("Try again later")
       });
@@ -50,7 +44,7 @@ export default function CreateAccountPage() {
 
   useEffect(() => {
     setValue("type", AccountType.CHECKING);
-    setValue("initialBalance", undefined);
+    setValue("initialBalance", 0);
   }, [setValue])
 
   return (
@@ -86,6 +80,21 @@ export default function CreateAccountPage() {
             value={type}
             setValue={handleType}
           />
+
+          <Field>
+            <FieldLabel htmlFor="initial_balance">Initial balance</FieldLabel>
+            <Input
+              {...register("initialBalance", { valueAsNumber: true })}
+              id="initial_balance"
+              type="number"
+            />
+
+            {errors.initialBalance && (
+              <FieldDescription>
+                {errors.initialBalance.message}
+              </FieldDescription>
+            )}
+          </Field>
         </FieldGroup>
 
         <Button size="lg" disabled={isPending} type="submit">

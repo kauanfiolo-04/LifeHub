@@ -51,7 +51,7 @@ export class AccountsService {
       },
       select: showTransac
         ? {
-            transactions: { id: true, amount: true }
+            transactions: { id: true, amount: true, type: true }
           }
         : undefined
     });
