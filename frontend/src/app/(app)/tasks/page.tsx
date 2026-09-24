@@ -64,9 +64,8 @@ export default function TasksPage() {
     return filterTasks(tasks, selectedFilters)
   }, [tasks, selectedFilters]);
 
-  const handleSearch = ({ search }: { search: string }) => {
+  const handleSearch = ({ search }: { search: string }) => 
     setSearch(search);
-  };
 
   const handleCheckFilter = (value: TaskSortBy | TaskPriority | TaskStatus | string) => {
     const strValue = String(value); // converte pois TaskPriority é number
@@ -122,7 +121,7 @@ export default function TasksPage() {
               onSearch={handleSearch}
             />
 
-            <div className="w-full md:w-auto gap-4 flex">
+            <div className="flex w-full md:w-auto gap-4">
               {isMobile && (
                 <Drawer direction="left" fixed >
                   <DrawerTrigger asChild>

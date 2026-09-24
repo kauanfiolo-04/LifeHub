@@ -2,9 +2,11 @@ import { queryKeys } from "@/lib/query-keys";
 import { TransactionsService } from "@/services/finance/transactions.service";
 import { useQuery } from "@tanstack/react-query";
 
-export function useTransactions(accName?: string) {
+export function useTransactions(
+  { accName, search }: { accName?: string, search?: string } = {}
+) {
   return useQuery({
     queryKey: queryKeys.finance.transactions.all,
-    queryFn: () => TransactionsService.findAll(accName)
+    queryFn: () => TransactionsService.findAll({ accName, search })
   });
 }

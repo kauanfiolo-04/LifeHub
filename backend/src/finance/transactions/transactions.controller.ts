@@ -18,8 +18,12 @@ export class TransactionsController {
 
   @UseGuards(JwtAuthGuard)
   @Get()
-  findAll(@TokenPayload() payload: JwtPayload, @Query('accountName') accName?: string) {
-    return this.transactionService.findAll(payload, accName);
+  findAll(
+    @TokenPayload() payload: JwtPayload,
+    @Query('accountName') accName?: string,
+    @Query('search') search?: string
+  ) {
+    return this.transactionService.findAll(payload, accName, search);
   }
 
   @Get(':id')
