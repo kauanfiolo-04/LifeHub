@@ -1,6 +1,6 @@
 "use client";
 
-import AccountCard from "@/components/finance/accounts/AccountCard";
+import AccountCard from "@/components/finance/accounts/account-card";
 import { Button } from "@/components/ui/button";
 import { useAccounts } from "@/hooks/finance/accounts/useAccounts";
 import { PlusSignIcon } from "@hugeicons/core-free-icons";

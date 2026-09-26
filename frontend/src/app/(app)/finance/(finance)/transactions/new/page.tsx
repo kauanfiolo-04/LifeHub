@@ -13,21 +13,41 @@ import useCreateTransaction from "@/hooks/finance/transactions/useCreateTransact
 import { useAccounts } from "@/hooks/finance/accounts/useAccounts";
 import AccountSelect from "@/components/finance/accounts/account-select";
 import { Account } from "@/types/finance/accounts.type";
+import { Textarea } from "@/components/ui/textarea";
+import TransactionTypeSelect from "@/components/finance/transactions/transaction-type-select";
+import { DatePicker } from "@/components/ui/date-picker";
 
 export default function CreateTransactionPage() {
   const router = useRouter();
 
-  const { register, handleSubmit, control, setValue, formState: { errors } } = useForm<CreateTransactionRequest>();
+  const { register, handleSubmit, control, setValue, formState: { errors }, clearErrors } = useForm<CreateTransactionRequest>();
 
-  const { mutateAsync, isPending, isError } = useCreateTransaction();
+  const { mutateAsync, isPending, isError, reset } = useCreateTransaction();
   const { data: accs } = useAccounts();
 
   const [selectedAcc, setSelectedAcc] = useState<Account | undefined>();
 
+  const description = useWatch({
+    control,
+    name: "description",
+    defaultValue: undefined
+  });
+
+  const type = useWatch({
+    control,
+    name: "type",
+    defaultValue: TransactionType.EXPENSE
+  });
+
   const handleAcc = (val: Account) => {
+    reset();
+    clearErrors();
     setSelectedAcc(val);
     setValue("accountId", val.id);
   }
+
+  const handleType = (val: TransactionType) =>
+    setValue("type", val);
 
   const handleOnSubmit = async (data: CreateTransactionRequest) => {
     try {
@@ -53,7 +73,7 @@ export default function CreateTransactionPage() {
 
       <form className="flex flex-col w-full md:max-w-xl gap-10" onSubmit={(e) => handleSubmit(handleOnSubmit)(e)}>
         <FieldGroup>
-          <Field>
+          <Field aria-invalid={isError || !!errors.title?.message}>
             <FieldLabel htmlFor="title">Title</FieldLabel>
             <Input
               className="md:h-8"
@@ -76,16 +96,53 @@ export default function CreateTransactionPage() {
             )}
           </Field>
 
-          <Field>
-            <FieldLabel>Account</FieldLabel>
+          <Field orientation="horizontal">
+            <Field>
+              <FieldLabel>Account</FieldLabel>
 
-            <AccountSelect 
-              accounts={accs ?? []}
-              value={selectedAcc}
-              setValue={handleAcc}
-              type="select"
-            />
+              <AccountSelect 
+                accounts={accs ?? []}
+                value={selectedAcc}
+                setValue={handleAcc}
+                type="select"
+                disabled={isError}
+              />
+            </Field>
+
+            <Field>
+              <FieldLabel>Type</FieldLabel>
+
+              <TransactionTypeSelect 
+                value={type}
+                setValue={handleType}
+              />
+            </Field>
           </Field>
+
+
+          <Field data-invalid={isError || !!errors.description?.message} >
+            <FieldLabel htmlFor="description">Description</FieldLabel>
+            <Textarea
+              aria-invalid={isError || !!errors.description?.message}
+              {...register("description", {
+                maxLength: {
+                  value: 500,
+                  message: "description cannot exceed 500 characters"
+                }
+              })}
+              id="description"
+            />
+
+            <FieldDescription className="text-end">
+              <span
+                style={{ color: (description ?? "").length > 500 ? "var(--destructive)" : undefined }}
+              >
+                {description?.length ?? 0}/500
+              </span>
+            </FieldDescription>
+          </Field>
+
+          <DatePicker />
         </FieldGroup>
 
         <Button size="lg" disabled={isPending} type="submit">

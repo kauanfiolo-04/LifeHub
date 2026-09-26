@@ -1,17 +1,18 @@
 import { Account } from "@/types/finance/accounts.type";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../ui/select";
-import { Dispatch, SetStateAction } from "react";
 import { formatToLabel } from "@/utils/format-to-label";
-import AccountIcon from "./AccountIcon";
+import AccountIcon from "./account-icon";
 
 interface AccountSelectProps {
   value: Account | undefined;
   accounts: Account[];
   setValue: (val: Account) => void;
   type: "all" | "select";
+  invalid?: boolean;
+  disabled?: boolean;
 }
 
-export default function AccountSelect({ value, accounts, setValue, type = "select" }: AccountSelectProps) {
+export default function AccountSelect({ value, accounts, setValue, type = "select", invalid = false, disabled = false }: AccountSelectProps) {
   return (
     <Select
       defaultValue={type}
@@ -20,8 +21,12 @@ export default function AccountSelect({ value, accounts, setValue, type = "selec
 
         if (acc) setValue(acc);
       }}
+      disabled={disabled}
     >
-      <SelectTrigger className="w-[calc(50%-8px)] md:w-40">
+      <SelectTrigger className={
+        type === "all" ? "w-[calc(50%-8px)] md:w-40" : "w-full"
+      }
+      >
         <div>
           <SelectValue>
             <p className="text-sm">

@@ -5,7 +5,7 @@ import { HugeiconsIcon } from "@hugeicons/react";
 import { Delete02Icon } from "@hugeicons/core-free-icons";
 import { Button } from "../../ui/button";
 import { TransactionType } from "@/types/finance/transactions.type";
-import AccountIcon from "./AccountIcon";
+import AccountIcon from "./account-icon";
 import { useRouter } from "next/navigation";
 import { useIsMobile } from "@/hooks/useMobile";
 import { useDeleteAccount } from "@/hooks/finance/accounts/useDeleteAccount";
