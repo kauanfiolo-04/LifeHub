@@ -49,7 +49,7 @@ export default function CreateAccountPage() {
 
   return (
     <>
-      <h1 className="text-2xl font-bold mb-8">New Task</h1>
+      <h1 className="text-2xl font-bold mb-8">New Account</h1>
 
       <form className="flex flex-col w-full md:max-w-xl gap-10" onSubmit={(e) => handleSubmit(handleOnSubmit)(e)}>
         <FieldGroup>
