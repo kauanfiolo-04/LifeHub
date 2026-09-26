@@ -26,7 +26,7 @@ export default function AccountSelect({ value, accounts, setValue, type = "selec
           <SelectValue>
             <p className="text-sm">
               {((val) => {
-                if (!val) return val === "all" ? "All accounts" : "Select an account";
+                if (!val) return type === "all" ? "All accounts" : "Select an account";
 
                 return formatToLabel(val.name);
               })(value)}

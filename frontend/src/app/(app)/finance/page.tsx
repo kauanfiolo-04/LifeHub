@@ -16,7 +16,7 @@ export default function FinancePage() {
 
   const [acc, setAcc] = useState<Account | undefined>();
 
-  const { data: finance } = useFinance(acc?.name);
+  const { data: finance } = useFinance(acc?.name ?? "all");
   const { data: accs } = useAccounts();
 
   useEffect(() => {
