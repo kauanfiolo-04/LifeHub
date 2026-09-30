@@ -7,7 +7,7 @@ import { useDebounce } from "@/hooks/useDebounce";
 import { PlusSignIcon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function TransactionsPage() {
   const router = useRouter();
@@ -16,10 +16,14 @@ export default function TransactionsPage() {
 
   const debouncedSearch = useDebounce<string | undefined>(search, 400);
 
-  const { data: transactions } = useTransactions({ search: debouncedSearch });
-
-  const handleSearch = ({ search }: { search: string }) => 
+  const { data: transactions, refetch } = useTransactions({ search: debouncedSearch });
+  
+  const handleSearch = ({ search }: { search: string }) =>
     setSearch(search);
+
+  useEffect(() => {
+    refetch();
+  }, [refetch, debouncedSearch]);
 
   return (
     <>
