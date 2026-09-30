@@ -1,3 +1,5 @@
+"use server";
+
 import LoginForm from "@/components/auth/login-form";
 import OAuthButtons from "@/components/auth/oauth-buttons";
 import { Separator } from "@/components/ui/separator";
@@ -5,7 +7,7 @@ import Image from "next/image";
 
 import LoginImg from "@/../public/images/Login.jpg";
 
-export default function LoginPage() {
+export default async function LoginPage() {
   return (
     <div className="flex h-screen">
       <div className="flex flex-col items-center justify-center gap-4 w-full md:w-2/5 px-6 py-10">

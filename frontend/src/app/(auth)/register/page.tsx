@@ -1,3 +1,5 @@
+"use server";
+
 import OAuthButtons from "@/components/auth/oauth-buttons";
 import RegisterForm from "@/components/auth/register-form";
 import { Separator } from "@/components/ui/separator";
@@ -5,7 +7,7 @@ import { Separator } from "@/components/ui/separator";
 import RegisterImg from "@/../public/images/Register.jpg";
 import Image from "next/image";
 
-export default function RegisterPage() {
+export default async function RegisterPage() {
   return (
     <div className="flex h-screen">
       <div className="flex flex-col items-center justify-center gap-4 w-full md:w-2/5 px-6 py-10">
