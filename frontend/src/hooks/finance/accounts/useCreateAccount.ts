@@ -9,7 +9,7 @@ export default function useCreateAccount(){
     mutationFn: AccountsService.create,
     onSuccess: () => {
       queryClient.invalidateQueries({ 
-        queryKey: queryKeys.finance.accounts.all
+        queryKey: queryKeys.finance.accounts.all()
       })
     }
   });

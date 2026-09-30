@@ -5,7 +5,10 @@ export const TransactionsService = {
   findAll: async ({ accName, search }: { accName?: string, search?: string }) => {
     const { data } = await api.get<Transaction[]>("/transactions", { params: { accountName: accName, search } });
 
-    return data;
+    return data.map((transaction) => ({
+      ...transaction,
+      date: new Date(transaction.date),
+    }));
   },
   create: async (createTransactionDto: CreateTransactionRequest) => {
     const { data } = await api.post<Transaction>("/transactions", createTransactionDto);
@@ -15,7 +18,10 @@ export const TransactionsService = {
   findOne: async (transactionId: string) => {
     const { data } = await api.get<Transaction>(`/transactions/${transactionId}`);
 
-    return data;
+    return {
+      ...data,
+      date: new Date(data.date)
+    };
   },
   update: async (transactionId: string, updateTransactionDTO: UpdateTransactionRequest) => {
     const { data } = await api.patch<Transaction>(`/transactions/${transactionId}`, updateTransactionDTO);

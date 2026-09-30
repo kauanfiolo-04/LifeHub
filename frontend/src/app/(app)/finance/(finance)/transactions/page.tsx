@@ -1,6 +1,7 @@
 "use client";
 
 import Search from "@/components/common/search";
+import TransactionCard from "@/components/finance/transactions/transaction-card";
 import { Button } from "@/components/ui/button";
 import { useTransactions } from "@/hooks/finance/transactions/useTransactions";
 import { useDebounce } from "@/hooks/useDebounce";
@@ -17,7 +18,7 @@ export default function TransactionsPage() {
   const debouncedSearch = useDebounce<string | undefined>(search, 400);
 
   const { data: transactions, refetch } = useTransactions({ search: debouncedSearch });
-  
+
   const handleSearch = ({ search }: { search: string }) =>
     setSearch(search);
 
@@ -41,11 +42,15 @@ export default function TransactionsPage() {
           onSearch={handleSearch}
         />
 
-        {(transactions ?? []).map(tran => (
-          <div key={tran.id}>
-            {tran.title}
-          </div>
-        ))}
+        <div className="grid grid-cols-1 md:grid-cols-2 mt-8">
+          {(transactions ?? []).map(tran => (
+            <TransactionCard 
+              key={tran.id}
+              transaction={tran}
+              router={router}
+            />
+          ))}
+        </div>
       </div>
     </>
   );

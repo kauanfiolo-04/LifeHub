@@ -1,8 +1,12 @@
 import { isToday, isTomorrow } from "date-fns";
 
-export function getTaskDateLabel(date: Date) {
-  if (isToday(date)) return "Today";
-  if (isTomorrow(date)) return "Tomorrow";
+export function getTaskDateLabel(date: Date, hours?: boolean) {
+  let dateStr;
 
-  return new Date(date).toLocaleDateString();
+  dateStr = date.toLocaleDateString();
+
+  if (isToday(date)) dateStr = "Today";
+  if (isTomorrow(date)) dateStr = "Tomorrow";
+
+  return `${dateStr}${hours ? ` ${date.getHours()}:${date.getMinutes()}` : ""}`;
 }
