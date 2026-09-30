@@ -77,7 +77,7 @@ export class TransactionsService {
       where,
       order: { createdAt: 'desc' },
       relations: { account: true },
-      select: { account: { id: true } }
+      select: { account: { id: true, name: true } }
     });
 
     return transactions;
