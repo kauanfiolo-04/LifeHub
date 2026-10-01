@@ -67,6 +67,10 @@ export class TransactionsService {
         {
           ...baseWhere,
           category: { name: ILike(`%${search}%`) }
+        },
+        {
+          ...baseWhere,
+          account: { name: ILike(`%${search}%`) }
         }
       );
     } else {
