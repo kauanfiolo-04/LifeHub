@@ -37,6 +37,7 @@ export default async function RegisterPage() {
           className="h-full"
           src={RegisterImg}
           alt="Mato"
+          loading="eager"
         />
       </div>
     </div>

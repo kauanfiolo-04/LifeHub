@@ -37,6 +37,7 @@ export default async function LoginPage() {
           className="h-full"
           src={LoginImg}
           alt="Mato"
+          loading="eager"
         />
       </div>
     </div>
