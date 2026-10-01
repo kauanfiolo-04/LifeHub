@@ -1,18 +1,44 @@
 "use client";
 
+import Search from "@/components/common/search";
 import NoteCard from "@/components/notes/note-card";
+import NoteOrder from "@/components/notes/note-order";
 import NoteSkeleton from "@/components/notes/note-skeleton";
 import { Button } from "@/components/ui/button";
 import { useNotes } from "@/hooks/notes/useNotes";
+import { useDebounce } from "@/hooks/useDebounce";
+import { useIsMobile } from "@/hooks/useMobile";
+import { NoteSortBy } from "@/types/notes.type";
 import { PlusSignIcon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export default function NotesPage() {
-  const { data: notes, isLoading } = useNotes();
-
   const router = useRouter();
-  
+
+  const isMobile = useIsMobile();
+
+  const [search, setSearch] = useState<string | undefined>();
+  const [sortBy, setSortBy] = useState<NoteSortBy | undefined>();
+
+  const debouncedSearch = useDebounce<string | undefined>(search, 400);
+
+  const { data: notes, isLoading, refetch } = useNotes({ search: debouncedSearch, sortBy });
+
+  const handleSearch = ({ search }: { search: string }) =>
+    setSearch(search);
+
+  const handleSortBy = (value: NoteSortBy) =>
+    setSortBy(value);
+
+  const clearSortBy = () =>
+    setSortBy(undefined);
+
+  useEffect(() => {
+    refetch();
+  }, [refetch, debouncedSearch, sortBy]);
+
   return (
     <>
       <div className="flex w-full justify-between items-center mb-8">
@@ -23,14 +49,34 @@ export default function NotesPage() {
         </Button>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 justify-items-center gap-4 w-full">
-        {isLoading ? (
-          Array.from({ length: 6 }).map((_, index) => (
-            <NoteSkeleton key={index} />
-          ))
-        ) : 
-          (notes ?? []).map(note => (<NoteCard key={note.id} note={note}/>))
-        }
+      <div className="flex gap-4 w-full">
+        <div className="flex flex-col gap-4 w-full">
+          <div className="flex flex-col md:flex-row gap-4">
+            <Search
+              searchValue={search}
+              onSearch={handleSearch}
+            />
+
+            <div className="flex w-full md:w-auto gap-4">
+              <NoteOrder
+                order={sortBy}
+                selectOrder={handleSortBy}
+                clearOrder={clearSortBy}
+                isMobile={isMobile}
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 justify-items-center gap-4 w-full">
+            {isLoading ? (
+              Array.from({ length: 6 }).map((_, index) => (
+                <NoteSkeleton key={index} />
+              ))
+            ) :
+              (notes ?? []).map(note => (<NoteCard key={note.id} note={note} />))
+            }
+          </div>
+        </div>
       </div>
     </>
   );

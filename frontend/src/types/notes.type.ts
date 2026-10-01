@@ -1,3 +1,8 @@
+export enum NoteSortBy {
+  CREATED_AT = 'createdAt',
+  UPDATED_AT = 'updatedAt'
+}
+
 export type Note = {
   id: string;
   title: string;
@@ -7,6 +12,11 @@ export type Note = {
   createdAt?: Date;
   updatedAt?: Date;
 };
+
+export type FindAllNoteSearchParam = {
+  search?: string;
+  sortBy?: NoteSortBy;
+}
 
 export type CreateNoteRequest = {
   title: string;

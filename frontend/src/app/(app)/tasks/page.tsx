@@ -18,7 +18,6 @@ import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 
 export default function TasksPage() {
-
   const router = useRouter();
 
   const isMobile = useIsMobile();

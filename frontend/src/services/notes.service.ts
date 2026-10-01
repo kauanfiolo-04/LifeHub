@@ -1,9 +1,10 @@
 import { api } from "@/lib/axios";
 import { CreateNoteRequest, Note, UpdateNoteRequest } from "@/types/notes.type";
+import { FindAllNoteSearchParam } from "@/types/notes.type";
 
 export const NotesService = {
-  findAll: async () => {
-    const { data } = await api.get<Note[]>("/notes");
+  findAll: async (params: FindAllNoteSearchParam) => {
+    const { data } = await api.get<Note[]>("/notes", { params });
 
     return data;
   },
