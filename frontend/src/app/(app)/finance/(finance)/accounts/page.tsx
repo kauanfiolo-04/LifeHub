@@ -10,7 +10,7 @@ import { useRouter } from "next/navigation";
 export default function AccountsPage() {
   const router = useRouter();
   
-  const { data: accs, isFetching } = useAccounts({ showTransac: true });
+  const { data: accs, isFetching, isLoading } = useAccounts({ showTransac: true });
 
   return (
     <>
@@ -25,15 +25,15 @@ export default function AccountsPage() {
         </Button>
       </div>
 
-      {(!accs || accs.length === 0) ? (
+      {(isFetching || isLoading) ? (
+        <div>Loading ...</div>
+      ) : (!accs || accs.length === 0) ? (
         <h2 
           className="cursor-pointer underline md:no-underline hover:underline"
           onClick={() => router.push("/finance/accounts/new")}
         >
           Please, create an account!
         </h2>
-      ) : isFetching ? (
-        <div>Loading ...</div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
           {accs?.map(acc => <AccountCard key={acc.id} account={acc} />)}
