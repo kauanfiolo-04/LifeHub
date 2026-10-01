@@ -2,7 +2,7 @@ import { Task, TaskPriority, TaskStatus } from "@/types/tasks.type";
 import { Card, CardContent } from "../ui/card";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Calendar03Icon } from "@hugeicons/core-free-icons";
-import { getTaskDateLabel } from "@/utils/get-task-date-label";
+import { getDateLabel } from "@/utils/get-date-label";
 import { type AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 
 interface TaskCardProps {
@@ -29,7 +29,7 @@ const DueDate = ({ date }: DueDateProps) => {
     <div className="flex gap-2 items-center">
       <HugeiconsIcon size={18} icon={Calendar03Icon} />
 
-      <span className="text-sm">{getTaskDateLabel(date)}</span>
+      <span className="text-sm">{getDateLabel(date)}</span>
     </div>
   );
 };

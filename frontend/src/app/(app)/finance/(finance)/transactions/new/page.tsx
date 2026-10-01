@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm, useWatch } from "react-hook-form";
 import { Button } from "@/components/ui/button";
@@ -27,6 +27,8 @@ export default function CreateTransactionPage() {
 
   const [selectedAcc, setSelectedAcc] = useState<Account | undefined>();
 
+  const now = useMemo(() => new Date(), []);
+
   const description = useWatch({
     control,
     name: "description",
@@ -39,6 +41,12 @@ export default function CreateTransactionPage() {
     defaultValue: TransactionType.EXPENSE
   });
 
+  const date = useWatch({
+    control,
+    name: "date",
+    defaultValue: now
+  });
+
   const handleAcc = (val: Account) => {
     reset();
     clearErrors();
@@ -48,6 +56,10 @@ export default function CreateTransactionPage() {
 
   const handleType = (val: TransactionType) =>
     setValue("type", val);
+
+  const handleDate = (date?: Date) => {
+    if (date) setValue("date", date);
+  }
 
   const handleOnSubmit = async (data: CreateTransactionRequest) => {
     try {
@@ -65,7 +77,8 @@ export default function CreateTransactionPage() {
 
   useEffect(() => {
     setValue("type", TransactionType.EXPENSE);
-  }, [setValue])
+    setValue("date", now);
+  }, [setValue, now]);
 
   return (
     <>
@@ -142,7 +155,13 @@ export default function CreateTransactionPage() {
             </FieldDescription>
           </Field>
 
-          <DatePicker />
+          <DatePicker 
+            value={date}
+            onChange={handleDate}
+            showHours={true}
+            defaultValue={now}
+            invalid={isError}
+          />
         </FieldGroup>
 
         <Button size="lg" disabled={isPending} type="submit">

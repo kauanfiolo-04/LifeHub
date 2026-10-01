@@ -1,6 +1,6 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Transaction, TransactionType } from "@/types/finance/transactions.type";
-import { getTaskDateLabel } from "@/utils/get-task-date-label";
+import { getDateLabel } from "@/utils/get-date-label";
 import { Calendar03Icon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { type AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
@@ -49,7 +49,7 @@ export default function TransactionCard({ transaction, router }: TransactionCard
               />
 
               <span className="text-xs leading-none">
-                {getTaskDateLabel(date, true)}
+                {getDateLabel(date, true)}
               </span>
             </div>
           </div>

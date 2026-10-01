@@ -24,7 +24,7 @@ export type CreateTransactionRequest = {
   amount: number;
   accountId: string;
   categoryId?: string;
-  date: string;
+  date: Date;
 };
 
 export type UpdateTransactionRequest = Partial<CreateTransactionRequest>;
