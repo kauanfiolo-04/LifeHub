@@ -3,8 +3,9 @@ import { CreateNoteDTO } from './dto/create-note.dto';
 import { UpdateNoteDTO } from './dto/update-note.dto';
 import { Note } from './entities/note.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { FindOptionsOrder, FindOptionsWhere, ILike, Repository } from 'typeorm';
 import { JwtPayload } from '../auth/types/jwt-payload.type';
+import { NotesSortBy } from './enum/notes-sort-by';
 
 @Injectable()
 export class NotesService {
@@ -28,15 +29,49 @@ export class NotesService {
     return newNote;
   }
 
-  async findAll(userId: string) {
-    const notes = await this.notesRepository.find({
-      where: {
-        user: { id: userId }
-      },
-      order: { createdAt: 'desc' }
-    });
+  async findAll(payload: JwtPayload, search?: string, orderBy?: NotesSortBy) {
+    let order: FindOptionsOrder<Note> | undefined;
 
-    return notes;
+    const where: FindOptionsWhere<Note>[] = [];
+
+    const baseWhere: FindOptionsWhere<Note> = {
+      user: { id: payload.sub }
+    };
+
+    switch (orderBy) {
+      case NotesSortBy.CREATED_AT:
+        order = { createdAt: 'desc' };
+        break;
+
+      case NotesSortBy.UPDATED_AT:
+        order = { updatedAt: 'desc' };
+        break;
+
+      default:
+        order = { createdAt: 'desc' };
+        break;
+    }
+
+    if (search) {
+      where.push(
+        {
+          ...baseWhere,
+          title: ILike(`%${search}%`)
+        },
+        {
+          ...baseWhere,
+          content: ILike(`%${search}%`)
+        },
+        {
+          ...baseWhere,
+          tags: ILike(`%${search}%`)
+        }
+      );
+    } else {
+      where.push(baseWhere);
+    }
+
+    return await this.notesRepository.find({ where, order });
   }
 
   async findOne(id: string) {
