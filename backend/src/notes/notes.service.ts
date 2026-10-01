@@ -3,7 +3,7 @@ import { CreateNoteDTO } from './dto/create-note.dto';
 import { UpdateNoteDTO } from './dto/update-note.dto';
 import { Note } from './entities/note.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FindOptionsOrder, FindOptionsWhere, ILike, Repository } from 'typeorm';
+import { FindOptionsOrder, FindOptionsWhere, ILike, Raw, Repository } from 'typeorm';
 import { JwtPayload } from '../auth/types/jwt-payload.type';
 import { NotesSortBy } from './enum/notes-sort-by';
 
@@ -64,7 +64,14 @@ export class NotesService {
         },
         {
           ...baseWhere,
-          tags: ILike(`%${search}%`)
+          tags: Raw(
+            alias => `EXISTS (
+              SELECT 1
+              FROM unnest(${alias}) AS tag
+              WHERE tag ILIKE :search
+            )`,
+            { search: `%${search}%` }
+          )
         }
       );
     } else {
