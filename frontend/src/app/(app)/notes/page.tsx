@@ -51,20 +51,19 @@ export default function NotesPage() {
 
       <div className="flex gap-4 w-full">
         <div className="flex flex-col gap-4 w-full">
-          <div className="flex flex-col md:flex-row gap-4">
+          <div className="flex gap-4">
             <Search
               searchValue={search}
               onSearch={handleSearch}
             />
-
-            <div className="flex w-full md:w-auto gap-4">
-              <NoteOrder
-                order={sortBy}
-                selectOrder={handleSortBy}
-                clearOrder={clearSortBy}
-                isMobile={isMobile}
-              />
-            </div>
+            
+            <NoteOrder
+              order={sortBy}
+              selectOrder={handleSortBy}
+              clearOrder={clearSortBy}
+              isMobile={isMobile}
+              type="icon"
+            />
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 justify-items-center gap-4 w-full">

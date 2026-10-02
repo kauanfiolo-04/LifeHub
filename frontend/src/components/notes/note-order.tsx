@@ -11,6 +11,7 @@ interface NoteOrderProps {
   selectOrder: (value: NoteSortBy) => void;
   clearOrder: () => void;
   isMobile: boolean;
+  type?: "text" | "icon";
 }
 
 const sortingOptions = Object.keys(NoteSortBy).map(key => {
@@ -25,15 +26,23 @@ const sortingOptions = Object.keys(NoteSortBy).map(key => {
   };
 });
 
-export default function NoteOrder({ order, selectOrder, clearOrder, isMobile }: NoteOrderProps) {
+export default function NoteOrder({ order, selectOrder, clearOrder, isMobile, type = "text" }: NoteOrderProps) {
+  const iconOnly = type === "icon";
+
   const labelToShow = (opt: NoteSortBy) => 
     sortingOptions.find(item => item.value === opt)?.label;
 
   return isMobile ? (
     <Drawer direction="left" fixed >
       <DrawerTrigger asChild>
-        <Button variant="outline" className="gap-2 w-[calc(50%-8px)]">
-          <span>{order ? labelToShow(order) : "Order by"}</span>
+        <Button 
+          variant="outline" 
+          className="gap-2" 
+          style={{ width: !iconOnly ? "calc(50% - 8px)" : "auto"  }}
+        >
+          {!iconOnly && (
+            <span>{order ? labelToShow(order) : "Order by"}</span>
+          )}
 
           <HugeiconsIcon icon={Sorting05Icon} />
         </Button>
