@@ -1,7 +1,6 @@
 "use client";
 
 import TaskCard from "@/components/tasks/task-card";
-import TaskOrder from "@/components/tasks/task-order";
 import Search from "@/components/common/search";
 import TasksFilterList, { getFiltersListGroups } from "@/components/tasks/tasks-filter-list";
 import TaskCardSkeleton from "@/components/tasks/tasks-card-skeleton";
@@ -16,6 +15,14 @@ import { FilterMailIcon, PlusSignIcon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
+import OrderBy, { OrderOptions } from "@/components/common/order-by";
+
+const orderOptions: OrderOptions<TaskSortBy>[] = [
+  { label: "Priority", value: TaskSortBy.PRIORITY },
+  { label: "Due date", value: TaskSortBy.DUE_DATE },
+  { label: "Created at", value: TaskSortBy.CREATED_AT },
+  { label: "Update at", value: TaskSortBy.UPDATED_AT }
+]; 
 
 export default function TasksPage() {
   const router = useRouter();
@@ -141,8 +148,9 @@ export default function TasksPage() {
                 </Drawer>
               )}
 
-              <TaskOrder 
+              <OrderBy<TaskSortBy> 
                 order={sortBy}
+                options={orderOptions}
                 selectOrder={handleSortBy}
                 clearOrder={clearSortBy}
                 isMobile={isMobile}

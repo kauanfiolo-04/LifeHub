@@ -1,8 +1,8 @@
 "use client";
 
+import OrderBy, { OrderOptions } from "@/components/common/order-by";
 import Search from "@/components/common/search";
 import NoteCard from "@/components/notes/note-card";
-import NoteOrder from "@/components/notes/note-order";
 import NoteSkeleton from "@/components/notes/note-skeleton";
 import { Button } from "@/components/ui/button";
 import { useNotes } from "@/hooks/notes/useNotes";
@@ -13,6 +13,11 @@ import { PlusSignIcon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+
+const orderOptions: OrderOptions<NoteSortBy>[] = [
+  { label: "Created at", value: NoteSortBy.CREATED_AT },
+  { label: "Updated at", value: NoteSortBy.UPDATED_AT }
+]; 
 
 export default function NotesPage() {
   const router = useRouter();
@@ -57,8 +62,9 @@ export default function NotesPage() {
               onSearch={handleSearch}
             />
             
-            <NoteOrder
+            <OrderBy<NoteSortBy>
               order={sortBy}
+              options={orderOptions}
               selectOrder={handleSortBy}
               clearOrder={clearSortBy}
               isMobile={isMobile}

@@ -1,41 +1,42 @@
 import { HugeiconsIcon } from "@hugeicons/react";
-import { ArrowDownWideNarrow, CancelCircleIcon, Sorting01Icon, Sorting05Icon } from "@hugeicons/core-free-icons";
+import { CancelCircleIcon, Sorting05Icon } from "@hugeicons/core-free-icons";
 import { Button } from "../ui/button";
-import { TaskSortBy } from "@/types/tasks.type";
 import { Drawer, DrawerClose, DrawerContent, DrawerTrigger } from "../ui/drawer";
-import TasksFilterList from "./tasks-filter-list";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu";
-import { Field, FieldGroup } from "../ui/field";
 import { Card, CardContent, CardHeader } from "../ui/card";
 
-interface TaskOrderProps {
-  order: TaskSortBy | undefined;
-  selectOrder: (value: TaskSortBy) => void;
-  clearOrder: () => void;
-  isMobile: boolean;
+export interface OrderOptions<T> {
+  label: string;
+  value: T;
 }
 
-const sortingOptions = Object.keys(TaskSortBy).map(key => {
-  const label = key
-    .toLowerCase()
-    .replace(/_/g, ' ')
-    .replace(/\b\w/g, char => char.toUpperCase());
+interface OrderByProps<T> {
+  order?: T;
+  options: OrderOptions<T>[];
+  selectOrder: (value: T) => void;
+  clearOrder: () => void;
+  isMobile: boolean;
+  type?: "text" | "icon";
+}
 
-  return {
-    label: label,
-    value: TaskSortBy[key as keyof typeof TaskSortBy]
-  };
-});
+export default function OrderBy<T>({ order, options, selectOrder, clearOrder, isMobile, type = "text" }: OrderByProps<T>) {
+  const iconOnly = type === "icon";
 
-export default function TaskOrder({ order, selectOrder, clearOrder, isMobile }: TaskOrderProps) {
-  const labelToShow = (opt: TaskSortBy) => 
-    sortingOptions.find(item => item.value === opt)?.label;
+  const labelToShow = options.find(
+    (option) => option.value === order
+  )?.label ?? "Order by";
 
   return isMobile ? (
     <Drawer direction="left" fixed >
       <DrawerTrigger asChild>
-        <Button variant="outline" className="gap-2 w-[calc(50%-8px)]">
-          <span>{order ? labelToShow(order) : "Order by"}</span>
+        <Button
+          variant="outline"
+          className="gap-2"
+          style={{ width: !iconOnly ? "calc(50% - 8px)" : "auto" }}
+        >
+          {!iconOnly && (
+            <span>{labelToShow}</span>
+          )}
 
           <HugeiconsIcon icon={Sorting05Icon} />
         </Button>
@@ -53,7 +54,7 @@ export default function TaskOrder({ order, selectOrder, clearOrder, isMobile }: 
           </CardHeader>
 
           <CardContent>
-            {sortingOptions.map((opt, idx) => (
+            {options.map((opt, idx) => (
               <Button key={idx}
                 className="w-full justify-start"
                 variant={order === opt.value ? "outline" : "ghost"}
@@ -66,7 +67,7 @@ export default function TaskOrder({ order, selectOrder, clearOrder, isMobile }: 
             ))}
 
             {!(!!order) && (
-              <Button 
+              <Button
                 variant="ghost"
                 onClick={clearOrder}
               >
@@ -81,7 +82,7 @@ export default function TaskOrder({ order, selectOrder, clearOrder, isMobile }: 
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="outline" className="gap-2 w-32">
-          <span>{order ? labelToShow(order) : "Order by"}</span>
+          <span>{labelToShow}</span>
 
           <HugeiconsIcon icon={Sorting05Icon} />
         </Button>
@@ -89,9 +90,9 @@ export default function TaskOrder({ order, selectOrder, clearOrder, isMobile }: 
 
       <DropdownMenuContent>
         <DropdownMenuGroup>
-          {sortingOptions.map((opt, idx) => (
+          {options.map((opt, idx) => (
             <DropdownMenuItem key={idx} asChild>
-              <Button 
+              <Button
                 className="w-full justify-start"
                 variant={order === opt.value ? "outline" : "ghost"}
                 onClick={() => selectOrder(opt.value)}
