@@ -2,10 +2,10 @@ import { Finance } from "@/types/finance/finance.type";
 import { Card, CardHeader } from "../ui/card";
 
 interface MetricsBoxesProps {
-  metrics: Finance;
+  metrics?: Finance;
 }
 
-export default function MetricsBoxes({ metrics }: MetricsBoxesProps) {
+export default function MetricsBoxes({ metrics = { balance: 0, totalExpenses: 0, totalIncomes: 0 } }: MetricsBoxesProps) {
   return (
     <div className="grid grid-cols-2 md:flex gap-4 items-center w-full">
       <Card className="w-40 aspect-square p-5 bg-[#006653]">

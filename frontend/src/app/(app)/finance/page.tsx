@@ -38,14 +38,14 @@ export default function FinancePage() {
             type="all"
           />
 
-          <Button className="w-[calc(50%-8px)] md:w-40 gap-2" variant="outline" onClick={() => router.push("/transactions/new")}>
+          <Button className="w-[calc(50%-8px)] md:w-40 gap-2" variant="outline" onClick={() => router.push("/finance/transactions/new")}>
             <HugeiconsIcon icon={PlusSignIcon} />
             <span>New transaction</span>
           </Button>
         </div>
         
         <MetricsBoxes 
-          metrics={finance ?? { balance: 0, totalExpenses: 0, totalIncomes: 0 }}
+          metrics={finance}
         />
       </div>
     </>
