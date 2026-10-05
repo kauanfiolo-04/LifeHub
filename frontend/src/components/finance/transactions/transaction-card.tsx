@@ -34,8 +34,8 @@ export default function TransactionCard({ transaction, router }: TransactionCard
           <div className="flex justify-start gap-2 items-center">
             {!!category && <p>{category?.name}</p>}
 
-            <div>
-              <AccountIcon accType={account.type} />
+            <div className="flex gap-2 items-center">
+              <AccountIcon accType={account.type} size={18} />
               <p className="text-sm">{account.name}</p>
             </div>
           </div>
