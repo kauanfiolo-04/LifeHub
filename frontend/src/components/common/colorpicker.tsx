@@ -1,4 +1,4 @@
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
+import { Popover, PopoverContent, PopoverHeader, PopoverTitle, PopoverTrigger } from "../ui/popover";
 import { Button } from "../ui/button";
 import { Card } from "../ui/card";
 import { HexAlphaColorPicker } from "react-colorful";
@@ -14,8 +14,8 @@ export interface ColorPickerProps {
 
 export default function ColorPicker({ color, setColor, readOnly = false, invalid = false }: ColorPickerProps) {
   return (
-    <Dialog>
-      <DialogTrigger asChild disabled={readOnly}>
+    <Popover>
+      <PopoverTrigger asChild disabled={readOnly}>
         <Button variant="ghost"
           aria-invalid={invalid}
           className={`
@@ -27,12 +27,12 @@ export default function ColorPicker({ color, setColor, readOnly = false, invalid
             <div className="h-4 w-4 border" style={{ backgroundColor: color ?? "#000000" }} /> {color ?? "#000000"}
           </span>
         </Button>
-      </DialogTrigger>
+      </PopoverTrigger>
 
-      <DialogContent style={{ backgroundColor: color }} closeBtnVariant="secondary">
-        <DialogHeader>
-          <DialogTitle className="text-xl font-bold" style={{ color: color ? getAccessibleTextColor(color) : undefined }}>Color select</DialogTitle>
-        </DialogHeader>
+      <PopoverContent style={{ backgroundColor: color }} align="center">
+        <PopoverHeader>
+          <PopoverTitle className="text-xl font-bold" style={{ color: color ? getAccessibleTextColor(color) : undefined }}>Color select</PopoverTitle>
+        </PopoverHeader>
 
         <Card className="items-center">
           <HexAlphaColorPicker
@@ -60,7 +60,7 @@ export default function ColorPicker({ color, setColor, readOnly = false, invalid
             }}
           />
         </Card>
-      </DialogContent>
-    </Dialog>
+      </PopoverContent>
+    </Popover>
   );
 }

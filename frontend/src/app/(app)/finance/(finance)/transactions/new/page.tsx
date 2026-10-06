@@ -16,6 +16,7 @@ import { Account } from "@/types/finance/accounts.type";
 import { Textarea } from "@/components/ui/textarea";
 import TransactionTypeSelect from "@/components/finance/transactions/transaction-type-select";
 import { DatePicker } from "@/components/ui/date-picker";
+import SelectCategory from "@/components/finance/categories/select-category";
 
 export default function CreateTransactionPage() {
   const router = useRouter();
@@ -132,7 +133,6 @@ export default function CreateTransactionPage() {
             </Field>
           </Field>
 
-
           <Field data-invalid={isError || !!errors.description?.message} >
             <FieldLabel htmlFor="description">Description</FieldLabel>
             <Textarea
@@ -155,13 +155,25 @@ export default function CreateTransactionPage() {
             </FieldDescription>
           </Field>
 
-          <DatePicker 
-            value={date}
-            onChange={handleDate}
-            showHours={true}
-            defaultValue={now}
-            invalid={isError}
-          />
+          <Field orientation={"horizontal"}>
+            <Field>
+              <FieldLabel>Date</FieldLabel>
+              
+              <DatePicker 
+                value={date}
+                onChange={handleDate}
+                showHours={true}
+                defaultValue={now}
+                invalid={isError}
+              />
+            </Field>
+
+            <Field>
+              <FieldLabel>Category</FieldLabel>
+            
+              <SelectCategory />
+            </Field>
+          </Field>
         </FieldGroup>
 
         <Button size="lg" disabled={isPending} type="submit">
