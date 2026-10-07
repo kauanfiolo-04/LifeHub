@@ -16,7 +16,9 @@ import { Account } from "@/types/finance/accounts.type";
 import { Textarea } from "@/components/ui/textarea";
 import TransactionTypeSelect from "@/components/finance/transactions/transaction-type-select";
 import { DatePicker } from "@/components/ui/date-picker";
-import SelectCategory from "@/components/finance/categories/select-category";
+import { Category } from "@/types/finance/categories.type";
+import { useCategories } from "@/hooks/finance/categories/useCategories";
+import CategorySelect from "@/components/finance/categories/category-select";
 
 export default function CreateTransactionPage() {
   const router = useRouter();
@@ -25,8 +27,10 @@ export default function CreateTransactionPage() {
 
   const { mutateAsync, isPending, isError, reset } = useCreateTransaction();
   const { data: accs } = useAccounts();
+  const { data: categs } = useCategories();
 
   const [selectedAcc, setSelectedAcc] = useState<Account | undefined>();
+  const [selectedCateg, setSelectedCateg] = useState<Category | undefined>();
 
   const now = useMemo(() => new Date(), []);
 
@@ -62,6 +66,13 @@ export default function CreateTransactionPage() {
     if (date) setValue("date", date);
   }
 
+  const handleCateg = (val: Category) => {
+    reset();
+    clearErrors();
+    setSelectedCateg(val);
+    setValue("categoryId", val.id);
+  }
+
   const handleOnSubmit = async (data: CreateTransactionRequest) => {
     try {
       await mutateAsync(data, {
@@ -79,6 +90,7 @@ export default function CreateTransactionPage() {
   useEffect(() => {
     setValue("type", TransactionType.EXPENSE);
     setValue("date", now);
+    setValue("categoryId", undefined);
   }, [setValue, now]);
 
   return (
@@ -171,7 +183,11 @@ export default function CreateTransactionPage() {
             <Field>
               <FieldLabel>Category</FieldLabel>
             
-              <SelectCategory />
+              <CategorySelect
+                categories={categs ?? []}
+                category={selectedCateg}
+                setCategory={handleCateg}
+              />
             </Field>
           </Field>
         </FieldGroup>

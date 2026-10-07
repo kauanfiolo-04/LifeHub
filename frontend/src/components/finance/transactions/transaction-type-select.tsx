@@ -20,7 +20,7 @@ export default function TransactionTypeSelect({ value, setValue }: TransactionTy
 
       <SelectContent>
         <SelectGroup>
-          <SelectLabel>Select</SelectLabel>
+          <SelectLabel>Choose transaction type</SelectLabel>
 
           {entries.map(([key, val]) => (
             <SelectItem key={key} value={val.toString()}>

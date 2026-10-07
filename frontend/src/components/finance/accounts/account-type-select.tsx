@@ -20,7 +20,7 @@ export default function AccountTypeSelect({ value, setValue }: AccountTypeSelect
 
       <SelectContent>
         <SelectGroup>
-          <SelectLabel>Select</SelectLabel>
+          <SelectLabel>Select account type</SelectLabel>
 
           {entries.map(([key, val]) => (
             <SelectItem key={key} value={val.toString()}>
