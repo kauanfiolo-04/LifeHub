@@ -2,7 +2,7 @@
 
 import ColorPicker from "@/components/common/colorpicker";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
@@ -10,12 +10,12 @@ import useCreateCategory from "@/hooks/finance/categories/useCreateCategory";
 import { CreateCategoryRequest } from "@/types/finance/categories.type";
 import { getErrorMessage } from "@/utils/get-error-message";
 import { addNotification } from "@/utils/notifications";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 
 export default function CreateCategoryDialog() {
   const { mutateAsync, isPending, isError, reset } = useCreateCategory();
-  
+
   const { register, setValue, handleSubmit, control, reset: resetForm } = useForm<CreateCategoryRequest>();
 
   const [open, setOpen] = useState(false);
@@ -26,7 +26,7 @@ export default function CreateCategoryDialog() {
     defaultValue: undefined
   });
 
-  const handleColor = (color?: string) => 
+  const handleColor = (color?: string) =>
     setValue("color", color);
 
   const handleOpenChange = (value: boolean) => {
@@ -40,11 +40,11 @@ export default function CreateCategoryDialog() {
 
   const handleOnSubmit = async (data: CreateCategoryRequest) => {
     try {
-      await mutateAsync(data, { 
+      await mutateAsync(data, {
         onSuccess: () => {
           addNotification.success("Category created with success!");
           handleOpenChange(false);
-        }, 
+        },
         onError: (e) => {
           const message = getErrorMessage(e);
           addNotification.error(Array.isArray(message) ? message.join(", ") : message);
@@ -56,15 +56,17 @@ export default function CreateCategoryDialog() {
   }
 
   return (
-    <Dialog open={open}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
         <Button variant="outline">Add</Button>
       </DialogTrigger>
 
       <DialogContent>
-        <DialogHeader>Create new category</DialogHeader>
+        <DialogHeader>
+          <DialogTitle>Create new category</DialogTitle>
+        </DialogHeader>
 
-        <form 
+        <form
           onSubmit={(e) => {
             e.stopPropagation();
             handleSubmit(handleOnSubmit)(e);
@@ -74,9 +76,9 @@ export default function CreateCategoryDialog() {
             <Field aria-invalid={isError}>
               <FieldLabel>Name</FieldLabel>
 
-              <Input 
+              <Input
                 aria-invalid={isError}
-                {...register("name", { 
+                {...register("name", {
                   onChange: () => reset(),
                   minLength: {
                     message: "Name must be longer than 2 characters.",
@@ -94,7 +96,7 @@ export default function CreateCategoryDialog() {
             <Field>
               <FieldLabel>Color</FieldLabel>
 
-              <ColorPicker 
+              <ColorPicker
                 color={color}
                 setColor={handleColor}
               />
