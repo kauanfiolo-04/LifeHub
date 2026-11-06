@@ -10,12 +10,15 @@ import useCreateCategory from "@/hooks/finance/categories/useCreateCategory";
 import { CreateCategoryRequest } from "@/types/finance/categories.type";
 import { getErrorMessage } from "@/utils/get-error-message";
 import { addNotification } from "@/utils/notifications";
+import { useEffect, useState } from "react";
 import { useForm, useWatch } from "react-hook-form";
 
 export default function CreateCategoryDialog() {
   const { mutateAsync, isPending, isError, reset } = useCreateCategory();
   
-  const { register, setValue, handleSubmit, control } = useForm<CreateCategoryRequest>();
+  const { register, setValue, handleSubmit, control, reset: resetForm } = useForm<CreateCategoryRequest>();
+
+  const [open, setOpen] = useState(false);
 
   const color = useWatch({
     control,
@@ -26,11 +29,21 @@ export default function CreateCategoryDialog() {
   const handleColor = (color?: string) => 
     setValue("color", color);
 
+  const handleOpenChange = (value: boolean) => {
+    setOpen(value);
+
+    if (!value) {
+      resetForm();
+      reset();
+    }
+  };
+
   const handleOnSubmit = async (data: CreateCategoryRequest) => {
     try {
       await mutateAsync(data, { 
         onSuccess: () => {
-          addNotification.success("Category created with success!")
+          addNotification.success("Category created with success!");
+          handleOpenChange(false);
         }, 
         onError: (e) => {
           const message = getErrorMessage(e);
@@ -43,7 +56,7 @@ export default function CreateCategoryDialog() {
   }
 
   return (
-    <Dialog>
+    <Dialog open={open}>
       <DialogTrigger asChild>
         <Button variant="outline">Add</Button>
       </DialogTrigger>

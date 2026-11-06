@@ -13,7 +13,7 @@ export default function CategorySelect({ categories, category, setCategory }: Ca
   return (
     <div className="flex gap-2 w-full">
       <Select
-        defaultValue="select"
+        defaultValue={category?.name.toLowerCase() ?? "select"}
         onValueChange={(val) => {
           const cat = categories.find(item => item.name.toLowerCase() === val);
 

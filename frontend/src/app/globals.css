@@ -32,6 +32,10 @@
   }
 }
 
+@theme {
+  --breakpoint-3xl: 1600px;
+}
+
 @theme inline {
   --font-heading: var(--font-sans);
   --font-sans: var(--font-sans);
