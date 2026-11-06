@@ -35,6 +35,11 @@ export default function CategorySelect({ categories, category, setCategory }: Ca
                 key={cat.id}
                 value={cat.name.toLowerCase()}
               >
+                <div 
+                  className="w-2 h-2 rounded-full mr-1" 
+                  style={{ backgroundColor: cat.color ?? "transparent" }} 
+                />
+                
                 {formatToLabel(cat.name)}
               </SelectItem>
             ))}
