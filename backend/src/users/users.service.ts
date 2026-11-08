@@ -17,6 +17,14 @@ export class UsersService {
     throw new NotFoundException('User not found!');
   }
 
+  async getDetail(id: string, payload: JwtPayload) {
+    const detailedItem = await this.findOne(id);
+
+    if (payload.sub !== detailedItem.id) throw new UnauthorizedException(`You can't get data from another user.`);
+
+    return detailedItem;
+  }
+
   async create(dto: CreateUserDTO) {
     try {
       const newUser = this.userRepository.create(dto);

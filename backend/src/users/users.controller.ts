@@ -9,19 +9,15 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  // @Post()
-  // create(@Body() body: CreateUserDTO) {
-  //   return this.usersService.create(body);
+  // @Get()
+  // findAll() {
+  //   return this.usersService.findAll();
   // }
 
-  @Get()
-  findAll() {
-    return this.usersService.findAll();
-  }
-
+  @UseGuards(JwtAuthGuard)
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.usersService.findOne(id);
+  findOne(@Param('id') id: string, @TokenPayload() payload: JwtPayload) {
+    return this.usersService.getDetail(id, payload);
   }
 
   @UseGuards(JwtAuthGuard)
