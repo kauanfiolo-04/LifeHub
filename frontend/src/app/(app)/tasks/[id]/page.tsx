@@ -117,12 +117,12 @@ export default function Task() {
 
   return (
     <>
-      <h1 className="text-2xl font-bold mb-8">Task</h1>
+      <h1 className="text-2xl font-bold mb-4 md:mb-8">Task</h1>
 
       {loadingTask ? (
         <NoteFormSkeleton />
       ) : (
-        <form className="flex flex-col w-full md:max-w-2xl gap-10" onSubmit={(e) => handleSubmit(handleOnSubmit)(e)}>
+        <form className="flex flex-col w-full md:max-w-2xl gap-6 md:gap-10" onSubmit={(e) => handleSubmit(handleOnSubmit)(e)}>
           <FieldGroup>
             <Field>
               <FieldLabel htmlFor="title">Title</FieldLabel>

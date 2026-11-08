@@ -75,10 +75,10 @@ export default function TasksPage() {
 
   return (
     <>
-      <h1 className="text-2xl font-bold mb-8">New Task</h1>
+      <h1 className="text-2xl font-bold mb-4 md:mb-8">New Task</h1>
 
-      <form className="flex flex-col w-full md:max-w-xl gap-10" onSubmit={(e) => handleSubmit(handleOnSubmit)(e)}>
-        <FieldGroup>
+      <form className="flex flex-1 md:flex-none flex-col w-full md:max-w-xl gap-6 md:gap-10" onSubmit={(e) => handleSubmit(handleOnSubmit)(e)}>
+        <FieldGroup className="flex-1 md:flex-none">
           <Field>
             <FieldLabel htmlFor="title">Title</FieldLabel>
             <Input
@@ -106,9 +106,10 @@ export default function TasksPage() {
             )}
           </Field>
 
-          <Field data-invalid={isError || !!errors.description?.message} >
+          <Field className="flex-1 md:flex-none" data-invalid={isError || !!errors.description?.message} >
             <FieldLabel htmlFor="description">Description</FieldLabel>
             <Textarea
+              className="flex-1 md:flex-none min-h-20 md:min-h-0 resize-none md:resize-y field-sizing-fixed"
               aria-invalid={isError || !!errors.description?.message}
               {...register("description", {
                 maxLength: {

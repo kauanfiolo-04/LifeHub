@@ -49,9 +49,9 @@ export default function CreateAccountPage() {
 
   return (
     <>
-      <h1 className="text-2xl font-bold mb-8">New Account</h1>
+      <h1 className="text-2xl font-bold mb-4 md:mb-8">New Account</h1>
 
-      <form className="flex flex-col w-full md:max-w-xl gap-10" onSubmit={(e) => handleSubmit(handleOnSubmit)(e)}>
+      <form className="flex flex-col w-full md:max-w-xl gap-6 md:gap-10" onSubmit={(e) => handleSubmit(handleOnSubmit)(e)}>
         <FieldGroup>
           <Field>
             <FieldLabel htmlFor="name">Name</FieldLabel>

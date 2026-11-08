@@ -64,7 +64,7 @@ export default function LoginForm() {
   }, [reset, email, password]);
 
   return (
-    <form className="flex flex-col w-full gap-10" onSubmit={(e) => handleSubmit(handleOnSubmit)(e)}>
+    <form className="flex flex-col w-full gap-6 md:gap-10" onSubmit={(e) => handleSubmit(handleOnSubmit)(e)}>
       <FieldGroup>
         <Field data-invalid={invalidCredentials} >
           <FieldLabel htmlFor="email">Email</FieldLabel>

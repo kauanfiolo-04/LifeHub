@@ -61,7 +61,7 @@ export default function RegisterForm() {
   };
 
   return (
-    <form className="flex flex-col w-full gap-10" onSubmit={(e) => handleSubmit(handleOnSubmit)(e)}>
+    <form className="flex flex-col w-full gap-6 md:gap-10" onSubmit={(e) => handleSubmit(handleOnSubmit)(e)}>
       <FieldGroup>
         <Field>
           <FieldLabel htmlFor="name">Name</FieldLabel>

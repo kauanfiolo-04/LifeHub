@@ -77,8 +77,8 @@ export default function CreateTransactionPage() {
     try {
       await mutateAsync(data, {
         onSuccess: () => {
-          addNotification.success("Account created with success!");
-          router.push("/finance/accounts");
+          addNotification.success("Transaction created with success!");
+          router.push("/finance/transactions");
         },
         onError: () => addNotification.error("Try again later")
       });
@@ -95,10 +95,10 @@ export default function CreateTransactionPage() {
 
   return (
     <>
-      <h1 className="text-2xl font-bold mb-8">New Transaction</h1>
+      <h1 className="text-2xl font-bold mb-4 md:mb-8">New Transaction</h1>
 
-      <form className="flex flex-col w-full md:max-w-xl gap-10" onSubmit={(e) => handleSubmit(handleOnSubmit)(e)}>
-        <FieldGroup>
+      <form className="flex flex-1 md:flex-none flex-col w-full md:max-w-xl gap-6 md:gap-10 " onSubmit={(e) => handleSubmit(handleOnSubmit)(e)}>
+        <FieldGroup className="flex-1 md:flex-none">
           <Field aria-invalid={isError || !!errors.title?.message}>
             <FieldLabel htmlFor="title">Title</FieldLabel>
             <Input
@@ -145,9 +145,10 @@ export default function CreateTransactionPage() {
             </Field>
           </Field>
 
-          <Field data-invalid={isError || !!errors.description?.message} >
+          <Field className="flex-1 md:flex-none" data-invalid={isError || !!errors.description?.message} >
             <FieldLabel htmlFor="description">Description</FieldLabel>
             <Textarea
+              className="flex-1 md:flex-none min-h-20 md:min-h-0 resize-none md:resize-y field-sizing-fixed"
               aria-invalid={isError || !!errors.description?.message}
               {...register("description", {
                 maxLength: {

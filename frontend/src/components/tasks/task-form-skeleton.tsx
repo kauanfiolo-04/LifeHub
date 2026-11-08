@@ -3,7 +3,7 @@ import { Skeleton } from "../ui/skeleton";
 
 export default function TaskFormSkeleton() {
   return (
-    <form className="flex flex-col w-full md:max-w-2xl gap-10">
+    <form className="flex flex-col w-full md:max-w-2xl gap-6 md:gap-10">
       <FieldGroup>
         <Field>
           <FieldLabel htmlFor="title">Title</FieldLabel>
