@@ -4,7 +4,7 @@ import { CreateTaskDTO } from './dto/create-task.dto';
 import { UpdateTaskDTO } from './dto/update-task.dto';
 import { Task } from './entities/task.entity';
 import { TaskSortBy } from './enum/task-sort-by';
-import { type FindOptionsOrder, ILike, Repository } from 'typeorm';
+import { type FindOptionsOrder, FindOptionsRelations, FindOptionsSelect, ILike, Repository } from 'typeorm';
 import { type JwtPayload } from '../auth/types/jwt-payload.type';
 
 @Injectable()
@@ -16,6 +16,15 @@ export class TasksService {
 
   throwNotFoundException(): never {
     throw new NotFoundException('Task not found!');
+  }
+
+  async getDetail(id: string, payload: JwtPayload) {
+    const detailedItem = await this.findOne(id, { user: true }, { user: { id: true } });
+
+    if (payload.sub !== detailedItem.user.id)
+      throw new UnauthorizedException(`You can't get data from another user's task.`);
+
+    return detailedItem;
   }
 
   async create(dto: CreateTaskDTO, payload: JwtPayload) {
@@ -72,8 +81,12 @@ export class TasksService {
     return tasks;
   }
 
-  async findOne(id: string) {
-    const task = await this.tasksRepository.findOneBy({ id });
+  async findOne(id: string, relations?: FindOptionsRelations<Task>, select?: FindOptionsSelect<Task>) {
+    const task = await this.tasksRepository.findOne({
+      where: { id },
+      relations,
+      select
+    });
 
     if (!task) this.throwNotFoundException();
 
@@ -81,7 +94,7 @@ export class TasksService {
   }
 
   async update(id: string, dto: UpdateTaskDTO, payload: JwtPayload) {
-    const task = await this.tasksRepository.findOne({ where: { id }, relations: { user: true } });
+    const task = await this.findOne(id, { user: true }, { user: { id: true } });
 
     if (!task) this.throwNotFoundException();
 
@@ -97,7 +110,7 @@ export class TasksService {
   }
 
   async remove(id: string, payload: JwtPayload) {
-    const task = await this.tasksRepository.findOne({ where: { id }, relations: { user: true } });
+    const task = await this.findOne(id, { user: true }, { user: { id: true } });
 
     if (!task) this.throwNotFoundException();
 

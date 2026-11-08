@@ -23,9 +23,10 @@ export class TasksController {
     return this.tasksService.findAll(payload, search, sortBy);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.tasksService.findOne(id);
+  findOne(@Param('id') id: string, @TokenPayload() payload: JwtPayload) {
+    return this.tasksService.getDetail(id, payload);
   }
 
   @UseGuards(JwtAuthGuard)
