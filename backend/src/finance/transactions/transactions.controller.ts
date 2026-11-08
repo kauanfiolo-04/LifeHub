@@ -26,9 +26,10 @@ export class TransactionsController {
     return this.transactionService.findAll(payload, accName, search);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.transactionService.findOne(id, { account: true, category: true });
+  findOne(@Param('id') id: string, payload: JwtPayload) {
+    return this.transactionService.getDetail(id, payload);
   }
 
   @UseGuards(JwtAuthGuard)

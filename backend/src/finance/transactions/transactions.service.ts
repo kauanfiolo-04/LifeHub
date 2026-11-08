@@ -21,6 +21,33 @@ export class TransactionsService {
     throw new NotFoundException(`${item} not found!`);
   }
 
+  async getDetail(id: string, payload: JwtPayload) {
+    const detailedItem = await this.findOne(
+      id,
+      { account: { user: true }, category: true },
+      {
+        account: {
+          id: true,
+          name: true,
+          type: true,
+          user: {
+            id: true
+          }
+        },
+        category: {
+          id: true,
+          name: true,
+          color: true
+        }
+      }
+    );
+
+    if (payload.sub !== detailedItem.account.user.id)
+      throw new UnauthorizedException(`You can't get data from another user's transaction.`);
+
+    return detailedItem;
+  }
+
   async create(dto: CreateTransactionDTO, payload: JwtPayload) {
     const { accountId, categoryId, ...rest } = dto;
 
@@ -111,7 +138,8 @@ export class TransactionsService {
       }
     );
 
-    if (!transaction) this.throwNotFoundException('Transaction');
+    if (payload.sub !== transaction.account.user.id)
+      throw new UnauthorizedException(`You can't change another user's transaction.`);
 
     const { accountId, categoryId, ...rest } = dto;
 
@@ -128,9 +156,6 @@ export class TransactionsService {
 
       transaction.category = category;
     }
-
-    if (payload.sub !== transaction.account.user.id)
-      throw new UnauthorizedException(`You can't change another user's transaction.`);
 
     Object.assign(transaction, rest);
 
