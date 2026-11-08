@@ -7,6 +7,7 @@ import { UpdateTransactionDTO } from './dto/update-transaction.dto';
 import { AccountsService } from '../accounts/accounts.service';
 import { JwtPayload } from '../../auth/types/jwt-payload.type';
 import { CategoriesService } from '../categories/categories.service';
+import { Account } from '../accounts/entities/account.entity';
 
 @Injectable()
 export class TransactionsService {
@@ -51,12 +52,9 @@ export class TransactionsService {
   async create(dto: CreateTransactionDTO, payload: JwtPayload) {
     const { accountId, categoryId, ...rest } = dto;
 
-    const account = await this.accountsService.findOne(accountId, { user: true }, { user: { id: true } });
+    const account = await this.accountsService.getDetail(accountId, payload);
 
-    if (account.user.id !== payload.sub)
-      throw new UnauthorizedException(`You can't create transactions for another user's account.`);
-
-    const category = categoryId ? await this.categoriesService.findOne(categoryId) : undefined;
+    const category = categoryId ? await this.categoriesService.getDetail(categoryId, payload) : undefined;
 
     const newTransaction = this.transactionsRepository.create({
       ...rest,
@@ -70,48 +68,39 @@ export class TransactionsService {
   }
 
   async findAll(payload: JwtPayload, accName?: string, search?: string) {
-    const where: FindOptionsWhere<Transaction>[] = [];
-
-    const baseWhere = {
-      account: {
-        user: { id: payload.sub },
-        ...(accName && {
-          name: ILike(`%${accName}%`)
-        })
-      }
+    const accountWhere: FindOptionsWhere<Account> = {
+      user: { id: payload.sub },
+      ...(accName && { name: ILike(`%${accName}%`) })
     };
 
+    const baseWhere: FindOptionsWhere<Transaction> = { account: accountWhere };
+
+    const where: FindOptionsWhere<Transaction>[] = [baseWhere];
+
     if (search) {
+      const term = ILike(`%${search}%`);
+
+      where.length = 0;
       where.push(
-        {
-          ...baseWhere,
-          title: ILike(`%${search}%`)
-        },
-        {
-          ...baseWhere,
-          description: ILike(`%${search}%`)
-        },
-        {
-          ...baseWhere,
-          category: { name: ILike(`%${search}%`) }
-        },
-        {
-          ...baseWhere,
-          account: { name: ILike(`%${search}%`) }
-        }
+        { ...baseWhere, title: term },
+        { ...baseWhere, description: term },
+        { ...baseWhere, category: { name: term } }
       );
-    } else {
-      where.push(baseWhere);
+
+      if (!accName) {
+        where.push({ ...baseWhere, account: { ...accountWhere, name: term } });
+      }
     }
 
-    const transactions = await this.transactionsRepository.find({
+    return this.transactionsRepository.find({
       where,
-      order: { createdAt: 'desc' },
-      relations: { account: true },
-      select: { account: { id: true, name: true, type: true } }
+      order: { date: 'desc', createdAt: 'desc' },
+      relations: { account: true, category: true },
+      select: {
+        account: { id: true, name: true, type: true },
+        category: { id: true, name: true, color: true }
+      }
     });
-
-    return transactions;
   }
 
   async findOne(id: string, relations?: FindOptionsRelations<Transaction>, select?: FindOptionsSelect<Transaction>) {
@@ -144,15 +133,15 @@ export class TransactionsService {
     const { accountId, categoryId, ...rest } = dto;
 
     if (accountId) {
-      const account = await this.accountsService.findOne(accountId, { user: true }, { user: { id: true } });
-
-      if (account.user.id !== payload.sub) throw new UnauthorizedException(`You can't use another user's account.`);
+      // chama getDetail ao invés de findOne devido a verificacao do dono da conta
+      const account = await this.accountsService.getDetail(accountId, payload);
 
       transaction.account = account;
     }
 
     if (categoryId) {
-      const category = await this.categoriesService.findOne(categoryId);
+      // chama getDetail ao invés de findOne devido a verificacao do dono da conta
+      const category = await this.categoriesService.getDetail(categoryId, payload);
 
       transaction.category = category;
     }
