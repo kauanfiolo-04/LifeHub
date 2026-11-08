@@ -27,9 +27,10 @@ export class NotesController {
     return this.notesService.findAll(payload, search, sortBy);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.notesService.findOne(id);
+  findOne(@Param('id') id: string, @TokenPayload() payload: JwtPayload) {
+    return this.notesService.getDetail(id, payload);
   }
 
   @UseGuards(JwtAuthGuard)

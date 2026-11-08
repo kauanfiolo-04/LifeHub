@@ -3,7 +3,15 @@ import { CreateNoteDTO } from './dto/create-note.dto';
 import { UpdateNoteDTO } from './dto/update-note.dto';
 import { Note } from './entities/note.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FindOptionsOrder, FindOptionsWhere, ILike, Raw, Repository } from 'typeorm';
+import {
+  FindOptionsOrder,
+  FindOptionsRelations,
+  FindOptionsSelect,
+  FindOptionsWhere,
+  ILike,
+  Raw,
+  Repository
+} from 'typeorm';
 import { JwtPayload } from '../auth/types/jwt-payload.type';
 import { NotesSortBy } from './enum/notes-sort-by';
 
@@ -16,6 +24,15 @@ export class NotesService {
 
   throwNotFoundException(): never {
     throw new NotFoundException('Note not found!');
+  }
+
+  async getDetail(id: string, payload: JwtPayload) {
+    const detailedItem = await this.findOne(id, { user: true }, { user: { id: true } });
+
+    if (payload.sub !== detailedItem.user.id)
+      throw new UnauthorizedException(`You can't get data from another user's task.`);
+
+    return detailedItem;
   }
 
   async create(dto: CreateNoteDTO, payload: JwtPayload) {
@@ -81,8 +98,12 @@ export class NotesService {
     return await this.notesRepository.find({ where, order });
   }
 
-  async findOne(id: string) {
-    const note = await this.notesRepository.findOneBy({ id });
+  async findOne(id: string, relations?: FindOptionsRelations<Note>, select?: FindOptionsSelect<Note>) {
+    const note = await this.notesRepository.findOne({
+      where: { id },
+      relations,
+      select
+    });
 
     if (!note) this.throwNotFoundException();
 
@@ -90,7 +111,7 @@ export class NotesService {
   }
 
   async update(id: string, dto: UpdateNoteDTO, payload: JwtPayload) {
-    const note = await this.notesRepository.findOne({ where: { id }, relations: { user: true } });
+    const note = await this.findOne(id, { user: true }, { user: { id: true } });
 
     if (!note) this.throwNotFoundException();
 
@@ -106,7 +127,7 @@ export class NotesService {
   }
 
   async remove(id: string, payload: JwtPayload) {
-    const note = await this.notesRepository.findOne({ where: { id }, relations: { user: true } });
+    const note = await this.findOne(id, { user: true }, { user: { id: true } });
 
     if (!note) this.throwNotFoundException();
 
