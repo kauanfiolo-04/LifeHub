@@ -21,6 +21,15 @@ export class AccountsService {
     throw new NotFoundException('Account not found!');
   }
 
+  async getDetail(id: string, payload: JwtPayload) {
+    const detailedItem = await this.findOne(id, { user: true }, { user: { id: true } });
+
+    if (payload.sub !== detailedItem.user.id)
+      throw new UnauthorizedException(`You can't get data from another user's account.`);
+
+    return detailedItem;
+  }
+
   async create(dto: CreateAccountDTO, payload: JwtPayload) {
     const newAccount = this.accountsRepository.create({
       ...{ name: dto.name, type: dto.type },

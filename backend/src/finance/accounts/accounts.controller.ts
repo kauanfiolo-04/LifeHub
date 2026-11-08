@@ -22,9 +22,10 @@ export class AccountsController {
     return this.accountsService.findAll(payload, !!showTransac);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.accountsService.findOne(id, { user: true, transactions: true }, { user: { id: true } });
+  findOne(@Param('id') id: string, @TokenPayload() payload: JwtPayload) {
+    return this.accountsService.getDetail(id, payload);
   }
 
   @UseGuards(JwtAuthGuard)
