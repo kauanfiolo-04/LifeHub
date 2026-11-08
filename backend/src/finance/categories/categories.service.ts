@@ -17,6 +17,15 @@ export class CategoriesService {
     throw new NotFoundException('Category not found!');
   }
 
+  async getDetail(id: string, payload: JwtPayload) {
+    const detailedItem = await this.findOne(id, { user: true }, { user: { id: true } });
+
+    if (payload.sub !== detailedItem.user.id)
+      throw new UnauthorizedException(`You can't get data from another user's Categorie.`);
+
+    return detailedItem;
+  }
+
   async create(dto: CreateCategoryDTO, payload: JwtPayload) {
     const newCategory = this.categoriesRepository.create({
       ...dto,

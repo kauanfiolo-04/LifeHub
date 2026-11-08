@@ -16,14 +16,15 @@ export class CategoriesController {
     return this.categoriesService.create(body, payload);
   }
 
-  @Get()
-  findAll() {
-    return this.categoriesService.findAll();
-  }
+  // @Get()
+  // findAll() {
+  //   return this.categoriesService.findAll();
+  // }
 
+  @UseGuards(JwtAuthGuard)
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.categoriesService.findOne(id, { user: true }, { user: { id: true } });
+  findOne(@Param('id') id: string, @TokenPayload() payload: JwtPayload) {
+    return this.categoriesService.getDetail(id, payload);
   }
 
   @UseGuards(JwtAuthGuard)
