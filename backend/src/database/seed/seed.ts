@@ -27,6 +27,10 @@ import { TransactionType } from '../../finance/transactions/enum/transaction-typ
 import { accountsData, INITIAL_BALANCE_TITLE } from './data/accounts.data';
 import { categoriesData } from './data/categories.data';
 import { buildTransactions, getPeriodStart } from './data/transactions.data';
+import { Task } from '../../tasks/entities/task.entity';
+import { Note } from '../../notes/entities/note.entity';
+import { buildTasks } from './data/tasks.data';
+import { notesData } from './data/notes.data';
 
 // ---------------------------------------------------------------------------
 // Configuração
@@ -66,7 +70,7 @@ async function ensureDemoUser(app: INestApplicationContext): Promise<User> {
 }
 
 /** Apaga transações, contas e categorias SÓ do usuário informado. */
-async function resetFinanceData(manager: EntityManager, userId: string): Promise<void> {
+async function resetDemoData(manager: EntityManager, userId: string): Promise<void> {
   // Ordem por causa das FKs: transações -> contas e categorias.
   // (delete não aceita critério em relação aninhada, por isso find + delete por ids)
   const transactions = await manager.find(Transaction, {
@@ -94,6 +98,22 @@ async function resetFinanceData(manager: EntityManager, userId: string): Promise
     await manager.delete(
       Category,
       categories.map(c => c.id)
+    );
+
+  const tasks = await manager.find(Task, { where: { user: { id: userId } }, select: { id: true } });
+
+  if (tasks.length)
+    await manager.delete(
+      Task,
+      tasks.map(t => t.id)
+    );
+
+  const notes = await manager.find(Note, { where: { user: { id: userId } }, select: { id: true } });
+
+  if (notes.length)
+    await manager.delete(
+      Note,
+      notes.map(n => n.id)
     );
 }
 
@@ -142,6 +162,34 @@ async function seedCategories(manager: EntityManager, user: User): Promise<Map<s
   }
 
   return result;
+}
+
+/** Creates the demo tasks that don't exist yet (matched by title). Returns how many were created. */
+async function seedTasks(manager: EntityManager, user: User): Promise<number> {
+  const existing = await manager.find(Task, { where: { user: { id: user.id } }, select: { title: true } });
+  const existingTitles = new Set(existing.map(t => t.title));
+
+  const entities = buildTasks(new Date())
+    .filter(task => !existingTitles.has(task.title))
+    .map(task => manager.create(Task, { ...task, user }));
+
+  await manager.save(entities, { chunk: 100 });
+
+  return entities.length;
+}
+
+/** Creates the demo notes that don't exist yet (matched by title). Returns how many were created. */
+async function seedNotes(manager: EntityManager, user: User): Promise<number> {
+  const existing = await manager.find(Note, { where: { user: { id: user.id } }, select: { title: true } });
+  const existingTitles = new Set(existing.map(n => n.title));
+
+  const entities = notesData
+    .filter(note => !existingTitles.has(note.title))
+    .map(note => manager.create(Note, { ...note, user }));
+
+  await manager.save(entities, { chunk: 100 });
+
+  return entities.length;
 }
 
 /** Gera e grava as transações dos últimos meses. Retorna quantas foram criadas. */
@@ -242,19 +290,22 @@ async function main(): Promise<void> {
     // Tudo em uma transação: se algo falhar no meio, nada fica pela metade.
     const summary = await ds.transaction(async manager => {
       if (FLAGS.reset) {
-        await resetFinanceData(manager, user.id);
+        await resetDemoData(manager, user.id);
         console.log('Dados financeiros do usuário demo apagados.');
       }
 
       const accounts = await seedAccounts(manager, user, periodStart);
       const categories = await seedCategories(manager, user);
       const transactions = await seedTransactions(manager, accounts, categories);
+      const tasks = await seedTasks(manager, user);
+      const notes = await seedNotes(manager, user);
 
-      return { accounts: accounts.size, categories: categories.size, transactions };
+      return { accounts: accounts.size, categories: categories.size, transactions, tasks, notes };
     });
 
     console.log(
-      `Seed concluído: ${summary.accounts} contas, ${summary.categories} categorias, ${summary.transactions} transações novas.`
+      `Seed concluído: ${summary.accounts} contas, ${summary.categories} categorias, ` +
+        `${summary.transactions} transações, ${summary.tasks} tasks e ${summary.notes} notes novas.`
     );
   } finally {
     await app.close();

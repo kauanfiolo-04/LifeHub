@@ -8,7 +8,10 @@ export const TasksService = {
       params: { search, sortBy, page, limit },
     });
 
-    return response;
+    return {
+      ...response,
+      data: response.data.map(t => ({ ...t, dueDate: new Date(t.dueDate) }))
+    };
   },
   findOne: async (taskId: string) => {
     const { data } = await api.get<Task>(`/tasks/${taskId}`);
