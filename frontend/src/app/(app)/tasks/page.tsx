@@ -25,7 +25,34 @@ const orderOptions: OrderOptions<TaskSortBy>[] = [
   { label: "Due date", value: TaskSortBy.DUE_DATE },
   { label: "Created at", value: TaskSortBy.CREATED_AT },
   { label: "Update at", value: TaskSortBy.UPDATED_AT }
-]; 
+];
+
+const filterTasks = (
+  tasks: Task[],
+  selectedFilters: string[]
+) => {
+  const groups = getFiltersListGroups(selectedFilters);
+
+  const [statusFilters, priorityFilters, dateFilters] = groups;
+
+  return tasks.filter((task) => {
+    const matchesStatus =
+      statusFilters.length === 0 ||
+      statusFilters.includes(task.status);
+
+    const matchesPriority =
+      priorityFilters.length === 0 ||
+      priorityFilters.includes(String(task.priority));
+
+    const matchesDate =
+      dateFilters.length === 0 ||
+      dateFilters.some((filter) =>
+        matchesDateFilter(task, filter)
+      );
+
+    return matchesStatus && matchesPriority && matchesDate;
+  });
+};
 
 export default function TasksPage() {
   const router = useRouter();
@@ -36,46 +63,19 @@ export default function TasksPage() {
   const [sortBy, setSortBy] = useState<TaskSortBy | undefined>();
   const [selectedFilters, setSelectedtFilters] = useState<string[]>([]);
   const [page, setPage] = useState(1);
-  
+
   const debouncedSearch = useDebounce<string | undefined>(search, 400);
-  
+
   const { data: response, isFetching, isPlaceholderData } = useTasks({ search: debouncedSearch, sortBy, page, limit: LIMIT });
-  
+
   const tasksToShow = useMemo(() => {
     const tasks = response?.data;
-    
+
     if (!tasks) return [];
-    
+
     return filterTasks(tasks, selectedFilters)
   }, [response, selectedFilters]);
   const totalPages = Math.max(response?.meta.totalPages ?? 1, 1);
-
-  const filterTasks = (
-    tasks: Task[],
-    selectedFilters: string[]
-  ) => {
-    const groups = getFiltersListGroups(selectedFilters);
-
-    const [statusFilters, priorityFilters, dateFilters] = groups;
-
-    return tasks.filter((task) => {
-      const matchesStatus =
-        statusFilters.length === 0 ||
-        statusFilters.includes(task.status);
-
-      const matchesPriority =
-        priorityFilters.length === 0 ||
-        priorityFilters.includes(String(task.priority));
-
-      const matchesDate =
-        dateFilters.length === 0 ||
-        dateFilters.some((filter) =>
-          matchesDateFilter(task, filter)
-        );
-
-      return matchesStatus && matchesPriority && matchesDate;
-    });
-  };
 
   const handleSearch = ({ search }: { search: string }) => {
     setSearch(search);
@@ -132,7 +132,7 @@ export default function TasksPage() {
 
         <div className="flex flex-col gap-4 w-full">
           <div className="flex flex-col md:flex-row gap-4">
-            <Search 
+            <Search
               searchValue={search}
               onSearch={handleSearch}
             />
@@ -158,7 +158,7 @@ export default function TasksPage() {
                 </Drawer>
               )}
 
-              <OrderBy<TaskSortBy> 
+              <OrderBy<TaskSortBy>
                 order={sortBy}
                 options={orderOptions}
                 selectOrder={handleSortBy}
@@ -179,7 +179,7 @@ export default function TasksPage() {
           </div>
 
           {response && response.meta.total > 0 && (
-            <ListPagination 
+            <ListPagination
               page={page}
               totalPages={totalPages}
               onPageChange={setPage}
