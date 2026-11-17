@@ -10,6 +10,7 @@ import { CategoriesService } from '../categories/categories.service';
 import { Account } from '../accounts/entities/account.entity';
 import { FindTransactionDTO } from './dto/find-transaction.dto';
 import { Paginated } from '../../common/types/paginated.type';
+import { TransactionType } from './enum/transaction-type.enum';
 
 @Injectable()
 export class TransactionsService {
@@ -183,5 +184,30 @@ export class TransactionsService {
       throw new UnauthorizedException(`You can't change another user's transaction.`);
 
     return await this.transactionsRepository.remove(transaction);
+  }
+
+  async getTotals(payload: JwtPayload, accName?: string) {
+    const qb = this.transactionsRepository
+      .createQueryBuilder('transaction')
+      .innerJoin('transaction.account', 'account')
+      .innerJoin('account.user', 'user')
+      .select('COALESCE(SUM(transaction.amount) FILTER (WHERE transaction.type = :income), 0)', 'totalIncomes')
+      .addSelect('COALESCE(SUM(transaction.amount) FILTER (WHERE transaction.type = :expense), 0)', 'totalExpenses')
+      .where('user.id = :userId', { userId: payload.sub })
+      .setParameters({
+        income: TransactionType.INCOME,
+        expense: TransactionType.EXPENSE
+      });
+
+    if (accName) {
+      qb.andWhere('account.name ILIKE :accName', { accName: `%${accName}%` });
+    }
+
+    const raw = await qb.getRawOne<{ totalIncomes: string; totalExpenses: string }>();
+
+    return {
+      totalIncomes: Number(raw?.totalIncomes ?? 0),
+      totalExpenses: Number(raw?.totalExpenses ?? 0)
+    };
   }
 }
