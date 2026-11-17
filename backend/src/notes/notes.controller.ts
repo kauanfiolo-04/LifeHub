@@ -6,6 +6,7 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { TokenPayload } from '../auth/decorators/user.decorator';
 import { type JwtPayload } from '../auth/types/jwt-payload.type';
 import { NotesSortBy } from './enum/notes-sort-by';
+import { FindNotesDTO } from './dto/find-notes.dto';
 
 @Controller('notes')
 export class NotesController {
@@ -19,12 +20,8 @@ export class NotesController {
 
   @UseGuards(JwtAuthGuard)
   @Get()
-  findAll(
-    @TokenPayload() payload: JwtPayload,
-    @Query('search') search?: string,
-    @Query('sortBy') sortBy?: NotesSortBy
-  ) {
-    return this.notesService.findAll(payload, search, sortBy);
+  findAll(@TokenPayload() payload: JwtPayload, @Query() query: FindNotesDTO) {
+    return this.notesService.findAll(payload, query);
   }
 
   @UseGuards(JwtAuthGuard)

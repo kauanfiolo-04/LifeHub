@@ -14,6 +14,8 @@ import {
 } from 'typeorm';
 import { JwtPayload } from '../auth/types/jwt-payload.type';
 import { NotesSortBy } from './enum/notes-sort-by';
+import { Paginated } from '../common/types/paginated.type';
+import { FindNotesDTO } from './dto/find-notes.dto';
 
 @Injectable()
 export class NotesService {
@@ -46,7 +48,7 @@ export class NotesService {
     return newNote;
   }
 
-  async findAll(payload: JwtPayload, search?: string, orderBy?: NotesSortBy) {
+  async findAll(payload: JwtPayload, { orderBy, search, limit, page }: FindNotesDTO): Promise<Paginated<Note>> {
     let order: FindOptionsOrder<Note> | undefined;
 
     const where: FindOptionsWhere<Note>[] = [];
@@ -95,7 +97,17 @@ export class NotesService {
       where.push(baseWhere);
     }
 
-    return await this.notesRepository.find({ where, order });
+    const [data, total] = await this.notesRepository.findAndCount({
+      where,
+      order,
+      skip: (page - 1) * limit,
+      take: limit
+    });
+
+    return {
+      data,
+      meta: { total, page, limit, totalPages: Math.ceil(total / limit) }
+    };
   }
 
   async findOne(id: string, relations?: FindOptionsRelations<Note>, select?: FindOptionsSelect<Note>) {
