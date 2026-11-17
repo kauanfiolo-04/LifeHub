@@ -5,7 +5,7 @@ import { TasksService } from './tasks.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { TokenPayload } from '../auth/decorators/user.decorator';
 import { type JwtPayload } from '../auth/types/jwt-payload.type';
-import { TaskSortBy } from './enum/task-sort-by';
+import { FindTasksDTO } from './dto/find-tasks.dto';
 
 @Controller('tasks')
 export class TasksController {
@@ -19,8 +19,8 @@ export class TasksController {
 
   @UseGuards(JwtAuthGuard)
   @Get()
-  findAll(@TokenPayload() payload: JwtPayload, @Query('search') search?: string, @Query('sortBy') sortBy?: TaskSortBy) {
-    return this.tasksService.findAll(payload, search, sortBy);
+  findAll(@TokenPayload() payload: JwtPayload, @Query() query: FindTasksDTO) {
+    return this.tasksService.findAll(payload, query);
   }
 
   @UseGuards(JwtAuthGuard)

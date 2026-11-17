@@ -6,6 +6,8 @@ import { Task } from './entities/task.entity';
 import { TaskSortBy } from './enum/task-sort-by';
 import { type FindOptionsOrder, FindOptionsRelations, FindOptionsSelect, ILike, Repository } from 'typeorm';
 import { type JwtPayload } from '../auth/types/jwt-payload.type';
+import { Paginated } from '../common/types/paginated.type';
+import { FindTasksDTO } from './dto/find-tasks.dto';
 
 @Injectable()
 export class TasksService {
@@ -38,12 +40,12 @@ export class TasksService {
     return newTask;
   }
 
-  async findAll(payload: JwtPayload, search?: string, orderBy?: TaskSortBy) {
+  async findAll(payload: JwtPayload, { search, sortBy, page, limit }: FindTasksDTO): Promise<Paginated<Task>> {
     const searchTerm = search?.trim();
 
     let order: FindOptionsOrder<Task> | undefined;
 
-    switch (orderBy) {
+    switch (sortBy) {
       case TaskSortBy.DUE_DATE:
         order = { dueDate: 'asc' };
         break;
@@ -65,7 +67,7 @@ export class TasksService {
         break;
     }
 
-    const tasks = await this.tasksRepository.find({
+    const [data, total] = await this.tasksRepository.findAndCount({
       where: searchTerm
         ? [
             { user: { id: payload.sub }, title: ILike(`%${searchTerm}%`) },
@@ -75,10 +77,15 @@ export class TasksService {
       order,
       relations: {
         user: true
-      }
+      },
+      skip: (page - 1) * limit,
+      take: limit
     });
 
-    return tasks;
+    return {
+      data,
+      meta: { total, page, limit, totalPages: Math.ceil(total / limit) }
+    };
   }
 
   async findOne(id: string, relations?: FindOptionsRelations<Task>, select?: FindOptionsSelect<Task>) {
