@@ -8,7 +8,7 @@ export default registerAs(
       type: process.env.DATABASE_TYPE as 'postgres',
       url: process.env.DATABASE_URL ?? '',
       autoLoadEntities: Boolean(process.env.DATABASE_AUTO_LOAD_ENTITIES || true),
-      synchronize: Boolean(process.env.DATABASE_SYNCHRONIZE)
+      synchronize: process.env.DATABASE_SYNCHRONIZE === 'true'
     },
     environment: process.env.NODE_ENV || 'development',
     frontend_url: process.env.FRONTEND_URL || 'http://localhost:3000',
