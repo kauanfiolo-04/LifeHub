@@ -13,9 +13,11 @@ export type Note = {
   updatedAt?: Date;
 };
 
-export type FindAllNoteSearchParam = {
+export type FindParams = {
   search?: string;
-  sortBy?: NoteSortBy;
+  orderBy?: NoteSortBy;
+  page?: number;
+  limit?: number;
 }
 
 export type CreateNoteRequest = {

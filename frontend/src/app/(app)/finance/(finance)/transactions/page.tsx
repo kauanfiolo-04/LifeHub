@@ -11,12 +11,12 @@ import { HugeiconsIcon } from "@hugeicons/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-const LIMIT = 9; // múltiplo de 3 para fechar as linhas do grid md:grid-cols-3
+const LIMIT = 9; // múltiplo de 3 para fechar as linhas do grid md:grid-cols-3 
 
 export default function TransactionsPage() {
   const router = useRouter();
 
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState<string | undefined>();
   const [page, setPage] = useState(1);
 
   const debouncedSearch = useDebounce<string | undefined>(search, 400);

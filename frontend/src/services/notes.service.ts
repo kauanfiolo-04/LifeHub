@@ -1,12 +1,14 @@
 import { api } from "@/lib/axios";
-import { CreateNoteRequest, Note, UpdateNoteRequest } from "@/types/notes.type";
-import { FindAllNoteSearchParam } from "@/types/notes.type";
+import { Paginated } from "@/types/api.type";
+import { CreateNoteRequest, FindParams, Note, UpdateNoteRequest } from "@/types/notes.type";
 
 export const NotesService = {
-  findAll: async (params: FindAllNoteSearchParam) => {
-    const { data } = await api.get<Note[]>("/notes", { params });
+  findAll: async ({ search, orderBy, page, limit }: FindParams) => {
+    const { data: response } = await api.get<Paginated<Note>>("/notes", {
+      params: { search, orderBy, page, limit },
+    });
 
-    return data;
+    return response;
   },
   create: async (createNoteDto: CreateNoteRequest) => {
     const { data } = await api.post<Note>("/notes", createNoteDto);

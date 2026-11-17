@@ -4,15 +4,15 @@ import { Transaction, CreateTransactionRequest, UpdateTransactionRequest, FindPa
 
 export const TransactionsService = {
   findAll: async ({ accountName, search, page, limit }: FindParams) => {
-  const { data: response } = await api.get<Paginated<Transaction>>("/transactions", {
-    params: { accountName, search, page, limit },
-  });
+    const { data: response } = await api.get<Paginated<Transaction>>("/transactions", {
+      params: { accountName, search, page, limit },
+    });
 
-  return {
-    ...response,
-    data: response.data.map((t) => ({ ...t, date: new Date(t.date) })),
-  };
-},
+    return {
+      ...response,
+      data: response.data.map((t) => ({ ...t, date: new Date(t.date) })),
+    };
+  },
   create: async (createTransactionDto: CreateTransactionRequest) => {
     const { data } = await api.post<Transaction>("/transactions", createTransactionDto);
 

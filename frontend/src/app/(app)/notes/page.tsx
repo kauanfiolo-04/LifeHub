@@ -1,5 +1,6 @@
 "use client";
 
+import ListPagination from "@/components/common/list-pagination";
 import OrderBy, { OrderOptions } from "@/components/common/order-by";
 import Search from "@/components/common/search";
 import NoteCard from "@/components/notes/note-card";
@@ -14,6 +15,8 @@ import { HugeiconsIcon } from "@hugeicons/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
+const LIMIT = 10;
+
 const orderOptions: OrderOptions<NoteSortBy>[] = [
   { label: "Created at", value: NoteSortBy.CREATED_AT },
   { label: "Updated at", value: NoteSortBy.UPDATED_AT }
@@ -25,24 +28,30 @@ export default function NotesPage() {
   const isMobile = useIsMobile();
 
   const [search, setSearch] = useState<string | undefined>();
-  const [sortBy, setSortBy] = useState<NoteSortBy | undefined>();
+  const [orderBy, setOrderBy] = useState<NoteSortBy | undefined>();
+  const [page, setPage] = useState(1);
 
   const debouncedSearch = useDebounce<string | undefined>(search, 400);
 
-  const { data: notes, isLoading, refetch } = useNotes({ search: debouncedSearch, sortBy });
+  const { data: response, isLoading, isPlaceholderData } = useNotes({ search: debouncedSearch, orderBy, page, limit: LIMIT });
 
-  const handleSearch = ({ search }: { search: string }) =>
+  const notes = response?.data ?? [];
+  const totalPages = Math.max(response?.meta.totalPages ?? 1, 1);
+
+  const handleSearch = ({ search }: { search: string }) => {
     setSearch(search);
+    setPage(1);
+  };
 
-  const handleSortBy = (value: NoteSortBy) =>
-    setSortBy(value);
+  const handleOrderBy = (value: NoteSortBy) => {
+    setOrderBy(value);
+    setPage(1);
+  };
 
-  const clearSortBy = () =>
-    setSortBy(undefined);
-
-  useEffect(() => {
-    refetch();
-  }, [refetch, debouncedSearch, sortBy]);
+  const clearSortBy = () => {
+    setOrderBy(undefined);
+    setPage(1);
+  }
 
   return (
     <>
@@ -63,24 +72,33 @@ export default function NotesPage() {
             />
             
             <OrderBy<NoteSortBy>
-              order={sortBy}
+              order={orderBy}
               options={orderOptions}
-              selectOrder={handleSortBy}
+              selectOrder={handleOrderBy}
               clearOrder={clearSortBy}
               isMobile={isMobile}
               type="icon"
             />
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 justify-items-center gap-4 w-full">
+          <div className="grid grid-cols-2 md:grid-cols-4 justify-items-center gap-4 w-full">
             {isLoading ? (
               Array.from({ length: 6 }).map((_, index) => (
                 <NoteSkeleton key={index} />
               ))
             ) :
-              (notes ?? []).map(note => (<NoteCard key={note.id} note={note} />))
+              notes.map(note => (<NoteCard key={note.id} note={note} />))
             }
           </div>
+
+          {response && response.meta.total > 0 && (
+            <ListPagination 
+              page={page}
+              totalPages={totalPages}
+              onPageChange={setPage}
+              disabled={isPlaceholderData}
+            />
+          )}
         </div>
       </div>
     </>
