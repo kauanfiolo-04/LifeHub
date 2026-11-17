@@ -19,7 +19,7 @@ export default function TransactionCard({ transaction, router }: TransactionCard
   return (
     <Card
       className="w-full min-h-36 cursor-pointer hover:shadow-lg transition-shadow ease-in-out duration-500"
-      onClick={() => router.push(`/transaction/${id}`)}
+      // onClick={() => router.push(`/transaction/${id}`)}
     >
       <CardContent className="h-full">
         <div className="flex flex-col justify-between w-full h-full">

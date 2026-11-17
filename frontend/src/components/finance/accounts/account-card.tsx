@@ -72,7 +72,7 @@ export default function AccountCard({ account }: AccountCardProps) {
   return (
     <Card 
       className="cursor-pointer" 
-      onClick={() => router.push(`/finance/accounts/${account.id}`)}
+      // onClick={() => router.push(`/finance/accounts/${account.id}`)}
     >
       <Header
         accName={account.name}
