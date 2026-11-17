@@ -14,8 +14,11 @@ import { matchesDateFilter } from "@/utils/matches-date-filter";
 import { FilterMailIcon, PlusSignIcon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { useRouter } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import OrderBy, { OrderOptions } from "@/components/common/order-by";
+import ListPagination from "@/components/common/list-pagination";
+
+const LIMIT = 10;
 
 const orderOptions: OrderOptions<TaskSortBy>[] = [
   { label: "Priority", value: TaskSortBy.PRIORITY },
@@ -32,10 +35,20 @@ export default function TasksPage() {
   const [search, setSearch] = useState<string | undefined>();
   const [sortBy, setSortBy] = useState<TaskSortBy | undefined>();
   const [selectedFilters, setSelectedtFilters] = useState<string[]>([]);
+  const [page, setPage] = useState(1);
   
   const debouncedSearch = useDebounce<string | undefined>(search, 400);
   
-  const { data: tasks, refetch, isFetching } = useTasks({ search: debouncedSearch, sortBy });
+  const { data: response, isFetching, isPlaceholderData } = useTasks({ search: debouncedSearch, sortBy, page, limit: LIMIT });
+  
+  const tasksToShow = useMemo(() => {
+    const tasks = response?.data;
+    
+    if (!tasks) return [];
+    
+    return filterTasks(tasks, selectedFilters)
+  }, [response, selectedFilters]);
+  const totalPages = Math.max(response?.meta.totalPages ?? 1, 1);
 
   const filterTasks = (
     tasks: Task[],
@@ -64,14 +77,10 @@ export default function TasksPage() {
     });
   };
 
-  const tasksToShow = useMemo(() => {
-    if (!tasks) return [];
-
-    return filterTasks(tasks, selectedFilters)
-  }, [tasks, selectedFilters]);
-
-  const handleSearch = ({ search }: { search: string }) => 
+  const handleSearch = ({ search }: { search: string }) => {
     setSearch(search);
+    setPage(1);
+  };
 
   const handleCheckFilter = (value: TaskSortBy | TaskPriority | TaskStatus | string) => {
     const strValue = String(value); // converte pois TaskPriority é number
@@ -79,24 +88,25 @@ export default function TasksPage() {
     setSelectedtFilters(
       prev => prev.includes(strValue) ?
         prev.filter(el => el !== strValue) : [...prev, strValue]
-    )
+    );
+
+    setPage(1);
   };
 
   const clearFilters = () => {
     setSelectedtFilters([]);
+    setPage(1);
   };
 
   const handleSortBy = (value: TaskSortBy) => {
     setSortBy(value);
+    setPage(1);
   };
 
   const clearSortBy = () => {
     setSortBy(undefined);
+    setPage(1);
   }
-
-  useEffect(() => {
-    refetch();
-  }, [refetch, debouncedSearch, sortBy]);
 
   return (
     <>
@@ -167,6 +177,15 @@ export default function TasksPage() {
               (tasksToShow).map(task => <TaskCard key={task.id} task={task} router={router} />)
             }
           </div>
+
+          {response && response.meta.total > 0 && (
+            <ListPagination 
+              page={page}
+              totalPages={totalPages}
+              onPageChange={setPage}
+              disabled={isPlaceholderData}
+            />
+          )}
         </div>
       </div>
     </>

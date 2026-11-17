@@ -3,9 +3,9 @@ import { Paginated } from "@/types/api.type";
 import { CreateNoteRequest, FindParams, Note, UpdateNoteRequest } from "@/types/notes.type";
 
 export const NotesService = {
-  findAll: async ({ search, orderBy, page, limit }: FindParams) => {
+  findAll: async ({ search, sortBy, page, limit }: FindParams) => {
     const { data: response } = await api.get<Paginated<Note>>("/notes", {
-      params: { search, orderBy, page, limit },
+      params: { search, sortBy, page, limit },
     });
 
     return response;

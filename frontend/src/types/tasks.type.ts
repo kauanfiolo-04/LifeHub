@@ -29,9 +29,11 @@ export type Task = {
   updatedAt?: Date;
 };
 
-export type FindAllTaskSearchParam = {
+export type FindParams = {
   search?: string;
   sortBy?: TaskSortBy;
+  page?: number;
+  limit?: number;
 }
 
 export type CreateTaskRequest = {
