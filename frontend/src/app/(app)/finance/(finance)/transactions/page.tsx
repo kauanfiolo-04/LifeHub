@@ -1,5 +1,6 @@
 "use client";
 
+import ListPagination from "@/components/common/list-pagination";
 import Search from "@/components/common/search";
 import TransactionCard from "@/components/finance/transactions/transaction-card";
 import { Button } from "@/components/ui/button";
@@ -8,23 +9,31 @@ import { useDebounce } from "@/hooks/useDebounce";
 import { PlusSignIcon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+
+const LIMIT = 9; // múltiplo de 3 para fechar as linhas do grid md:grid-cols-3
 
 export default function TransactionsPage() {
   const router = useRouter();
 
   const [search, setSearch] = useState("");
+  const [page, setPage] = useState(1);
 
   const debouncedSearch = useDebounce<string | undefined>(search, 400);
 
-  const { data: transactions, refetch } = useTransactions({ search: debouncedSearch });
+  const { data: response, isPlaceholderData } = useTransactions({
+    search: debouncedSearch,
+    page,
+    limit: LIMIT,
+  });
 
-  const handleSearch = ({ search }: { search: string }) =>
+  const transactions = response?.data ?? [];
+  const totalPages = Math.max(response?.meta.totalPages ?? 1, 1);
+
+  const handleSearch = ({ search }: { search: string }) => {
     setSearch(search);
-
-  useEffect(() => {
-    refetch();
-  }, [refetch, debouncedSearch]);
+    setPage(1);
+  };
 
   return (
     <>
@@ -37,20 +46,29 @@ export default function TransactionsPage() {
       </div>
 
       <div>
-        <Search 
+        <Search
           searchValue={search}
           onSearch={handleSearch}
         />
 
         <div className="grid grid-cols-1 md:grid-cols-3 mt-8 gap-4">
-          {(transactions ?? []).map(tran => (
-            <TransactionCard 
+          {transactions.map(tran => (
+            <TransactionCard
               key={tran.id}
               transaction={tran}
               router={router}
             />
           ))}
         </div>
+
+        {response && response.meta.total > 0 && (
+          <ListPagination 
+            page={page}
+            totalPages={totalPages}
+            onPageChange={setPage}
+            disabled={isPlaceholderData}
+          />
+        )}
       </div>
     </>
   );
