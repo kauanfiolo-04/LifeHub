@@ -1,5 +1,5 @@
-import { Account } from "./accounts.type";
-import { Category } from "./categories.type";
+import { Account } from './accounts.type';
+import { Category } from './categories.type';
 
 export enum TransactionType {
   INCOME = 'income',
@@ -17,6 +17,13 @@ export type Transaction = {
   date: Date;
 };
 
+export type FindParams = {
+  accountName?: string;
+  search?: string;
+  page?: number;
+  limit?: number;
+};
+
 export type CreateTransactionRequest = {
   title: string;
   description?: string;
@@ -31,4 +38,4 @@ export type UpdateTransactionRequest = Partial<CreateTransactionRequest>;
 
 export type DeleteTransactionRequest = {
   transactionId: string;
-}
+};

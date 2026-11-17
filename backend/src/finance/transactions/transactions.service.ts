@@ -8,6 +8,8 @@ import { AccountsService } from '../accounts/accounts.service';
 import { JwtPayload } from '../../auth/types/jwt-payload.type';
 import { CategoriesService } from '../categories/categories.service';
 import { Account } from '../accounts/entities/account.entity';
+import { FindTransactionDTO } from './dto/find-transaction.dto';
+import { Paginated } from '../../common/types/paginated.type';
 
 @Injectable()
 export class TransactionsService {
@@ -67,10 +69,13 @@ export class TransactionsService {
     return newTransaction;
   }
 
-  async findAll(payload: JwtPayload, accName?: string, search?: string) {
+  async findAll(
+    payload: JwtPayload,
+    { accountName, search, page, limit }: FindTransactionDTO
+  ): Promise<Paginated<Transaction>> {
     const accountWhere: FindOptionsWhere<Account> = {
       user: { id: payload.sub },
-      ...(accName && { name: ILike(`%${accName}%`) })
+      ...(accountName && { name: ILike(`%${accountName}%`) })
     };
 
     const baseWhere: FindOptionsWhere<Transaction> = { account: accountWhere };
@@ -87,20 +92,27 @@ export class TransactionsService {
         { ...baseWhere, category: { name: term } }
       );
 
-      if (!accName) {
+      if (!accountName) {
         where.push({ ...baseWhere, account: { ...accountWhere, name: term } });
       }
     }
 
-    return this.transactionsRepository.find({
+    const [data, total] = await this.transactionsRepository.findAndCount({
       where,
-      order: { date: 'desc', createdAt: 'desc' },
+      order: { date: 'desc', createdAt: 'desc', id: 'desc' },
       relations: { account: true, category: true },
       select: {
         account: { id: true, name: true, type: true },
         category: { id: true, name: true, color: true }
-      }
+      },
+      skip: (page - 1) * limit,
+      take: limit
     });
+
+    return {
+      data,
+      meta: { total, page, limit, totalPages: Math.ceil(total / limit) }
+    };
   }
 
   async findOne(id: string, relations?: FindOptionsRelations<Transaction>, select?: FindOptionsSelect<Transaction>) {

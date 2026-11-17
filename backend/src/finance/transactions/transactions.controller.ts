@@ -5,6 +5,7 @@ import { type JwtPayload } from '../../auth/types/jwt-payload.type';
 import { CreateTransactionDTO } from './dto/create-transaction.dto';
 import { TransactionsService } from './transactions.service';
 import { UpdateTransactionDTO } from './dto/update-transaction.dto';
+import { FindTransactionDTO } from './dto/find-transaction.dto';
 
 @Controller('transactions')
 export class TransactionsController {
@@ -18,12 +19,8 @@ export class TransactionsController {
 
   @UseGuards(JwtAuthGuard)
   @Get()
-  findAll(
-    @TokenPayload() payload: JwtPayload,
-    @Query('accountName') accName?: string,
-    @Query('search') search?: string
-  ) {
-    return this.transactionService.findAll(payload, accName, search);
+  findAll(@TokenPayload() payload: JwtPayload, @Query() query: FindTransactionDTO) {
+    return this.transactionService.findAll(payload, query);
   }
 
   @UseGuards(JwtAuthGuard)
