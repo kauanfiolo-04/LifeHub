@@ -13,7 +13,7 @@ import { NoteSortBy } from "@/types/notes.type";
 import { PlusSignIcon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 const LIMIT = 10;
 
@@ -28,12 +28,12 @@ export default function NotesPage() {
   const isMobile = useIsMobile();
 
   const [search, setSearch] = useState<string | undefined>();
-  const [orderBy, setOrderBy] = useState<NoteSortBy | undefined>();
+  const [sortBy, setSortBy] = useState<NoteSortBy | undefined>();
   const [page, setPage] = useState(1);
 
   const debouncedSearch = useDebounce<string | undefined>(search, 400);
 
-  const { data: response, isLoading, isPlaceholderData } = useNotes({ search: debouncedSearch, orderBy, page, limit: LIMIT });
+  const { data: response, isLoading, isPlaceholderData } = useNotes({ search: debouncedSearch, sortBy, page, limit: LIMIT });
 
   const notes = response?.data ?? [];
   const totalPages = Math.max(response?.meta.totalPages ?? 1, 1);
@@ -43,13 +43,13 @@ export default function NotesPage() {
     setPage(1);
   };
 
-  const handleOrderBy = (value: NoteSortBy) => {
-    setOrderBy(value);
+  const handleSortBy = (value: NoteSortBy) => {
+    setSortBy(value);
     setPage(1);
   };
 
   const clearSortBy = () => {
-    setOrderBy(undefined);
+    setSortBy(undefined);
     setPage(1);
   }
 
@@ -72,9 +72,9 @@ export default function NotesPage() {
             />
             
             <OrderBy<NoteSortBy>
-              order={orderBy}
+              order={sortBy}
               options={orderOptions}
-              selectOrder={handleOrderBy}
+              selectOrder={handleSortBy}
               clearOrder={clearSortBy}
               isMobile={isMobile}
               type="icon"

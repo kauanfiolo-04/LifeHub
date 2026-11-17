@@ -9,5 +9,5 @@ export class FindNotesDTO extends PaginationQueryDto {
 
   @IsOptional()
   @IsEnum(NotesSortBy)
-  orderBy?: NotesSortBy;
+  sortBy?: NotesSortBy;
 }

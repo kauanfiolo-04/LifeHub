@@ -6,7 +6,7 @@ export const queryKeys = {
   notes: {
     all: ["notes"] as const,
     list: (
-      params: { search?: string, orderBy?: NoteSortBy, page?: number, limit?: number }
+      params: { search?: string, sortBy?: NoteSortBy, page?: number, limit?: number }
     ) => ["transactions", "list", params] as const,
     detail: (id: string) => ["notes", id] as const,
   },

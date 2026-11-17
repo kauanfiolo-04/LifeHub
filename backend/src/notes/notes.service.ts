@@ -48,7 +48,7 @@ export class NotesService {
     return newNote;
   }
 
-  async findAll(payload: JwtPayload, { orderBy, search, limit, page }: FindNotesDTO): Promise<Paginated<Note>> {
+  async findAll(payload: JwtPayload, { sortBy, search, limit, page }: FindNotesDTO): Promise<Paginated<Note>> {
     let order: FindOptionsOrder<Note> | undefined;
 
     const where: FindOptionsWhere<Note>[] = [];
@@ -57,7 +57,7 @@ export class NotesService {
       user: { id: payload.sub }
     };
 
-    switch (orderBy) {
+    switch (sortBy) {
       case NotesSortBy.CREATED_AT:
         order = { createdAt: 'desc' };
         break;

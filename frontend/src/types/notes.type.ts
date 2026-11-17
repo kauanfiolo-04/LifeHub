@@ -15,7 +15,7 @@ export type Note = {
 
 export type FindParams = {
   search?: string;
-  orderBy?: NoteSortBy;
+  sortBy?: NoteSortBy;
   page?: number;
   limit?: number;
 }
