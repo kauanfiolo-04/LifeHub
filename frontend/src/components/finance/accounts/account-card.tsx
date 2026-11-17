@@ -90,7 +90,7 @@ export default function AccountCard({ account }: AccountCardProps) {
                 account -= cur.amount;
               }
               return account;
-            }, 0)
+            }, 0).toFixed(2)
           }
         </p>
         
