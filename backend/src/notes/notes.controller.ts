@@ -5,7 +5,6 @@ import { NotesService } from './notes.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { TokenPayload } from '../auth/decorators/user.decorator';
 import { type JwtPayload } from '../auth/types/jwt-payload.type';
-import { NotesSortBy } from './enum/notes-sort-by';
 import { FindNotesDTO } from './dto/find-notes.dto';
 
 @Controller('notes')

@@ -8,7 +8,7 @@ import { AccountsService } from '../accounts/accounts.service';
 import { JwtPayload } from '../../auth/types/jwt-payload.type';
 import { CategoriesService } from '../categories/categories.service';
 import { Account } from '../accounts/entities/account.entity';
-import { FindTransactionDTO } from './dto/find-transaction.dto';
+import { FindTransactionsDTO } from './dto/find-transactions.dto';
 import { Paginated } from '../../common/types/paginated.type';
 import { TransactionType } from './enum/transaction-type.enum';
 
@@ -72,7 +72,7 @@ export class TransactionsService {
 
   async findAll(
     payload: JwtPayload,
-    { accountName, search, page, limit }: FindTransactionDTO
+    { accountName, search, page, limit }: FindTransactionsDTO
   ): Promise<Paginated<Transaction>> {
     const accountWhere: FindOptionsWhere<Account> = {
       user: { id: payload.sub },
