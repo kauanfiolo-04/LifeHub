@@ -11,7 +11,7 @@ export function matchesDateFilter(task: Task, filter: string) {
     case 'tomorrow':
       return isTomorrow(dueDate);
 
-    case 'week':
+    case 'this_week':
       return isThisWeek(dueDate);
 
     default:

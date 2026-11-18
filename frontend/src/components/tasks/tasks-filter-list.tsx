@@ -76,7 +76,7 @@ const FiltersList: TaskFilter[] = [
       },
       {
         label: "This week",
-        value: "week"
+        value: "this_week"
       },
     ]
   }

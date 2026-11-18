@@ -1,5 +1,5 @@
 import { NoteSortBy } from "@/types/notes.type";
-import { TaskSortBy } from "@/types/tasks.type";
+import { FindTasksParams } from "@/types/tasks.type";
 
 export const queryKeys = {
   me: ["me"] as const,
@@ -8,15 +8,13 @@ export const queryKeys = {
     all: ["notes"] as const,
     list: (
       params: { search?: string, sortBy?: NoteSortBy, page?: number, limit?: number }
-    ) => ["transactions", "list", params] as const,
+    ) => ["notes", "list", params] as const,
     detail: (id: string) => ["notes", id] as const,
   },
 
   tasks: {
     all: ["tasks"] as const,
-    list: (
-      params: { search?: string, sortBy?: TaskSortBy, page?: number, limit?: number }
-    ) => ["transactions", "list", params] as const,
+    list: (params: FindTasksParams) => ["tasks", "list", params] as const,
     detail: (id: string) => ["tasks", id] as const,
   },
 

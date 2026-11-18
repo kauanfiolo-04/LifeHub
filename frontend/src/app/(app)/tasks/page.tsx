@@ -9,8 +9,7 @@ import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
 import { useTasks } from "@/hooks/tasks/useTasks";
 import { useDebounce } from "@/hooks/useDebounce";
 import { useIsMobile } from "@/hooks/useMobile";
-import { TaskSortBy, TaskStatus, TaskPriority, Task } from "@/types/tasks.type";
-import { matchesDateFilter } from "@/utils/matches-date-filter";
+import { TaskSortBy, TaskStatus, TaskPriority } from "@/types/tasks.type";
 import { FilterMailIcon, PlusSignIcon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { useRouter } from "next/navigation";
@@ -27,33 +26,6 @@ const orderOptions: OrderOptions<TaskSortBy>[] = [
   { label: "Update at", value: TaskSortBy.UPDATED_AT }
 ];
 
-const filterTasks = (
-  tasks: Task[],
-  selectedFilters: string[]
-) => {
-  const groups = getFiltersListGroups(selectedFilters);
-
-  const [statusFilters, priorityFilters, dateFilters] = groups;
-
-  return tasks.filter((task) => {
-    const matchesStatus =
-      statusFilters.length === 0 ||
-      statusFilters.includes(task.status);
-
-    const matchesPriority =
-      priorityFilters.length === 0 ||
-      priorityFilters.includes(String(task.priority));
-
-    const matchesDate =
-      dateFilters.length === 0 ||
-      dateFilters.some((filter) =>
-        matchesDateFilter(task, filter)
-      );
-
-    return matchesStatus && matchesPriority && matchesDate;
-  });
-};
-
 export default function TasksPage() {
   const router = useRouter();
 
@@ -66,16 +38,23 @@ export default function TasksPage() {
 
   const debouncedSearch = useDebounce<string | undefined>(search, 400);
 
-  const { data: response, isFetching, isPlaceholderData } = useTasks({ search: debouncedSearch, sortBy, page, limit: LIMIT });
+const [statusFilters, priorityFilters, dateFilters] = useMemo(
+  () => getFiltersListGroups(selectedFilters),
+  [selectedFilters]
+);
 
-  const tasksToShow = useMemo(() => {
-    const tasks = response?.data;
+const { data: response, isFetching, isPlaceholderData } = useTasks({
+  search: debouncedSearch,
+  sortBy,
+  page,
+  limit: LIMIT,
+  status: statusFilters,
+  priority: priorityFilters,
+  dateFilters
+});
 
-    if (!tasks) return [];
-
-    return filterTasks(tasks, selectedFilters)
-  }, [response, selectedFilters]);
-  const totalPages = Math.max(response?.meta.totalPages ?? 1, 1);
+const tasksToShow = response?.data ?? [];
+const totalPages = Math.max(response?.meta.totalPages ?? 1, 1);
 
   const handleSearch = ({ search }: { search: string }) => {
     setSearch(search);

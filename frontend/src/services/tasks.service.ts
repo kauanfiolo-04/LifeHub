@@ -1,12 +1,19 @@
 import { api } from "@/lib/axios";
 import { Paginated } from "@/types/api.type";
-import { CreateTaskRequest, FindParams, Task, UpdateTaskRequest } from "@/types/tasks.type";
+import { CreateTaskRequest, FindTasksParams, Task, UpdateTaskRequest } from "@/types/tasks.type";
+import { toCsv } from "@/utils/to-csv";
 
 export const TasksService = {
-  findAll: async ({ search, sortBy, page, limit }: FindParams) => {
-    const { data: response } = await api.get<Paginated<Task>>("/tasks", {
-      params: { search, sortBy, page, limit },
-    });
+  findAll: async (params: FindTasksParams) => {
+    const { status, priority, dateFilters, ...rest } = params;
+
+    const { data: response } = await api.get<Paginated<Task>>("/tasks", { 
+      params: {
+      ...rest,
+      status: toCsv(status),
+      priority: toCsv(priority),
+      dateFilters: toCsv(dateFilters),
+    } });
 
     return {
       ...response,
