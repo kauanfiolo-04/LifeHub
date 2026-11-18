@@ -1,12 +1,10 @@
 import { api } from "@/lib/axios";
 import { Paginated } from "@/types/api.type";
-import { Transaction, CreateTransactionRequest, UpdateTransactionRequest, FindParams } from "@/types/finance/transactions.type";
+import { Transaction, CreateTransactionRequest, UpdateTransactionRequest, FindTransactionsParams } from "@/types/finance/transactions.type";
 
 export const TransactionsService = {
-  findAll: async ({ accountName, search, page, limit }: FindParams) => {
-    const { data: response } = await api.get<Paginated<Transaction>>("/transactions", {
-      params: { accountName, search, page, limit },
-    });
+  findAll: async (params: FindTransactionsParams) => {
+    const { data: response } = await api.get<Paginated<Transaction>>("/transactions", { params });
 
     return {
       ...response,

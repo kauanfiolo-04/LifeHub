@@ -17,7 +17,7 @@ export type Transaction = {
   date: Date;
 };
 
-export type FindParams = {
+export type FindTransactionsParams = {
   accountName?: string;
   search?: string;
   page?: number;

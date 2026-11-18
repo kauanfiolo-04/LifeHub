@@ -13,7 +13,7 @@ export type Note = {
   updatedAt?: Date;
 };
 
-export type FindParams = {
+export type FindNotesParams = {
   search?: string;
   sortBy?: NoteSortBy;
   page?: number;
