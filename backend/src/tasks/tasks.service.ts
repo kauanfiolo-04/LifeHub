@@ -3,11 +3,23 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { CreateTaskDTO } from './dto/create-task.dto';
 import { UpdateTaskDTO } from './dto/update-task.dto';
 import { Task } from './entities/task.entity';
-import { TaskSortBy } from './enum/task-sort-by';
-import { type FindOptionsOrder, FindOptionsRelations, FindOptionsSelect, ILike, Repository } from 'typeorm';
+import {
+  Between,
+  type FindOptionsOrder,
+  FindOptionsRelations,
+  FindOptionsSelect,
+  FindOptionsWhere,
+  ILike,
+  In,
+  IsNull,
+  LessThan,
+  Repository
+} from 'typeorm';
 import { type JwtPayload } from '../auth/types/jwt-payload.type';
 import { Paginated } from '../common/types/paginated.type';
 import { FindTasksDTO } from './dto/find-tasks.dto';
+import { TaskDateFilter } from './enum/task-date-filter.enum';
+import { TaskSortBy } from './enum/task-sort-by';
 
 @Injectable()
 export class TasksService {
@@ -40,44 +52,74 @@ export class TasksService {
     return newTask;
   }
 
-  async findAll(payload: JwtPayload, { search, sortBy, page, limit }: FindTasksDTO): Promise<Paginated<Task>> {
-    const searchTerm = search?.trim();
+  private buildDateWhere(filter: TaskDateFilter): FindOptionsWhere<Task> {
+    const now = new Date();
+    const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const endOfDay = new Date(startOfDay.getTime() + 24 * 60 * 60 * 1000 - 1);
 
-    let order: FindOptionsOrder<Task> | undefined;
+    switch (filter) {
+      case TaskDateFilter.TODAY:
+        return { dueDate: Between(startOfDay, endOfDay) };
 
-    switch (sortBy) {
-      case TaskSortBy.DUE_DATE:
-        order = { dueDate: 'asc' };
-        break;
+      case TaskDateFilter.THIS_WEEK: {
+        const endOfWeek = new Date(startOfDay);
+        endOfWeek.setDate(startOfDay.getDate() + (6 - startOfDay.getDay()));
+        endOfWeek.setHours(23, 59, 59, 999);
+        return { dueDate: Between(startOfDay, endOfWeek) };
+      }
 
-      case TaskSortBy.PRIORITY:
-        order = { priority: 'desc' };
-        break;
+      case TaskDateFilter.OVERDUE:
+        return { dueDate: LessThan(startOfDay) };
 
-      case TaskSortBy.CREATED_AT:
-        order = { createdAt: 'desc' };
-        break;
-
-      case TaskSortBy.UPDATED_AT:
-        order = { updatedAt: 'desc' };
-        break;
+      case TaskDateFilter.NO_DATE:
+        return { dueDate: IsNull() };
 
       default:
-        order = { createdAt: 'desc' };
-        break;
+        return {};
     }
+  }
+
+  private buildOrder(sortBy?: TaskSortBy): FindOptionsOrder<Task> {
+    switch (sortBy) {
+      case TaskSortBy.DUE_DATE:
+        return { dueDate: 'asc' };
+      case TaskSortBy.PRIORITY:
+        return { priority: 'desc' };
+      case TaskSortBy.CREATED_AT:
+        return { createdAt: 'desc' };
+      case TaskSortBy.UPDATED_AT:
+        return { updatedAt: 'desc' };
+      default:
+        return { createdAt: 'desc' };
+    }
+  }
+
+  async findAll(
+    payload: JwtPayload,
+    { search, sortBy, page, limit, status, priority, dateFilters }: FindTasksDTO
+  ): Promise<Paginated<Task>> {
+    const searchTerm = search?.trim();
+
+    const baseWhere: FindOptionsWhere<Task> = {
+      user: { id: payload.sub },
+      ...(status?.length && { status: In(status) }),
+      ...(priority?.length && { priority: In(priority) })
+    };
+
+    const dateClauses: FindOptionsWhere<Task>[] = dateFilters?.length
+      ? dateFilters.map(f => this.buildDateWhere(f))
+      : [{}];
+
+    const searchClauses: FindOptionsWhere<Task>[] = searchTerm
+      ? [{ title: ILike(`%${searchTerm}%`) }, { description: ILike(`%${searchTerm}%`) }]
+      : [{}];
+
+    const where = dateClauses.flatMap(date => searchClauses.map(s => ({ ...baseWhere, ...date, ...s })));
 
     const [data, total] = await this.tasksRepository.findAndCount({
-      where: searchTerm
-        ? [
-            { user: { id: payload.sub }, title: ILike(`%${searchTerm}%`) },
-            { user: { id: payload.sub }, description: ILike(`%${searchTerm}%`) }
-          ]
-        : { user: { id: payload.sub } },
-      order,
-      relations: {
-        user: true
-      },
+      where,
+      order: this.buildOrder(sortBy),
+      relations: { user: true },
       skip: (page - 1) * limit,
       take: limit
     });
