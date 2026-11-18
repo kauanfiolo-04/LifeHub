@@ -3,21 +3,39 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { formatToLabel } from "@/utils/format-to-label";
 import AccountIcon from "./account-icon";
 
-interface AccountSelectProps {
+type AccountSelectProps = {
   value: Account | undefined;
   accounts: Account[];
-  setValue: (val: Account) => void;
-  type: "all" | "select";
   invalid?: boolean;
   disabled?: boolean;
-}
+} & (
+  | {
+      type: "all";
+      setValue: (val: Account | undefined) => void;
+    }
+  | {
+      type?: "select";
+      setValue: (val: Account) => void;
+    }
+);
 
-export default function AccountSelect({ value, accounts, setValue, type = "select", invalid = false, disabled = false }: AccountSelectProps) {
+export default function AccountSelect({
+  value,
+  accounts,
+  setValue,
+  type = "select",
+  disabled = false,
+}: AccountSelectProps) {
   return (
     <Select
       defaultValue={type}
-      onValueChange={str => {
-        const acc = accounts.find(item => item.name.toLowerCase() === str);
+      onValueChange={(str) => {
+        if (str === "all") {
+          if (type === "all") (setValue as (val: Account | undefined) => void)(undefined);
+          return;
+        }
+
+        const acc = accounts.find((item) => item.name.toLowerCase() === str);
 
         if (acc) setValue(acc);
       }}

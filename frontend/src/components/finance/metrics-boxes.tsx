@@ -9,9 +9,6 @@ interface MetricsBoxesProps {
   metrics?: Finance;
 }
 
-const formatCurrency = (value: number) =>
-  value.toLocaleString("en-US", { style: "currency", currency: "USD" });
-
 interface MetricCardProps {
   title: string;
   value: string;
@@ -55,14 +52,14 @@ export default function MetricsBoxes({ metrics = { balance: 0, totalExpenses: 0,
       <MetricCard 
         title="Balance"
         icon={Wallet01Icon}
-        value={formatCurrency(metrics.balance)}
+        value={"$" + metrics.balance.toLocaleString("currency", { style: "decimal" })}
         iconClassName="bg-blue-100 text-blue-600"
       />
 
       <MetricCard
         title="Incomes"
         icon={ArrowUp02Icon}
-        value={formatCurrency(metrics.totalIncomes)}
+        value={"$" + metrics.totalIncomes.toLocaleString("currency", { style: "decimal" })}
         valueClassName="text-green-500"
         iconClassName="bg-green-100 text-green-600"
       />
@@ -70,7 +67,7 @@ export default function MetricsBoxes({ metrics = { balance: 0, totalExpenses: 0,
       <MetricCard
         title="Expenses"
         icon={ArrowDown02Icon}
-        value={formatCurrency(metrics.totalExpenses)}
+        value={"$" + metrics.totalExpenses.toLocaleString("currency", { style: "decimal" })}
         valueClassName="text-red-500"
         iconClassName="bg-red-100 text-red-600"
       />

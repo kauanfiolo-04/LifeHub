@@ -1,6 +1,7 @@
 "use client";
 
 import AccountSelect from "@/components/finance/accounts/account-select";
+import LastTransactions from "@/components/finance/last-transactions";
 import MetricsBoxes from "@/components/finance/metrics-boxes";
 import { Button } from "@/components/ui/button";
 import { useAccounts } from "@/hooks/finance/accounts/useAccounts";
@@ -46,6 +47,10 @@ export default function FinancePage() {
         
         <MetricsBoxes 
           metrics={finance}
+        />
+
+        <LastTransactions 
+          accountName={acc?.name}
         />
       </div>
     </>
