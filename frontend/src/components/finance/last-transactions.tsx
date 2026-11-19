@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useTransactions } from "@/hooks/finance/transactions/useTransactions";
-import { cn } from "@/lib/utils";
+import { cn } from "cn";
 import { Transaction } from "@/types/finance/transactions.type";
 import {
   ArrowRight01Icon,

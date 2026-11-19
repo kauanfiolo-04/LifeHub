@@ -13,6 +13,7 @@ import {
 import { HugeiconsIcon } from "@hugeicons/react";
 import { type AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 import { useRouter } from "next/navigation";
+import { formatCurrency } from "@/utils/format-currency";
 
 interface TransactionCardProps {
   transaction: Transaction;
@@ -108,7 +109,7 @@ export default function TransactionCard({
               isExpense ? "text-red-500" : "text-green-500"
             )}
           >
-            {isExpense ? "-" : "+"} {"$" + amount.toLocaleString("currency", { style: "decimal" })}
+            {isExpense ? "-" : "+"} {formatCurrency(amount)}
           </p>
         </div>
       </div>
@@ -134,7 +135,7 @@ export default function TransactionCard({
                 isExpense ? "text-red-500" : "text-green-500"
               )}
             >
-              {isExpense ? "-" : "+"} {"$" + amount.toLocaleString("currency", { style: "decimal" })}
+              {isExpense ? "-" : "+"} {formatCurrency(amount)}
             </p>
           </div>
 

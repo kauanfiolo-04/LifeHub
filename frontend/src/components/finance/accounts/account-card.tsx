@@ -12,6 +12,7 @@ import { useDeleteAccount } from "@/hooks/finance/accounts/useDeleteAccount";
 import { MouseEventHandler } from "react";
 import { addNotification } from "@/utils/notifications";
 import { getErrorMessage } from "@/utils/get-error-message";
+import { formatCurrency } from "@/utils/format-currency";
 
 interface AccountCardProps {
   account: Account;
@@ -82,7 +83,7 @@ export default function AccountCard({ account }: AccountCardProps) {
 
       <CardContent>
         <p>
-          $ {(account.transactions ?? [])
+          {formatCurrency((account.transactions ?? [])
             .reduce((account, cur) => {
               if (cur.type === TransactionType.INCOME) {
                 account += cur.amount;
@@ -90,7 +91,7 @@ export default function AccountCard({ account }: AccountCardProps) {
                 account -= cur.amount;
               }
               return account;
-            }, 0).toFixed(2)
+            }, 0))
           }
         </p>
         

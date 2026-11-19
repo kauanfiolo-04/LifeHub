@@ -4,6 +4,7 @@ import { IconSvgObject } from "@/types/common";
 import { cn } from "cn";
 import { Card, CardContent } from "../ui/card";
 import { HugeiconsIcon } from "@hugeicons/react";
+import { formatCurrency } from "@/utils/format-currency";
 
 interface MetricsBoxesProps {
   metrics?: Finance;
@@ -52,14 +53,14 @@ export default function MetricsBoxes({ metrics = { balance: 0, totalExpenses: 0,
       <MetricCard 
         title="Balance"
         icon={Wallet01Icon}
-        value={"$" + metrics.balance.toLocaleString("currency", { style: "decimal" })}
+        value={formatCurrency(metrics.balance)}
         iconClassName="bg-blue-100 text-blue-600"
       />
 
       <MetricCard
         title="Incomes"
         icon={ArrowUp02Icon}
-        value={"$" + metrics.totalIncomes.toLocaleString("currency", { style: "decimal" })}
+        value={formatCurrency(metrics.totalIncomes)}
         valueClassName="text-green-500"
         iconClassName="bg-green-100 text-green-600"
       />
@@ -67,7 +68,7 @@ export default function MetricsBoxes({ metrics = { balance: 0, totalExpenses: 0,
       <MetricCard
         title="Expenses"
         icon={ArrowDown02Icon}
-        value={"$" + metrics.totalExpenses.toLocaleString("currency", { style: "decimal" })}
+        value={formatCurrency(metrics.totalExpenses)}
         valueClassName="text-red-500"
         iconClassName="bg-red-100 text-red-600"
       />

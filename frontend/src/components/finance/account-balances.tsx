@@ -9,7 +9,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { formatToLabel } from "@/utils/format-to-label";
-import { cn } from "@/lib/utils";
+import { cn } from "cn";
 import AccountIcon from "./accounts/account-icon";
 import {
   Wallet01Icon,
@@ -19,6 +19,7 @@ import {
   ArrowRight01Icon,
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
+import { formatCurrency } from "@/utils/format-currency";
 
 interface AccountBalancesProps {
   accounts?: Account[];
@@ -35,33 +36,23 @@ const ACCOUNT_TYPE_STYLES: Record<
   {
     bgBadge: string;
     textBadge: string;
-    iconBg: string;
-    iconColor: string;
   }
 > = {
   [AccountType.CHECKING]: {
     bgBadge: "bg-blue-500/10",
     textBadge: "text-blue-600 dark:text-blue-400",
-    iconBg: "bg-blue-500/10",
-    iconColor: "text-blue-600 dark:text-blue-400",
   },
   [AccountType.SAVINGS]: {
     bgBadge: "bg-emerald-500/10",
     textBadge: "text-emerald-600 dark:text-emerald-400",
-    iconBg: "bg-emerald-500/10",
-    iconColor: "text-emerald-600 dark:text-emerald-400",
   },
   [AccountType.CREDIT_CARD]: {
     bgBadge: "bg-purple-500/10",
     textBadge: "text-purple-600 dark:text-purple-400",
-    iconBg: "bg-purple-500/10",
-    iconColor: "text-purple-600 dark:text-purple-400",
   },
   [AccountType.CASH]: {
     bgBadge: "bg-amber-500/10",
     textBadge: "text-amber-600 dark:text-amber-400",
-    iconBg: "bg-amber-500/10",
-    iconColor: "text-amber-600 dark:text-amber-400",
   },
 };
 
@@ -79,16 +70,6 @@ export function calculateAccountBalance(account: Account): number {
     }
     return acc - Number(cur.amount);
   }, 0);
-}
-
-/**
- * Formata valores monetários
- */
-function formatCurrency(value: number): string {
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-  }).format(value);
 }
 
 export default function AccountBalances({
@@ -274,15 +255,7 @@ export default function AccountBalances({
               <CardContent className="p-4 flex flex-col justify-between h-full gap-3">
                 {/* Top: Ícone e Tipo */}
                 <div className="flex items-center justify-between">
-                  <div
-                    className={cn(
-                      "flex items-center justify-center size-9 rounded-lg border",
-                      style.iconBg,
-                      style.iconColor
-                    )}
-                  >
-                    <AccountIcon accType={account.type} size={18} />
-                  </div>
+                  <AccountIcon accType={account.type} size={18} />
 
                   <span
                     className={cn(
@@ -336,7 +309,7 @@ export default function AccountBalances({
           <button
             type="button"
             onClick={() => router.push("/finance/accounts/new")}
-            className="flex flex-col items-center justify-center gap-2 min-h-[140px] rounded-xl border border-dashed border-border/80 bg-card/40 p-4 text-muted-foreground transition-all duration-200 hover:border-primary/50 hover:bg-muted/30 hover:text-foreground cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+            className="flex flex-col items-center justify-center gap-2 min-h-35 rounded-xl border border-dashed border-border/80 bg-card/40 p-4 text-muted-foreground transition-all duration-200 hover:border-primary/50 hover:bg-muted/30 hover:text-foreground cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
           >
             <div className="flex size-9 items-center justify-center rounded-lg bg-muted text-muted-foreground">
               <HugeiconsIcon icon={PlusSignIcon} size={18} />
