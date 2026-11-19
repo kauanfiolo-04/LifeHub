@@ -19,6 +19,8 @@ import { DatePicker } from "@/components/ui/date-picker";
 import { Category } from "@/types/finance/categories.type";
 import { useCategories } from "@/hooks/finance/categories/useCategories";
 import CategorySelect from "@/components/finance/categories/category-select";
+import { CurrencyInput } from "@/components/common/currency-input";
+import { getErrorMessage } from "@/utils/get-error-message";
 
 export default function CreateTransactionPage() {
   const router = useRouter();
@@ -52,6 +54,8 @@ export default function CreateTransactionPage() {
     defaultValue: now
   });
 
+  const amount
+
   const handleAcc = (val: Account) => {
     reset();
     clearErrors();
@@ -80,7 +84,10 @@ export default function CreateTransactionPage() {
           addNotification.success("Transaction created with success!");
           router.push("/finance/transactions");
         },
-        onError: () => addNotification.error("Try again later")
+        onError: (e) => {
+          const message = getErrorMessage(e);
+          addNotification.error(Array.isArray(message) ? message.join(", ") : message);
+        }
       });
     } catch (error) {
       console.error(error);
@@ -190,6 +197,17 @@ export default function CreateTransactionPage() {
                 setCategory={handleCateg}
               />
             </Field>
+          </Field>
+
+          <Field>
+            <FieldLabel>Amount</FieldLabel>
+
+            <CurrencyInput 
+              id="amount"
+              aria-invalid={isError || !!errors.description?.message}
+              {...register("amount")}
+              required
+            />
           </Field>
         </FieldGroup>
 
