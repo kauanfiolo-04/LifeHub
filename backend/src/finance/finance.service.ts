@@ -9,10 +9,13 @@ export class FinanceService {
   async getMetrics(payload: JwtPayload, accName?: string) {
     const { totalIncomes, totalExpenses } = await this.transactionsService.getTotals(payload, accName);
 
+    const expensesByCategory = await this.transactionsService.getExpensesByCategory(payload, accName);
+
     return {
       totalIncomes,
       totalExpenses,
-      balance: totalIncomes - totalExpenses
+      balance: totalIncomes - totalExpenses,
+      expensesByCategory
     };
   }
 }

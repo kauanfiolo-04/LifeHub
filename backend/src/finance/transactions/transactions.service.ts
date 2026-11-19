@@ -11,6 +11,7 @@ import { Account } from '../accounts/entities/account.entity';
 import { FindTransactionsDTO } from './dto/find-transactions.dto';
 import { Paginated } from '../../common/types/paginated.type';
 import { TransactionType } from './enum/transaction-type.enum';
+import { CategoryExpense, ExpensesByCategoryRaw } from '../categories/types/category-expense';
 
 @Injectable()
 export class TransactionsService {
@@ -209,5 +210,39 @@ export class TransactionsService {
       totalIncomes: Number(raw?.totalIncomes ?? 0),
       totalExpenses: Number(raw?.totalExpenses ?? 0)
     };
+  }
+
+  async getExpensesByCategory(payload: JwtPayload, accountName?: string, limit = 5): Promise<CategoryExpense[]> {
+    const qb = this.transactionsRepository
+      .createQueryBuilder('t')
+      .innerJoin('t.account', 'a')
+      .innerJoin('a.user', 'u') // assumindo que Account tem a relação user
+      .leftJoin('t.category', 'c')
+      .select('c.id', 'categoryId')
+      .addSelect('c.name', 'name')
+      .addSelect('c.color', 'color')
+      .addSelect('SUM(t.amount)', 'total')
+      .where('u.id = :userId', { userId: payload.sub })
+      .andWhere('t.type = :type', { type: TransactionType.EXPENSE })
+      .groupBy('c.id')
+      .addGroupBy('c.name')
+      .addGroupBy('c.color')
+      .orderBy('SUM(t.amount)', 'DESC');
+
+    if (accountName) {
+      qb.andWhere('a.name ILIKE :accountName', { accountName: `%${accountName}%` });
+    }
+
+    const rows = await qb.getRawMany<ExpensesByCategoryRaw>();
+
+    const grandTotal = rows.reduce((sum, r) => sum + Number(r.total), 0);
+
+    return rows.slice(0, limit).map(r => ({
+      categoryId: r.categoryId,
+      name: r.name ?? 'Uncategorized',
+      color: r.color,
+      total: Number(r.total),
+      percentage: grandTotal > 0 ? (Number(r.total) / grandTotal) * 100 : 0
+    }));
   }
 }
