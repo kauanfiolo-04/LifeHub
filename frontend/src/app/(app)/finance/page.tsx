@@ -2,6 +2,7 @@
 
 import AccountBalances from "@/components/finance/account-balances";
 import AccountSelect from "@/components/finance/accounts/account-select";
+import { ExpensesByCategory } from "@/components/finance/expenses-by-category";
 import LastTransactions from "@/components/finance/last-transactions";
 import MetricsBoxes from "@/components/finance/metrics-boxes";
 import { Button } from "@/components/ui/button";
@@ -47,7 +48,7 @@ export default function FinancePage() {
         </div>
 
         <MetricsBoxes 
-          metrics={finance}
+          metrics={{ balance: finance?.balance ??  0, totalExpenses: finance?.totalExpenses ?? 0, totalIncomes: finance?.totalIncomes ?? 0 }}
         />
 
         <AccountBalances
@@ -59,6 +60,10 @@ export default function FinancePage() {
         
         <LastTransactions 
           accountName={acc?.name}
+        />
+
+        <ExpensesByCategory 
+          data={finance?.expensesByCategory ?? []}
         />
       </div>
     </>

@@ -9,6 +9,14 @@ export type Category = {
   transactions: Transaction[];
 };
 
+export type CategoryExpense = {
+  categoryId: string | null;
+  name: string;
+  color: string | null;
+  total: number;
+  percentage: number;
+};
+
 export type CreateCategoryRequest = {
   name: string;
   color?: string;

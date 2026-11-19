@@ -7,7 +7,7 @@ import { HugeiconsIcon } from "@hugeicons/react";
 import { formatCurrency } from "@/utils/format-currency";
 
 interface MetricsBoxesProps {
-  metrics?: Finance;
+  metrics: Pick<Finance, "balance" | "totalIncomes" | "totalExpenses">;
 }
 
 interface MetricCardProps {
@@ -42,7 +42,7 @@ export function MetricCard({ title, subtitle, icon, value, valueClassName, iconC
   );
 }
 
-export default function MetricsBoxes({ metrics = { balance: 0, totalExpenses: 0, totalIncomes: 0 } }: MetricsBoxesProps) {
+export default function MetricsBoxes({ metrics }: MetricsBoxesProps) {
   
   const savingsRate = metrics.totalIncomes > 0
     ? Math.round((metrics.balance / metrics.totalIncomes) * 100)
