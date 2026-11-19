@@ -1,5 +1,6 @@
 "use client";
 
+import AccountBalances from "@/components/finance/account-balances";
 import AccountSelect from "@/components/finance/accounts/account-select";
 import LastTransactions from "@/components/finance/last-transactions";
 import MetricsBoxes from "@/components/finance/metrics-boxes";
@@ -44,11 +45,18 @@ export default function FinancePage() {
             <span>New transaction</span>
           </Button>
         </div>
-        
+
         <MetricsBoxes 
           metrics={finance}
         />
 
+        <AccountBalances
+          selectedAccountId={acc?.id}
+          onSelectAccount={account =>
+            setAcc(cur => (cur?.id === account.id ? undefined : account))
+          }
+        />
+        
         <LastTransactions 
           accountName={acc?.name}
         />
