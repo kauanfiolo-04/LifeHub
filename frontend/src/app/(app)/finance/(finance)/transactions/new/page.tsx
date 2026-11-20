@@ -54,7 +54,11 @@ export default function CreateTransactionPage() {
     defaultValue: now
   });
 
-  const amount
+  const amount = useWatch({
+    control,
+    name: "amount",
+    defaultValue: 0
+  });
 
   const handleAcc = (val: Account) => {
     reset();
@@ -69,6 +73,10 @@ export default function CreateTransactionPage() {
   const handleDate = (date?: Date) => {
     if (date) setValue("date", date);
   }
+
+  const handleAmount = (num: number) => {
+    setValue("amount", num);
+  } 
 
   const handleCateg = (val: Category) => {
     reset();
@@ -98,6 +106,7 @@ export default function CreateTransactionPage() {
     setValue("type", TransactionType.EXPENSE);
     setValue("date", now);
     setValue("categoryId", undefined);
+    setValue("amount", 0);
   }, [setValue, now]);
 
   return (
@@ -205,7 +214,8 @@ export default function CreateTransactionPage() {
             <CurrencyInput 
               id="amount"
               aria-invalid={isError || !!errors.description?.message}
-              {...register("amount")}
+              value={amount}
+              onValueChange={handleAmount}
               required
             />
           </Field>
