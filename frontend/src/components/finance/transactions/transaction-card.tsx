@@ -17,7 +17,7 @@ import { formatCurrency } from "@/utils/format-currency";
 
 interface TransactionCardProps {
   transaction: Transaction;
-  router?: AppRouterInstance;
+  router: AppRouterInstance;
   horizontal?: boolean;
   className?: string;
   onClick?: () => void;
@@ -30,15 +30,12 @@ export default function TransactionCard({
   className,
   onClick,
 }: TransactionCardProps) {
-  const nextRouter = useRouter();
-  const r = router ?? nextRouter;
-
   const { id, title, amount, category, type, account, date } = transaction;
   const isExpense = type === TransactionType.EXPENSE;
   const dateObj = date instanceof Date ? date : new Date(date);
 
   const handleClick = onClick ?? (() => {
-    // r.push(`/finance/transactions/${id}`);
+    router.push(`/finance/transactions/${id}`);
   });
 
   if (horizontal) {

@@ -7,9 +7,10 @@ interface CategorySelectProps {
   categories: Category[];
   category: Category | undefined;
   setCategory: (cat: Category) => void;
+  disabled?: boolean;
 }
 
-export default function CategorySelect({ categories, category, setCategory }: CategorySelectProps) {
+export default function CategorySelect({ categories, category, setCategory, disabled = false }: CategorySelectProps) {
   return (
     <div className="flex gap-2 w-full">
       <Select
@@ -19,6 +20,7 @@ export default function CategorySelect({ categories, category, setCategory }: Ca
 
           if (cat) setCategory(cat);
         }}
+        disabled={disabled}
       >
         <SelectTrigger className="w-full">
           <SelectValue />

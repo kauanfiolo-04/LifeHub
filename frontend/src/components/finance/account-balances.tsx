@@ -255,7 +255,7 @@ export default function AccountBalances({
               <CardContent className="p-4 flex flex-col justify-between h-full gap-3">
                 {/* Top: Ícone e Tipo */}
                 <div className="flex items-center justify-between">
-                  <AccountIcon accType={account.type} size={18} />
+                  <AccountIcon accType={account.type} size={18} bg={true} />
 
                   <span
                     className={cn(

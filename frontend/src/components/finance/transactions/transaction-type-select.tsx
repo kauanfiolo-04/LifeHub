@@ -4,15 +4,17 @@ import { TransactionType } from "@/types/finance/transactions.type";
 interface TransactionTypeSelectProps {
   value: TransactionType;
   setValue: (val: TransactionType) => void;
+  disabled?: boolean;
 }
 
-export default function TransactionTypeSelect({ value, setValue }: TransactionTypeSelectProps) {
+export default function TransactionTypeSelect({ value, setValue, disabled = false }: TransactionTypeSelectProps) {
   const entries = Object.entries(TransactionType);
 
   return (
     <Select 
       value={value}
       onValueChange={setValue}
+      disabled={disabled}
     >
       <SelectTrigger className="w-full">
         <SelectValue />

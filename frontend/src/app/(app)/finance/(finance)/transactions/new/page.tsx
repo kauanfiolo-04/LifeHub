@@ -213,7 +213,7 @@ export default function CreateTransactionPage() {
 
             <CurrencyInput 
               id="amount"
-              aria-invalid={isError || !!errors.description?.message}
+              aria-invalid={isError || !!errors.amount?.message}
               value={amount}
               onValueChange={handleAmount}
               required

@@ -118,8 +118,8 @@ export default function LastTransactions({
               <TransactionCard
                 key={transaction.id}
                 transaction={transaction}
+                router={router}
                 horizontal
-                onClick={() => router.push("/finance/transactions")}
               />
             ))}
           </div>

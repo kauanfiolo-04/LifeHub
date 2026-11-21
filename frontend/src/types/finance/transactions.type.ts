@@ -34,7 +34,9 @@ export type CreateTransactionRequest = {
   date: Date;
 };
 
-export type UpdateTransactionRequest = Partial<CreateTransactionRequest>;
+export interface UpdateTransactionRequest extends Partial<Omit<CreateTransactionRequest, "type">> { 
+  type: TransactionType 
+};
 
 export type DeleteTransactionRequest = {
   transactionId: string;

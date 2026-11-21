@@ -10,11 +10,11 @@ type AccountSelectProps = {
   disabled?: boolean;
 } & (
   | {
-      type: "all";
+      type: 'all';
       setValue: (val: Account | undefined) => void;
     }
   | {
-      type?: "select";
+      type?: 'select';
       setValue: (val: Account) => void;
     }
 );
@@ -69,10 +69,11 @@ export default function AccountSelect({
             key={acc.id}
             value={acc.name.toLowerCase()}
           >
-            <div>
-              <p className="text-sm">{acc.name}</p>
-              <div className="flex items-center gap-2">
-                <AccountIcon accType={acc.type}/>
+            <div className="flex items-center gap-2">
+              <AccountIcon accType={acc.type}/>
+
+              <div>
+                <p className="text-sm">{acc.name}</p>
                 <span className="text-xs text-gray-400">{formatToLabel(acc.type)}</span>
               </div>
             </div>
