@@ -37,8 +37,8 @@ export class CategoriesService {
     return newCategory;
   }
 
-  async findAll() {
-    const categories = await this.categoriesRepository.find({ order: { createdAt: 'desc' } });
+  async findAll(payload: JwtPayload) {
+    const categories = await this.categoriesRepository.find({ where: { user: { id: payload.sub } }, order: { createdAt: 'desc' } });
 
     return categories;
   }
