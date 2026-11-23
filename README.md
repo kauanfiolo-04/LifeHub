@@ -393,9 +393,3 @@ LifeHub/
 | **Tasks** | `POST` | `/tasks` | Create a task with priority and due date |
 | **Notes** | `GET` | `/notes` | Retrieve user notes and tags |
 | **Notes** | `POST` | `/notes` | Create a new note with color and tags |
-
----
-
-## 📄 License
-
-This project is built for personal productivity and learning. Feel free to clone, customize, and extend it!
