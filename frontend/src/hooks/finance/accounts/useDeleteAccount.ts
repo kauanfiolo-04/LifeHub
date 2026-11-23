@@ -14,7 +14,11 @@ export function useDeleteAccount() {
       });
 
       queryClient.invalidateQueries({
-        queryKey: queryKeys.finance.accounts.all(),
+        queryKey: ["accounts"],
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: ["finance"],
       });
     }
   });

@@ -4,15 +4,17 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrig
 interface AccountTypeSelectProps {
   value: AccountType;
   setValue: (val: AccountType) => void;
+  disabled?: boolean;
 }
 
-export default function AccountTypeSelect({ value, setValue }: AccountTypeSelectProps) {
+export default function AccountTypeSelect({ value, setValue, disabled }: AccountTypeSelectProps) {
   const entries = Object.entries(AccountType);
 
   return (
     <Select 
       value={value}
       onValueChange={setValue}
+      disabled={disabled}
     >
       <SelectTrigger className="w-full">
         <SelectValue />

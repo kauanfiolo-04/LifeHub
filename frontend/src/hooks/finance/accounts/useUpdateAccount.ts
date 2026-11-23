@@ -15,7 +15,11 @@ export function useUpdateAccount() {
       });
 
       queryClient.invalidateQueries({
-        queryKey: queryKeys.finance.accounts.all(),
+        queryKey: ["accounts"],
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: ["finance"],
       });
     }
   });
