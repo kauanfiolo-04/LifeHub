@@ -136,7 +136,12 @@ export default function TransactionCard({
             </p>
           </div>
 
-          <div className="flex justify-start gap-2 items-center">
+          <div className="flex justify-between gap-2 items-center">
+            <div className="flex gap-2 items-center">
+              <AccountIcon accType={account.type} size={18} bg={false} />
+              <p className="text-sm">{account.name}</p>
+            </div>
+            
             {!!category && (
               <div className="flex items-center gap-1">
                 {category.color && (
@@ -148,11 +153,6 @@ export default function TransactionCard({
                 <p>{category.name}</p>
               </div>
             )}
-
-            <div className="flex gap-2 items-center">
-              <AccountIcon accType={account.type} size={18} />
-              <p className="text-sm">{account.name}</p>
-            </div>
           </div>
 
           <div className="flex justify-between items-center">

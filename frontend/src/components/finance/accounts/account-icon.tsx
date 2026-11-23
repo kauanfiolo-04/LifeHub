@@ -12,8 +12,8 @@ interface AccountIconProps {
 export default function AccountIcon({ accType, size, bg = false }: AccountIconProps) {
   if (accType === AccountType.CASH) return (
     <div className={cn(
-      "flex items-center justify-center size-9 rounded-lg border",
-      bg ? "bg-amber-500/10 text-amber-600 dark:text-amber-400" : ""
+      "flex items-center justify-center rounded-lg border",
+      bg ? "size-9 bg-amber-500/10 text-amber-600 dark:text-amber-400" : ""
     )}>
       <HugeiconsIcon icon={Cash02Icon} size={size} />
     </div>
@@ -21,8 +21,8 @@ export default function AccountIcon({ accType, size, bg = false }: AccountIconPr
 
   if (accType === AccountType.CHECKING) return (
     <div className={cn(
-      "flex items-center justify-center size-9 rounded-lg border",
-      bg ? "bg-blue-500/10 text-blue-600 dark:text-blue-400" : ""
+      "flex items-center justify-center rounded-lg border",
+      bg ? "size-9 bg-blue-500/10 text-blue-600 dark:text-blue-400" : ""
     )}>
       <HugeiconsIcon icon={BankIcon} size={size} />
     </div>
@@ -30,8 +30,8 @@ export default function AccountIcon({ accType, size, bg = false }: AccountIconPr
 
   if (accType === AccountType.CREDIT_CARD) return (
     <div className={cn(
-      "flex items-center justify-center size-9 rounded-lg border",
-      bg ? "bg-purple-500/10 text-purple-600 dark:text-purple-400" : ""
+      "flex items-center justify-center rounded-lg border",
+      bg ? "size-9 bg-purple-500/10 text-purple-600 dark:text-purple-400" : ""
     )}>
       <HugeiconsIcon icon={CreditCardIcon} size={size} />
     </div>
@@ -39,8 +39,8 @@ export default function AccountIcon({ accType, size, bg = false }: AccountIconPr
 
   if (accType === AccountType.SAVINGS) return (
     <div className={cn(
-      "flex items-center justify-center size-9 rounded-lg border",
-      bg ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400" : ""
+      "flex items-center justify-center rounded-lg border",
+      bg ? "size-9 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400" : ""
     )}>
       <HugeiconsIcon icon={PiggyBankIcon} size={size} />
     </div>

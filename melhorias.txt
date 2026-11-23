@@ -1,5 +1,3 @@
 Criar pagina de ver a conta e pra poder editar ela, e consguir ver as transações mais recentes daquela conta na mesma pagina
 
-Criar pagina de ver transação e poder editar
-
 Popular pagina de finanças - Prioridade 
