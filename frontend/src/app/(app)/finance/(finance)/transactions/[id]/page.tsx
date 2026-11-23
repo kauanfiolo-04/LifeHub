@@ -11,7 +11,6 @@ import { Edit02Icon } from '@hugeicons/core-free-icons';
 import { useMemo, useState } from 'react';
 import { Spinner } from '@/components/ui/spinner';
 import { useParams, useRouter } from 'next/navigation';
-import NoteFormSkeleton from '@/components/notes/note-form-skeleton';
 import { addNotification } from '@/utils/notifications';
 import { useTransaction } from '@/hooks/finance/transactions/useTransaction';
 import { Account } from '@/types/finance/accounts.type';
