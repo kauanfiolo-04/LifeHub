@@ -8,15 +8,11 @@ import { useForm, useWatch } from 'react-hook-form';
 import { Textarea } from '@/components/ui/textarea';
 import { HugeiconsIcon } from '@hugeicons/react';
 import { Edit02Icon } from '@hugeicons/core-free-icons';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Spinner } from '@/components/ui/spinner';
-import ColorPicker from '@/components/common/colorpicker';
 import { useParams, useRouter } from 'next/navigation';
-import { useUpdateNote } from '@/hooks/notes/useUpdateNote';
 import NoteFormSkeleton from '@/components/notes/note-form-skeleton';
-import { useDeleteNote } from '@/hooks/notes/useDeleteNote';
 import { addNotification } from '@/utils/notifications';
-import NoteTagField from '@/components/notes/note-tag-field';
 import { useTransaction } from '@/hooks/finance/transactions/useTransaction';
 import { Account } from '@/types/finance/accounts.type';
 import { Category } from '@/types/finance/categories.type';
@@ -29,6 +25,7 @@ import TransactionTypeSelect from '@/components/finance/transactions/transaction
 import { DatePicker } from '@/components/ui/date-picker';
 import CategorySelect from '@/components/finance/categories/category-select';
 import { CurrencyInput } from '@/components/common/currency-input';
+import TransactionFormSkeleton from '@/components/finance/transactions/transaction-form-skeleton';
 
 export default function Transaction() {
   const { id } = useParams<{ id: string }>();
@@ -39,7 +36,19 @@ export default function Transaction() {
   const { data: accs } = useAccounts();
   const { data: categs } = useCategories();
 
-  const { register, handleSubmit, setValue, control, formState: { errors }, reset } = useForm<UpdateTransactionRequest>();
+  const { register, handleSubmit, setValue, control, formState: { errors }, reset } = useForm<UpdateTransactionRequest>({
+    values: transaction
+    ? {
+        title: transaction.title,
+        type: transaction.type,
+        date: new Date(transaction.date),
+        description: transaction.description ?? '',
+        accountId: transaction.account?.id,
+        categoryId: transaction.category?.id,
+        amount: transaction.amount,
+      }
+    : undefined,
+  });
 
   const { mutateAsync: updateTransaction, isPending: updatingTransaction, isError: updateError } = useUpdateTransaction();
 
@@ -47,14 +56,24 @@ export default function Transaction() {
 
   const [isEditing, setIsEditing] = useState(false);
 
-  const [selectedAcc, setSelectedAcc] = useState<Account | undefined>();
-  const [selectedCateg, setSelectedCateg] = useState<Category | undefined>();
-
   const isError = deleteError || updateError;
 
   const isPending = updatingTransaction || deletingTransaction;
 
   const now = useMemo(() => new Date(), []);
+
+  const accountId = useWatch({ control, name: 'accountId' });
+  const categoryId = useWatch({ control, name: 'categoryId' });
+
+  const selectedAcc = useMemo(
+    () => accs?.find((acc) => acc.id === accountId) ?? transaction?.account,
+    [accs, accountId, transaction?.account]
+  );
+
+  const selectedCateg = useMemo(
+    () => categs?.find((cat) => cat.id === categoryId) ?? transaction?.category,
+    [categs, categoryId, transaction?.category]
+  );
 
   const description = useWatch({
     control,
@@ -81,8 +100,7 @@ export default function Transaction() {
   });
 
   const handleAcc = (val: Account) => {
-    setSelectedAcc(val);
-    setValue("accountId", val.id);
+    setValue("accountId", val.id, { shouldDirty: true });
   }
 
   const handleType = (val: TransactionType) =>
@@ -97,27 +115,8 @@ export default function Transaction() {
   } 
 
   const handleCateg = (val: Category) => {
-    setSelectedCateg(val);
-    setValue("categoryId", val.id);
+    setValue("categoryId", val.id, { shouldDirty: true });
   }
-
-const resetTransaction = useCallback(
-  (transaction: Transaction) => {
-    reset({
-      title: transaction.title,
-      type: transaction.type,
-      date: new Date(transaction.date), // veja o ponto 3 abaixo
-      description: transaction.description ?? '',
-      accountId: transaction.account?.id,
-      categoryId: transaction.category?.id,
-      amount: transaction.amount,
-    });
-
-    setSelectedAcc(transaction.account);
-    setSelectedCateg(transaction.category);
-  },
-  [reset]
-);
 
   const handleOnSubmit = async (data: UpdateTransactionRequest) => {
     try {
@@ -153,18 +152,12 @@ const resetTransaction = useCallback(
     }
   };
 
-  useEffect(() => {
-    if (!transaction) return;
-
-    resetTransaction(transaction);
-  }, [transaction, resetTransaction]);
-
   return (
     <>
-      <h1 className='text-2xl font-bold mb-4 md:mb-8'>Note</h1>
+      <h1 className='text-2xl font-bold mb-4 md:mb-8'>Transaction</h1>
 
       {(!transaction || loadingTransaction) ? (
-        <NoteFormSkeleton />
+        <TransactionFormSkeleton />
       ) : (
         <form
           className='flex flex-1 md:flex-none flex-col w-full md:max-w-2xl gap-6 md:gap-10'
@@ -270,7 +263,7 @@ const resetTransaction = useCallback(
                 className='w-[calc(25%-8px)]'
                 onClick={() => {
                   setIsEditing(false);
-                  if (transaction) resetTransaction(transaction);
+                  if (transaction) reset();
                 }}
               >
                 Cancel
