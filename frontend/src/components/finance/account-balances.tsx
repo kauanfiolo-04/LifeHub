@@ -21,15 +21,6 @@ import {
 import { HugeiconsIcon } from "@hugeicons/react";
 import { formatCurrency } from "@/utils/format-currency";
 
-interface AccountBalancesProps {
-  accounts?: Account[];
-  isLoading?: boolean;
-  selectedAccountId?: string;
-  onSelectAccount?: (account: Account) => void;
-  className?: string;
-  showAddCard?: boolean;
-}
-
 // Configuração visual para cada tipo de conta
 const ACCOUNT_TYPE_STYLES: Record<
   AccountType,
@@ -72,18 +63,30 @@ export function calculateAccountBalance(account: Account): number {
   }, 0);
 }
 
-export default function AccountBalances({
+export interface ConsolidatedBalanceCardProps {
+  accounts?: Account[];
+  isLoading?: boolean;
+  showValues?: boolean;
+  onToggleShowValues?: () => void;
+  className?: string;
+}
+
+/**
+ * Card isolado com o saldo total consolidado e ações rápidas
+ */
+export function ConsolidatedBalanceCard({
   accounts: propAccounts,
   isLoading: propIsLoading,
-  selectedAccountId,
-  onSelectAccount,
+  showValues: propShowValues,
+  onToggleShowValues,
   className,
-  showAddCard = true,
-}: AccountBalancesProps) {
+}: ConsolidatedBalanceCardProps) {
   const router = useRouter();
-  const [showValues, setShowValues] = useState(true);
+  const [internalShowValues, setInternalShowValues] = useState(true);
 
-  // Busca contas com transações para cálculo exato de saldo se não forem passadas via props
+  const showValues = propShowValues ?? internalShowValues;
+  const handleToggle = onToggleShowValues ?? (() => setInternalShowValues((prev) => !prev));
+
   const { data: fetchedAccounts, isLoading: queryIsLoading } = useAccounts({
     showTransac: true,
   });
@@ -94,36 +97,152 @@ export default function AccountBalances({
     [propAccounts, fetchedAccounts]
   );
 
-  // Saldo consolidado total e contagem
-  const { totalBalance, accountBalances } = useMemo(() => {
+  const totalBalance = useMemo(() => {
     let total = 0;
-    const balances = new Map<string, number>();
-
     for (const acc of accounts) {
-      const balance = calculateAccountBalance(acc);
-      balances.set(acc.id, balance);
-      total += balance;
+      total += calculateAccountBalance(acc);
     }
+    return total;
+  }, [accounts]);
 
-    return { totalBalance: total, accountBalances: balances };
+  if (isLoading) {
+    return (
+      <div className={cn("flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-5 rounded-xl border bg-card/60 w-full", className)}>
+        <div className="space-y-2">
+          <Skeleton className="h-4 w-36" />
+          <Skeleton className="h-8 w-48" />
+        </div>
+        <div className="flex gap-2">
+          <Skeleton className="h-9 w-24" />
+          <Skeleton className="h-9 w-28" />
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div
+      className={cn(
+        "relative overflow-hidden rounded-xl border bg-linear-to-br from-card via-card to-muted/30 p-5 shadow-xs w-full",
+        className
+      )}
+    >
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div className="flex items-start gap-3.5">
+          <div className="flex items-center justify-center size-11 rounded-xl bg-primary/10 text-primary shrink-0 ring-1 ring-primary/20">
+            <HugeiconsIcon icon={Wallet01Icon} size={22} />
+          </div>
+
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                Consolidated Balance
+              </span>
+              <span className="text-[11px] font-medium px-2 py-0.5 rounded-full bg-secondary text-secondary-foreground">
+                {accounts.length} {accounts.length === 1 ? "account" : "accounts"}
+              </span>
+            </div>
+
+            <div className="flex items-baseline gap-2 mt-1">
+              <p
+                className={cn(
+                  "text-2xl sm:text-3xl font-extrabold tracking-tight",
+                  totalBalance < 0 && "text-red-500"
+                )}
+              >
+                {showValues ? formatCurrency(totalBalance) : "••••••••"}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Ações Consolidadas */}
+        <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleToggle}
+            className="gap-1.5 text-xs text-muted-foreground hover:text-foreground cursor-pointer"
+            title={showValues ? "Hide balances" : "Show balances"}
+          >
+            <HugeiconsIcon
+              icon={showValues ? EyeOffIcon : EyeIcon}
+              size={16}
+            />
+            <span className="hidden xs:inline">
+              {showValues ? "Hide" : "Show"}
+            </span>
+          </Button>
+
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => router.push("/finance/accounts")}
+            className="gap-1 text-xs text-muted-foreground hover:text-foreground cursor-pointer"
+          >
+            <span>Manage</span>
+            <HugeiconsIcon icon={ArrowRight01Icon} size={14} />
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export interface AccountCardsGridProps {
+  accounts?: Account[];
+  isLoading?: boolean;
+  selectedAccountId?: string;
+  onSelectAccount?: (account: Account) => void;
+  showValues?: boolean;
+  showAddCard?: boolean;
+  title?: string;
+  className?: string;
+}
+
+/**
+ * Grid de mini-cards com as contas e botão para nova conta
+ */
+export function AccountCardsGrid({
+  accounts: propAccounts,
+  isLoading: propIsLoading,
+  selectedAccountId,
+  onSelectAccount,
+  showValues: propShowValues = true,
+  showAddCard = true,
+  title = "Accounts",
+  className,
+}: AccountCardsGridProps) {
+  const router = useRouter();
+
+  const { data: fetchedAccounts, isLoading: queryIsLoading } = useAccounts({
+    showTransac: true,
+  });
+
+  const isLoading = propIsLoading ?? queryIsLoading;
+  const accounts = useMemo(
+    () => propAccounts ?? fetchedAccounts ?? [],
+    [propAccounts, fetchedAccounts]
+  );
+
+  const accountBalances = useMemo(() => {
+    const balances = new Map<string, number>();
+    for (const acc of accounts) {
+      balances.set(acc.id, calculateAccountBalance(acc));
+    }
+    return balances;
   }, [accounts]);
 
   // Loading skeleton
   if (isLoading) {
     return (
-      <div className={cn("flex flex-col gap-4 w-full", className)}>
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-5 rounded-xl border bg-card/60">
-          <div className="space-y-2">
-            <Skeleton className="h-4 w-36" />
-            <Skeleton className="h-8 w-48" />
+      <div className={cn("flex flex-col gap-3 w-full", className)}>
+        {title && (
+          <div className="flex items-center justify-between">
+            <Skeleton className="h-4 w-24" />
           </div>
-          <div className="flex gap-2">
-            <Skeleton className="h-9 w-24" />
-            <Skeleton className="h-9 w-28" />
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        )}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
           {Array.from({ length: 4 }).map((_, i) => (
             <Card key={i} className="p-4">
               <div className="flex items-center justify-between mb-3">
@@ -160,7 +279,7 @@ export default function AccountBalances({
         </div>
         <Button
           onClick={() => router.push("/finance/accounts/new")}
-          className="gap-2 mt-2"
+          className="gap-2 mt-2 cursor-pointer"
           size="sm"
         >
           <HugeiconsIcon icon={PlusSignIcon} size={16} />
@@ -171,70 +290,22 @@ export default function AccountBalances({
   }
 
   return (
-    <div className={cn("flex flex-col gap-4 w-full", className)}>
-      {/* Indicador de Saldo Total Consolidado */}
-      <div className="relative overflow-hidden rounded-xl border bg-linear-to-br from-card via-card to-muted/30 p-5 shadow-xs">
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div className="flex items-start gap-3.5">
-            <div className="flex items-center justify-center size-11 rounded-xl bg-primary/10 text-primary shrink-0 ring-1 ring-primary/20">
-              <HugeiconsIcon icon={Wallet01Icon} size={22} />
-            </div>
-
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-                  Consolidated Balance
-                </span>
-                <span className="text-[11px] font-medium px-2 py-0.5 rounded-full bg-secondary text-secondary-foreground">
-                  {accounts.length} {accounts.length === 1 ? "account" : "accounts"}
-                </span>
-              </div>
-
-              <div className="flex items-baseline gap-2 mt-1">
-                <p
-                  className={cn(
-                    "text-2xl sm:text-3xl font-extrabold tracking-tight",
-                    totalBalance < 0 && "text-red-500"
-                  )}
-                >
-                  {showValues ? formatCurrency(totalBalance) : "••••••••"}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Ações Consolidadas */}
-          <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setShowValues(!showValues)}
-              className="gap-1.5 text-xs text-muted-foreground hover:text-foreground"
-              title={showValues ? "Hide balances" : "Show balances"}
-            >
-              <HugeiconsIcon
-                icon={showValues ? EyeOffIcon : EyeIcon}
-                size={16}
-              />
-              <span className="hidden xs:inline">
-                {showValues ? "Hide" : "Show"}
+    <div className={cn("flex flex-col gap-3 w-full", className)}>
+      {title && (
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+              {title}
+            </h3>
+            {selectedAccountId && (
+              <span className="text-[11px] text-primary font-medium">
+                (Click to clear filter)
               </span>
-            </Button>
-
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => router.push("/finance/accounts")}
-              className="gap-1 text-xs text-muted-foreground hover:text-foreground"
-            >
-              <span>Manage</span>
-              <HugeiconsIcon icon={ArrowRight01Icon} size={14} />
-            </Button>
+            )}
           </div>
         </div>
-      </div>
+      )}
 
-      {/* Grid de Mini-Cards por Conta */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
         {accounts.map((account) => {
           const balance = accountBalances.get(account.id) ?? 0;
@@ -249,7 +320,7 @@ export default function AccountBalances({
               className={cn(
                 "group relative transition-all duration-200 border hover:border-foreground/20 hover:shadow-xs",
                 onSelectAccount && "cursor-pointer",
-                isSelected && "ring-2 ring-primary border-primary bg-primary/2"
+                isSelected && "ring-2 ring-primary border-primary bg-primary/5"
               )}
             >
               <CardContent className="p-4 flex flex-col justify-between h-full gap-3">
@@ -283,7 +354,7 @@ export default function AccountBalances({
                       balance < 0 ? "text-red-500" : "text-foreground"
                     )}
                   >
-                    {showValues ? formatCurrency(balance) : "••••••"}
+                    {propShowValues ? formatCurrency(balance) : "••••••"}
                   </p>
                 </div>
 
@@ -323,6 +394,53 @@ export default function AccountBalances({
           </button>
         )}
       </div>
+    </div>
+  );
+}
+
+export interface AccountBalancesProps {
+  accounts?: Account[];
+  isLoading?: boolean;
+  selectedAccountId?: string;
+  onSelectAccount?: (account: Account) => void;
+  className?: string;
+  showAddCard?: boolean;
+  children?: React.ReactNode;
+}
+
+/**
+ * Componente padrão consolidado mantido para retrocompatibilidade
+ */
+export default function AccountBalances({
+  accounts,
+  isLoading,
+  selectedAccountId,
+  onSelectAccount,
+  className,
+  showAddCard = true,
+  children,
+}: AccountBalancesProps) {
+  const [showValues, setShowValues] = useState(true);
+
+  return (
+    <div className={cn("flex flex-col gap-6 w-full", className)}>
+      <ConsolidatedBalanceCard
+        accounts={accounts}
+        isLoading={isLoading}
+        showValues={showValues}
+        onToggleShowValues={() => setShowValues((prev) => !prev)}
+      />
+
+      {children}
+
+      <AccountCardsGrid
+        accounts={accounts}
+        isLoading={isLoading}
+        selectedAccountId={selectedAccountId}
+        onSelectAccount={onSelectAccount}
+        showValues={showValues}
+        showAddCard={showAddCard}
+      />
     </div>
   );
 }

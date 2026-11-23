@@ -1,6 +1,9 @@
 "use client";
 
-import AccountBalances from "@/components/finance/account-balances";
+import {
+  ConsolidatedBalanceCard,
+  AccountCardsGrid,
+} from "@/components/finance/account-balances";
 import AccountSelect from "@/components/finance/accounts/account-select";
 import { ExpensesByCategory } from "@/components/finance/expenses-by-category";
 import LastTransactions from "@/components/finance/last-transactions";
@@ -12,59 +15,66 @@ import { Account } from "@/types/finance/accounts.type";
 import { PlusSignIcon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 export default function FinancePage() {
   const router = useRouter();
 
   const [acc, setAcc] = useState<Account | undefined>();
+  const [showValues, setShowValues] = useState(true);
 
   const { data: finance } = useFinance(acc?.name ?? "all");
   const { data: accs } = useAccounts();
 
-  useEffect(() => {
-    console.log(finance, accs);
-  }, [finance, accs]);
-
   return (
     <>
-      <div className="flex w-full justify-between items-center mb-8">
+      <div className="flex flex-col sm:flex-row w-full justify-between items-start sm:items-center gap-4 mb-6">
         <h1 className="text-2xl font-bold">Finance</h1>
-      </div>
 
-      <div className="flex flex-col gap-8">
-        <div className="flex w-full items-center justify-between">
+        <div className="flex items-center gap-2.5">
           <AccountSelect
             value={acc}
-            accounts={accs ?? []} 
+            accounts={accs ?? []}
             setValue={setAcc}
             type="all"
           />
 
-          <Button className="w-[calc(50%-8px)] md:w-40 gap-2" variant="outline" onClick={() => router.push("/finance/transactions/new")}>
-            <HugeiconsIcon icon={PlusSignIcon} />
+          <Button
+            className="gap-2 cursor-pointer"
+            variant="outline"
+            onClick={() => router.push("/finance/transactions/new")}
+          >
+            <HugeiconsIcon icon={PlusSignIcon} size={16} />
             <span>New transaction</span>
           </Button>
         </div>
+      </div>
 
-        <AccountBalances
+      <div className="flex flex-col gap-6">
+        <ConsolidatedBalanceCard
+          showValues={showValues}
+          onToggleShowValues={() => setShowValues((prev) => !prev)}
+        />
+
+        <MetricsBoxes
+          metrics={{
+            balance: finance?.balance ?? 0,
+            totalExpenses: finance?.totalExpenses ?? 0,
+            totalIncomes: finance?.totalIncomes ?? 0,
+          }}
+        />
+
+        <AccountCardsGrid
+          showValues={showValues}
           selectedAccountId={acc?.id}
-          onSelectAccount={account =>
-            setAcc(cur => (cur?.id === account.id ? undefined : account))
+          onSelectAccount={(account) =>
+            setAcc((cur) => (cur?.id === account.id ? undefined : account))
           }
         />
 
-        <MetricsBoxes 
-          metrics={{ balance: finance?.balance ??  0, totalExpenses: finance?.totalExpenses ?? 0, totalIncomes: finance?.totalIncomes ?? 0 }}
-        />
+        <ExpensesByCategory data={finance?.expensesByCategory ?? []} />
 
-        <ExpensesByCategory 
-          data={finance?.expensesByCategory ?? []}
-        />
-        
-        <LastTransactions 
-          accountName={acc?.name}
-        />
+        <LastTransactions accountName={acc?.name} />
       </div>
     </>
   );
