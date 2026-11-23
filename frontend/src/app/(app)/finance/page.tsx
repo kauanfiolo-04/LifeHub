@@ -47,23 +47,23 @@ export default function FinancePage() {
           </Button>
         </div>
 
-        <MetricsBoxes 
-          metrics={{ balance: finance?.balance ??  0, totalExpenses: finance?.totalExpenses ?? 0, totalIncomes: finance?.totalIncomes ?? 0 }}
-        />
-
         <AccountBalances
           selectedAccountId={acc?.id}
           onSelectAccount={account =>
             setAcc(cur => (cur?.id === account.id ? undefined : account))
           }
         />
-        
-        <LastTransactions 
-          accountName={acc?.name}
+
+        <MetricsBoxes 
+          metrics={{ balance: finance?.balance ??  0, totalExpenses: finance?.totalExpenses ?? 0, totalIncomes: finance?.totalIncomes ?? 0 }}
         />
 
         <ExpensesByCategory 
           data={finance?.expensesByCategory ?? []}
+        />
+        
+        <LastTransactions 
+          accountName={acc?.name}
         />
       </div>
     </>
