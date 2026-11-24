@@ -1,7 +1,6 @@
 import { Account } from "@/types/finance/accounts.type";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../ui/select";
 import { formatToLabel } from "@/utils/format-to-label";
-import AccountIcon from "./account-icon";
 
 type AccountSelectProps = {
   value: Account | undefined;
@@ -42,7 +41,7 @@ export default function AccountSelect({
       disabled={disabled}
     >
       <SelectTrigger className={
-        type === "all" ? "w-[calc(50%-8px)] md:w-40" : "w-full"
+        type === "all" ? "w-[calc(50%)] md:w-40" : "w-full"
       }
       >
         <div>
@@ -69,13 +68,9 @@ export default function AccountSelect({
             key={acc.id}
             value={acc.name.toLowerCase()}
           >
-            <div className="flex items-center gap-2">
-              <AccountIcon accType={acc.type}/>
-
-              <div>
-                <p className="text-sm">{acc.name}</p>
-                <span className="text-xs text-gray-400">{formatToLabel(acc.type)}</span>
-              </div>
+            <div className="flex flex-col">
+              <p className="text-sm">{acc.name}</p>
+              <span className="text-xs text-gray-400">{formatToLabel(acc.type)}</span>
             </div>
           </SelectItem>
         ))}

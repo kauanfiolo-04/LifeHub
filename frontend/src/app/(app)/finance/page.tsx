@@ -31,7 +31,7 @@ export default function FinancePage() {
       <div className="flex flex-col sm:flex-row w-full justify-between items-start sm:items-center gap-4 mb-6">
         <h1 className="text-2xl font-bold">Finance</h1>
 
-        <div className="flex items-center gap-2.5">
+        <div className="flex gap-3 w-full md:w-auto">
           <AccountSelect
             value={acc}
             accounts={accs ?? []}
@@ -40,7 +40,7 @@ export default function FinancePage() {
           />
 
           <Button
-            className="gap-2 cursor-pointer"
+            className="w-[calc(50%)] gap-2"
             variant="outline"
             onClick={() => router.push("/finance/transactions/new")}
           >
@@ -57,6 +57,7 @@ export default function FinancePage() {
         />
 
         <MetricsBoxes
+          showValues={showValues}
           metrics={{
             balance: finance?.balance ?? 0,
             totalExpenses: finance?.totalExpenses ?? 0,
@@ -67,8 +68,13 @@ export default function FinancePage() {
         <AccountCardsGrid
           showValues={showValues}
           selectedAccountId={acc?.id}
-          onSelectAccount={(account) =>
-            setAcc((cur) => (cur?.id === account.id ? undefined : account))
+          onSelectAccount={(account) => {
+            if (!account) {
+              setAcc(undefined);
+            } else {
+              setAcc((cur) => (cur?.id === account.id ? undefined : account))
+            }
+          }
           }
         />
 

@@ -8,6 +8,7 @@ import { formatCurrency } from "@/utils/format-currency";
 
 interface MetricsBoxesProps {
   metrics: Pick<Finance, "balance" | "totalIncomes" | "totalExpenses">;
+  showValues: boolean;
 }
 
 interface MetricCardProps {
@@ -42,7 +43,7 @@ export function MetricCard({ title, subtitle, icon, value, valueClassName, iconC
   );
 }
 
-export default function MetricsBoxes({ metrics }: MetricsBoxesProps) {
+export default function MetricsBoxes({ metrics, showValues }: MetricsBoxesProps) {
   
   const savingsRate = metrics.totalIncomes > 0
     ? Math.round((metrics.balance / metrics.totalIncomes) * 100)
@@ -53,14 +54,14 @@ export default function MetricsBoxes({ metrics }: MetricsBoxesProps) {
       <MetricCard 
         title="Balance"
         icon={Wallet01Icon}
-        value={formatCurrency(metrics.balance)}
+        value={showValues ? formatCurrency(metrics.balance) : "••••••"}
         iconClassName="bg-blue-100 text-blue-600"
       />
 
       <MetricCard
         title="Incomes"
         icon={ArrowUp02Icon}
-        value={formatCurrency(metrics.totalIncomes)}
+        value={showValues ? formatCurrency(metrics.totalIncomes) : "••••••"}
         valueClassName="text-green-500"
         iconClassName="bg-green-100 text-green-600"
       />
@@ -68,7 +69,7 @@ export default function MetricsBoxes({ metrics }: MetricsBoxesProps) {
       <MetricCard
         title="Expenses"
         icon={ArrowDown02Icon}
-        value={formatCurrency(metrics.totalExpenses)}
+        value={showValues ? formatCurrency(metrics.totalExpenses) : "••••••"}
         valueClassName="text-red-500"
         iconClassName="bg-red-100 text-red-600"
       />

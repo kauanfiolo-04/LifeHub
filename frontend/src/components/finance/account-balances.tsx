@@ -193,7 +193,7 @@ export interface AccountCardsGridProps {
   accounts?: Account[];
   isLoading?: boolean;
   selectedAccountId?: string;
-  onSelectAccount?: (account: Account) => void;
+  onSelectAccount?: (account?: Account) => void;
   showValues?: boolean;
   showAddCard?: boolean;
   title?: string;
@@ -298,7 +298,7 @@ export function AccountCardsGrid({
               {title}
             </h3>
             {selectedAccountId && (
-              <span className="text-[11px] text-primary font-medium">
+              <span onClick={() => onSelectAccount?.(undefined)} className="text-[11px] text-primary font-medium">
                 (Click to clear filter)
               </span>
             )}
@@ -402,7 +402,7 @@ export interface AccountBalancesProps {
   accounts?: Account[];
   isLoading?: boolean;
   selectedAccountId?: string;
-  onSelectAccount?: (account: Account) => void;
+  onSelectAccount?: (account?: Account) => void;
   className?: string;
   showAddCard?: boolean;
   children?: React.ReactNode;

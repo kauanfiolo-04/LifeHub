@@ -136,7 +136,7 @@ export default function AccountDetailPage() {
               </Field>
             </FieldGroup>
             
-            {account && (
+            {account && (!isEditing) && (
               <LastTransactions accountName={account.name} limit={5} />
             )}
 
