@@ -323,22 +323,26 @@ LifeHub/
 
 3. Configure your environment variables in `.env`:
    ```env
-   DATABASE_TYPE=postgres
-   DATABASE_URL=postgresql://user:password@your-neon-host.neon.tech/lifehub?sslmode=require
+   DATABASE_TYPE=
+   DATABASE_URL=
    DATABASE_AUTO_LOAD_ENTITIES=true
    DATABASE_SYNCHRONIZE=true
+   
+   SEED_DEMO_EMAIL=
+   SEED_DEMO_PASSWORD=
+   SEED_SAFE_HOSTS=
 
-   JWT_ACCESS_SECRET=your_super_secret_access_token_key
+   JWT_ACCESS_SECRET=
    JWT_TTL=3600
-   JWT_REFRESH_SECRET=your_super_secret_refresh_token_key
+   JWT_REFRESH_SECRET=
    JWT_REFRESH_TTL=86400
 
-   GOOGLE_CLIENT_ID=your_google_client_id
-   GOOGLE_SECRET=your_google_client_secret
+   GOOGLE_CLIENT_ID=
+   GOOGLE_SECRET=
    GOOGLE_CALLBACK_URL=http://localhost:3000/callback/google
 
-   GITHUB_CLIENT_ID=your_github_client_id
-   GITHUB_CLIENT_SECRET=your_github_client_secret
+   GITHUB_CLIENT_ID=
+   GITHUB_CLIENT_SECRET=
    GITHUB_CALLBACK_URL=http://localhost:3000/callback/github
 
    PORT=3001
